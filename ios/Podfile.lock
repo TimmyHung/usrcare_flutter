@@ -1,0 +1,67 @@
+PODS:
+  - AppAuth (1.7.5):
+    - AppAuth/Core (= 1.7.5)
+    - AppAuth/ExternalUserAgent (= 1.7.5)
+  - AppAuth/Core (1.7.5)
+  - AppAuth/ExternalUserAgent (1.7.5):
+    - AppAuth/Core
+  - Flutter (1.0.0)
+  - flutter_line_sdk (2.3.8):
+    - Flutter
+    - LineSDKSwift (~> 5.3)
+  - google_sign_in_ios (0.0.1):
+    - AppAuth (>= 1.7.4)
+    - Flutter
+    - FlutterMacOS
+    - GoogleSignIn (~> 7.1)
+    - GTMSessionFetcher (>= 3.4.0)
+  - GoogleSignIn (7.1.0):
+    - AppAuth (< 2.0, >= 1.7.3)
+    - GTMAppAuth (< 5.0, >= 4.1.1)
+    - GTMSessionFetcher/Core (~> 3.3)
+  - GTMAppAuth (4.1.1):
+    - AppAuth/Core (~> 1.7)
+    - GTMSessionFetcher/Core (< 4.0, >= 3.3)
+  - GTMSessionFetcher (3.5.0):
+    - GTMSessionFetcher/Full (= 3.5.0)
+  - GTMSessionFetcher/Core (3.5.0)
+  - GTMSessionFetcher/Full (3.5.0):
+    - GTMSessionFetcher/Core
+  - LineSDKSwift (5.11.1):
+    - LineSDKSwift/Core (= 5.11.1)
+  - LineSDKSwift/Core (5.11.1)
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - flutter_line_sdk (from `.symlinks/plugins/flutter_line_sdk/ios`)
+  - google_sign_in_ios (from `.symlinks/plugins/google_sign_in_ios/darwin`)
+
+SPEC REPOS:
+  trunk:
+    - AppAuth
+    - GoogleSignIn
+    - GTMAppAuth
+    - GTMSessionFetcher
+    - LineSDKSwift
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  flutter_line_sdk:
+    :path: ".symlinks/plugins/flutter_line_sdk/ios"
+  google_sign_in_ios:
+    :path: ".symlinks/plugins/google_sign_in_ios/darwin"
+
+SPEC CHECKSUMS:
+  AppAuth: 501c04eda8a8d11f179dbe8637b7a91bb7e5d2fa
+  Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
+  flutter_line_sdk: 266c756b2223ca2645a7c302f8c4101e3e2b8e12
+  google_sign_in_ios: 07375bfbf2620bc93a602c0e27160d6afc6ead38
+  GoogleSignIn: d4281ab6cf21542b1cfaff85c191f230b399d2db
+  GTMAppAuth: f69bd07d68cd3b766125f7e072c45d7340dea0de
+  GTMSessionFetcher: 5aea5ba6bd522a239e236100971f10cb71b96ab6
+  LineSDKSwift: a3396147600cd9f2548fea88f31f49d928384bcb
+
+PODFILE CHECKSUM: 265702c5595ded980ac03c494ebd4c9795da671e
+
+COCOAPODS: 1.15.2

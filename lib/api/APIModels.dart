@@ -1,0 +1,200 @@
+class User {
+  final String username;
+  final String password;
+  final String salt;
+  final String email;
+  final String name;
+  final String gender;
+  final String birthday;
+  final String? phone; // 可選
+  final String city;
+  final String district;
+  final String neighbor;
+  final String? address; // 可選
+  final String? EName; // 可選
+  final String? EPhone; // 可選
+  final String? ERelation; // 可選
+
+  User({
+    required this.username,
+    required this.password,
+    required this.salt,
+    required this.email,
+    required this.name,
+    required this.gender,
+    required this.birthday,
+    this.phone,
+    required this.city,
+    required this.district,
+    required this.neighbor,
+    this.address,
+    this.EName,
+    this.EPhone,
+    this.ERelation,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'username': username,
+      'password': password,
+      'salt': salt,
+      'email': email,
+      'name': name,
+      'gender': gender,
+      'birthday': birthday,
+      'phone': phone,
+      'city': city,
+      'district': district,
+      'neighbor': neighbor,
+      'address': address,
+      'EName': EName,
+      'EPhone': EPhone,
+      'ERelation': ERelation,
+    };
+  }
+}
+
+
+class OTPRequest {
+  final String email;
+  final String OTP;
+
+  OTPRequest({required this.email, required this.OTP});
+
+  Map<String, dynamic> toJson() {
+    return {
+      'email': email,
+      'OTP': OTP,
+    };
+  }
+}
+
+class PasswordReset {
+  final String otp;
+  final String newPassword;
+  final String salt;
+
+  PasswordReset({
+    required this.otp,
+    required this.newPassword,
+    required this.salt,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'otp': otp,
+      'newPassword': newPassword,
+      'salt': salt,
+    };
+  }
+}
+
+class MoodRecord {
+  final String mood;
+  final String time;
+
+  MoodRecord({required this.mood, required this.time});
+
+  Map<String, dynamic> toJson() {
+    return {
+      'mood': mood,
+      'time': time,
+    };
+  }
+}
+
+class TypewriterRecord {
+  final String typewriter;
+
+  TypewriterRecord({required this.typewriter});
+
+  Map<String, dynamic> toJson() {
+    return {
+      'typewriter': typewriter,
+    };
+  }
+}
+
+class PointsDeduction {
+  final String time;
+  final int deductionType;
+  final int deductionAmount;
+
+  PointsDeduction({
+    required this.time,
+    required this.deductionType,
+    required this.deductionAmount,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'time': time,
+      'deductionType': deductionType,
+      'deductionAmount': deductionAmount,
+    };
+  }
+}
+
+class GameRecordCard {
+  final int level;
+  final String startTime;
+  final String endTime;
+  final String totalSteps;
+  final List<String> flipCount;
+  final int helpTotalCount;
+  final List<String> helpRecord;
+
+  GameRecordCard({
+    required this.level,
+    required this.startTime,
+    required this.endTime,
+    required this.totalSteps,
+    required this.flipCount,
+    required this.helpTotalCount,
+    required this.helpRecord,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'level': level,
+      'startTime': startTime,
+      'endTime': endTime,
+      'totalSteps': totalSteps,
+      'flipCount': flipCount,
+      'helpTotalCount': helpTotalCount,
+      'helpRecord': helpRecord,
+    };
+  }
+}
+
+class GameRecordOcean {
+  final int level;
+  final String startTime;
+  final String endTime;
+  final String starCount;
+  final int score;
+  final int helpTotalCount;
+  final List<String> helpRecord;
+
+  GameRecordOcean({
+    required this.level,
+    required this.startTime,
+    required this.endTime,
+    required this.starCount,
+    required this.score,
+    required this.helpTotalCount,
+    required this.helpRecord,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'level': level,
+      'startTime': startTime,
+      'endTime': endTime,
+      'starCount': starCount,
+      'score': score,
+      'helpTotalCount': helpTotalCount,
+      'helpRecord': helpRecord,
+    };
+  }
+}
