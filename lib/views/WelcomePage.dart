@@ -120,25 +120,26 @@ class _WelcomePageState extends State<WelcomePage> {
                       },
                     ),
                     const SizedBox(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: Container(
+                            margin: const EdgeInsets.only(right: 10.0),
                             color: Colors.black54,
                             height: 2,
-                            width: MediaQuery.of(context).size.width * 0.2,
                           ),
-                          const Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 5),
-                            child: Text("或使用以下方式繼續", style: TextStyle(fontSize: 20)),
-                          ),
-                          Container(
+                        ),
+                        const Text("或使用以下方式繼續", style: TextStyle(fontSize: 20)),
+                        Expanded(
+                          child: Container(
+                            margin: const EdgeInsets.only(left: 10.0),
                             color: Colors.black54,
                             height: 2,
-                            width: MediaQuery.of(context).size.width * 0.2,
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
+                    ),
                     const SizedBox(height: 10),
                     Row(
                       children: [
@@ -183,7 +184,6 @@ class _WelcomePageState extends State<WelcomePage> {
                                     AppleIDAuthorizationScopes.fullName,
                                   ],
                                   webAuthenticationOptions: WebAuthenticationOptions(
-                                    // TODO: Set the `clientId` and `redirectUri` arguments to the values you entered in the Apple Developer portal during the setup
                                     clientId: 'com.tku.usrcare.auth',
                                     redirectUri: Uri.parse('https://www.tkuusrcare.org',),
                                   ),
@@ -193,7 +193,12 @@ class _WelcomePageState extends State<WelcomePage> {
                                 );
 
                                 // ignore: avoid_print
-                                print(credential);
+                                print("登入時回傳的Creditional: \n$credential");
+                                // print(credential.authorizationCode);
+                                // print(credential.email);
+                                // print(credential.givenName);
+                                // print(credential.familyName);
+
 
                                 // This is the endpoint that will convert an authorization code obtained
                                 // via Sign in with Apple into a session in your system
