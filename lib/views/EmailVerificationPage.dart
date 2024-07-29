@@ -9,27 +9,29 @@ import 'package:usrcare/widgets/Dialog.dart';
 
 class EmailVerificationPage extends StatelessWidget {
   EmailVerificationPage({
-      super.key,
-      // required this.routeTo,
-      // this.arguments,
-    });
+    super.key,
+    // required this.routeTo,
+    // this.arguments,
+  });
 
   final APIService apiService = APIService();
 
-  void _validOTP(BuildContext context,String verificationCode) async {
-    Map<String, dynamic> arguments = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
+  void _validOTP(BuildContext context, String verificationCode) async {
+    Map<String, dynamic> arguments =
+        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
     String email = arguments["email"];
     // 驗證邏輯
     OTPRequest otpRequest = OTPRequest(email: email, OTP: verificationCode);
-    
-    final response = await apiService.emailOtpVerification_RegisterONLY(otpRequest);
-    final handledResponse = handleHttpResponses(context, response, "OTP驗證時發生錯誤");
+
+    final response =
+        await apiService.emailOtpVerification_RegisterONLY(otpRequest);
+    final handledResponse =
+        handleHttpResponses(context, response, "OTP驗證時發生錯誤");
     if (handledResponse == null) {
       return;
     }
     bool OTPpass = handledResponse['success'];
     if (OTPpass) {
-
       final String route = arguments['route'];
       arguments.remove("route");
 
@@ -42,6 +44,7 @@ class EmailVerificationPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
           Positioned.fill(
@@ -91,16 +94,16 @@ class EmailVerificationPage extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10),
                     borderColor: ColorUtil.primary,
                     showFieldAsBox: true,
-                    onSubmit: (String verificationCode){ //當所有代碼都填入後執行
-                        _validOTP(context, verificationCode);
-                    }, 
+                    onSubmit: (String verificationCode) {
+                      //當所有代碼都填入後執行
+                      _validOTP(context, verificationCode);
+                    },
                   ),
                   const SizedBox(height: 20),
                   const FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Text("請輸入信箱內收到的六位數字驗證碼", style: TextStyle(fontSize: 30)
-                    )
-                  ),
+                      fit: BoxFit.scaleDown,
+                      child: Text("請輸入信箱內收到的六位數字驗證碼",
+                          style: TextStyle(fontSize: 30))),
                   const Spacer(),
                   const Spacer(),
                 ],
@@ -124,12 +127,16 @@ class BackgroundPainter extends CustomPainter {
     path.moveTo(0, -size.height * 0.2);
     path.lineTo(0, size.height * 0.3);
     path.quadraticBezierTo(
-      size.width * 0.2, size.height * 0.75,
-      size.width * 0.5, size.height * 0.75,
+      size.width * 0.2,
+      size.height * 0.75,
+      size.width * 0.5,
+      size.height * 0.75,
     );
     path.quadraticBezierTo(
-      size.width * 0.5, size.height * 0.3,
-      size.width, size.height * 0.4,
+      size.width * 0.5,
+      size.height * 0.3,
+      size.width,
+      size.height * 0.4,
     );
     path.lineTo(size.width, -size.height * 0.2);
     path.close();
@@ -143,12 +150,16 @@ class BackgroundPainter extends CustomPainter {
     final secondPath = Path();
     secondPath.moveTo(0, size.height * 0.3);
     secondPath.quadraticBezierTo(
-      size.width * 0.25, size.height * 0.4,
-      size.width * 0.5, size.height * 0.35,
+      size.width * 0.25,
+      size.height * 0.4,
+      size.width * 0.5,
+      size.height * 0.35,
     );
     secondPath.quadraticBezierTo(
-      size.width * 0.75, size.height * 0.3,
-      size.width, size.height * 0.4,
+      size.width * 0.75,
+      size.height * 0.3,
+      size.width,
+      size.height * 0.4,
     );
     secondPath.lineTo(size.width, size.height);
     secondPath.lineTo(0, size.height);

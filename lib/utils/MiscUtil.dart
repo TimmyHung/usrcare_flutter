@@ -8,6 +8,7 @@ import 'package:usrcare/widgets/Dialog.dart';
 
 
 dynamic handleHttpResponses(BuildContext context, dynamic response, String? errorTitle) {
+  print(response.body);
   if (response.statusCode == 200) {
     final responseBody = json.decode(response.body);
     return responseBody;

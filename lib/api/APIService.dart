@@ -122,7 +122,7 @@ class APIService {
   // 點數相關
   Future<http.Response> getPoints() {
     final url = Uri.parse('$baseUrl/points');
-    return http.post(url, headers: headers);
+    return http.get(url, headers: headers);
   }
 
   Future<http.Response> postPointsDeduction(PointsDeduction pointsDeduction) {

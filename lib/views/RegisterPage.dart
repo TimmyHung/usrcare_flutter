@@ -12,7 +12,6 @@ import 'package:usrcare/widgets/DropDown.dart';
 import 'package:usrcare/widgets/TextField.dart';
 import 'package:usrcare/widgets/button.dart';
 
-
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
 
@@ -39,7 +38,6 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   void _checkEmailExists(BuildContext context) async {
-
     final response = await apiService.checkEmail(_email);
 
     if (response.statusCode == 200) {
@@ -48,19 +46,23 @@ class _RegisterPageState extends State<RegisterPage> {
       if (exists) {
         // showCustomDialog(context, "信箱已註冊", "此信箱已被註冊，請使用其他信箱。");
         final arguments = {"email": _email};
-        Navigator.pushNamed(context, '/register/AccountSetup', arguments: arguments);
+        Navigator.pushNamed(context, '/register/AccountSetup',
+            arguments: arguments);
       } else {
         final arguments = {"route": "/register/AccountSetup", "email": _email};
-        Navigator.pushNamed(context, '/EmailVerification', arguments: arguments);
+        Navigator.pushNamed(context, '/EmailVerification',
+            arguments: arguments);
       }
     } else {
-      showCustomDialog(context, "驗證Email時發生錯誤", response.reasonPhrase.toString());
+      showCustomDialog(
+          context, "驗證Email時發生錯誤", response.reasonPhrase.toString());
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
           Positioned.fill(
@@ -104,7 +106,8 @@ class _RegisterPageState extends State<RegisterPage> {
                     suffixIcon: _email.isEmpty
                         ? null
                         : (_isEmailValid ? Icons.check_circle : Icons.cancel),
-                    suffixIconColor: (_isEmailValid ? Colors.green : Colors.red),
+                    suffixIconColor:
+                        (_isEmailValid ? Colors.green : Colors.red),
                     onChanged: _validateEmail,
                   ),
                   const SizedBox(height: 20),
@@ -131,8 +134,6 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 }
 
-
-
 class AccountSetupPage extends StatefulWidget {
   const AccountSetupPage({super.key});
 
@@ -143,7 +144,8 @@ class AccountSetupPage extends StatefulWidget {
 class _AccountSetupPageState extends State<AccountSetupPage> {
   final TextEditingController accountController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController repeatPasswordController = TextEditingController();
+  final TextEditingController repeatPasswordController =
+      TextEditingController();
   final APIService apiService = APIService();
 
   bool _passwordVisible = false;
@@ -155,6 +157,7 @@ class _AccountSetupPageState extends State<AccountSetupPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
           Positioned.fill(
@@ -179,7 +182,8 @@ class _AccountSetupPageState extends State<AccountSetupPage> {
                       type: ButtonType.circular,
                       onPressed: () {
                         Navigator.pop(context);
-                        Navigator.popUntil(context, ModalRoute.withName("/register"));
+                        Navigator.popUntil(
+                            context, ModalRoute.withName("/register"));
                       },
                       icon: const Icon(Icons.arrow_back),
                     ),
@@ -205,7 +209,9 @@ class _AccountSetupPageState extends State<AccountSetupPage> {
                     label: '密碼',
                     inputType: InputType.password,
                     controller: passwordController,
-                    suffixIcon: _passwordVisible ? Icons.visibility : Icons.visibility_off,
+                    suffixIcon: _passwordVisible
+                        ? Icons.visibility
+                        : Icons.visibility_off,
                     onSuffixIconPressed: () {
                       setState(() {
                         _passwordVisible = !_passwordVisible;
@@ -219,7 +225,9 @@ class _AccountSetupPageState extends State<AccountSetupPage> {
                     label: '再次輸入密碼',
                     inputType: InputType.password,
                     controller: repeatPasswordController,
-                    suffixIcon: _repeatPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                    suffixIcon: _repeatPasswordVisible
+                        ? Icons.visibility
+                        : Icons.visibility_off,
                     onSuffixIconPressed: () {
                       setState(() {
                         _repeatPasswordVisible = !_repeatPasswordVisible;
@@ -234,7 +242,9 @@ class _AccountSetupPageState extends State<AccountSetupPage> {
                     child: CustomButton(
                       text: '下一步',
                       type: ButtonType.primary,
-                      onPressed: (){_registerProcess(context);},
+                      onPressed: () {
+                        _registerProcess(context);
+                      },
                     ),
                   ),
                   const Spacer(),
@@ -251,7 +261,8 @@ class _AccountSetupPageState extends State<AccountSetupPage> {
     final account = accountController.text;
     final password = passwordController.text;
     final repeatPassword = repeatPasswordController.text;
-    final arguments = ModalRoute.of(context)?.settings.arguments as Map<String,dynamic>;
+    final arguments =
+        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
     final email = arguments["email"];
 
     if (!_validateInputs(account, password, repeatPassword)) {
@@ -268,7 +279,11 @@ class _AccountSetupPageState extends State<AccountSetupPage> {
         return;
       }
 
-      Navigator.pushNamed(context, '/register/InfoSetup', arguments: {"email": email, "account": account, "password": password});
+      Navigator.pushNamed(context, '/register/InfoSetup', arguments: {
+        "email": email,
+        "account": account,
+        "password": password
+      });
     } catch (e) {
       _setError('_accountError', '發生未知錯誤');
     }
@@ -286,7 +301,7 @@ class _AccountSetupPageState extends State<AccountSetupPage> {
       return false;
     }
 
-    if (account.length > 50){
+    if (account.length > 50) {
       _setError('_accountError', '帳號長度不可超過50字元');
       return false;
     }
@@ -328,8 +343,6 @@ class _AccountSetupPageState extends State<AccountSetupPage> {
   }
 }
 
-
-
 class InfoSetupPage extends StatefulWidget {
   const InfoSetupPage({super.key});
 
@@ -361,33 +374,52 @@ class _InfoSetupPageState extends State<InfoSetupPage> {
       _birthdayError = _birthdayController.text.isEmpty ? '生日不能為空' : null;
       _cityError = _city == null ? '居住縣市不能為空' : null;
       _districtError = _districtController.text.isEmpty ? '居住鄉鎮市區不能為空' : null;
-      _neighborhoodError = _neighborhoodController.text.isEmpty ? '居住村里不能為空' : null;
+      _neighborhoodError =
+          _neighborhoodController.text.isEmpty ? '居住村里不能為空' : null;
     });
 
-    if (_nameError == null && _genderError == null && _birthdayError == null && _cityError == null && _districtError == null && _neighborhoodError == null) {
-        final Map<String, dynamic> arguments = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
-        final String email = arguments['email'];
-        final String account = arguments['account'];
-        final String password = arguments['password'];
-        final String salt = generateSalt();
-        final hashedPassword = hashPassword(password, salt);
-        String gender = _gender! == "男性" ? "male" : "female";
+    if (_nameError == null &&
+        _genderError == null &&
+        _birthdayError == null &&
+        _cityError == null &&
+        _districtError == null &&
+        _neighborhoodError == null) {
+      final Map<String, dynamic> arguments =
+          ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
+      final String email = arguments['email'];
+      final String account = arguments['account'];
+      final String password = arguments['password'];
+      final String salt = generateSalt();
+      final hashedPassword = hashPassword(password, salt);
+      String gender = _gender! == "男性" ? "male" : "female";
 
-        final User user = User(username: account, password: hashedPassword, salt: salt, email: email, name: _nameController.text, gender: gender, birthday: _birthdayController.text, city: _city!, district: _districtController.text, neighbor: _neighborhoodController.text);
+      final User user = User(
+          username: account,
+          password: hashedPassword,
+          salt: salt,
+          email: email,
+          name: _nameController.text,
+          gender: gender,
+          birthday: _birthdayController.text,
+          city: _city!,
+          district: _districtController.text,
+          neighbor: _neighborhoodController.text);
 
-        final response = await api.registerUser(user);
-        dynamic handledResponse = handleHttpResponses(context, response, "創建帳號時發生錯誤");
-        if (handledResponse == null) {
-          return;
-        }
+      final response = await api.registerUser(user);
+      dynamic handledResponse =
+          handleHttpResponses(context, response, "創建帳號時發生錯誤");
+      if (handledResponse == null) {
+        return;
+      }
 
-        final userToken = handledResponse['user_token'];
-        
-        Navigator.pushNamed(context, '/home');
+      final userToken = handledResponse['user_token'];
+
+      Navigator.pushNamed(context, '/home');
     }
   }
 
-  String generateSalt() {//生成64字元的鹽巴
+  String generateSalt() {
+    //生成64字元的鹽巴
     final bytes = List<int>.generate(64, (i) => i + 1);
     return base64Url.encode(bytes);
   }
@@ -431,6 +463,7 @@ class _InfoSetupPageState extends State<InfoSetupPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
           Positioned.fill(
@@ -496,13 +529,16 @@ class _InfoSetupPageState extends State<InfoSetupPage> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text("生日", style: TextStyle(fontSize: 22, color: Colors.black)),
+                              const Text("生日",
+                                  style: TextStyle(
+                                      fontSize: 22, color: Colors.black)),
                               TextField(
                                 controller: _birthdayController,
                                 style: Theme.of(context).textTheme.bodySmall,
                                 showCursor: false,
                                 decoration: InputDecoration(
-                                  errorStyle: const TextStyle(color: Colors.red, fontSize: 20),
+                                  errorStyle: const TextStyle(
+                                      color: Colors.red, fontSize: 20),
                                   errorText: _birthdayError,
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10),
@@ -510,10 +546,12 @@ class _InfoSetupPageState extends State<InfoSetupPage> {
                                 ),
                                 onChanged: _validateBirthday,
                                 onTap: () async {
-                                  DateTime? newDateTime = await showRoundedDatePicker(
+                                  DateTime? newDateTime =
+                                      await showRoundedDatePicker(
                                     context: context,
                                     initialDate: DateTime.now(),
-                                    firstDate: DateTime(DateTime.now().year - 110),
+                                    firstDate:
+                                        DateTime(DateTime.now().year - 110),
                                     lastDate: DateTime.now(),
                                     borderRadius: 16,
                                     theme: ThemeData(
@@ -521,17 +559,24 @@ class _InfoSetupPageState extends State<InfoSetupPage> {
                                       colorScheme: ColorScheme.fromSwatch(),
                                       dialogBackgroundColor: Colors.white,
                                       textTheme: const TextTheme(
-                                        titleMedium: TextStyle(color: Colors.black,fontSize:25),
-                                        bodyLarge: TextStyle(color: Colors.black,fontSize:22),
-                                        bodyMedium: TextStyle(color: Colors.black,fontSize:20),
-                                        bodySmall: TextStyle(color: Colors.black,fontSize:20),
+                                        titleMedium: TextStyle(
+                                            color: Colors.black, fontSize: 25),
+                                        bodyLarge: TextStyle(
+                                            color: Colors.black, fontSize: 22),
+                                        bodyMedium: TextStyle(
+                                            color: Colors.black, fontSize: 20),
+                                        bodySmall: TextStyle(
+                                            color: Colors.black, fontSize: 20),
                                       ),
                                     ),
                                   );
                                   if (newDateTime != null) {
                                     setState(() {
-                                      _birthdayController.text = newDateTime.toString().substring(0, 10);
-                                      _validateBirthday(_birthdayController.text);
+                                      _birthdayController.text = newDateTime
+                                          .toString()
+                                          .substring(0, 10);
+                                      _validateBirthday(
+                                          _birthdayController.text);
                                     });
                                   }
                                 },
@@ -542,10 +587,28 @@ class _InfoSetupPageState extends State<InfoSetupPage> {
                           CustomDropdownButton(
                             label: '居住縣市',
                             options: const [
-                              "臺北市", "新北市", "桃園市", "臺中市", "臺南市", "高雄市",
-                              "基隆市", "新竹市", "嘉義市", "新竹縣", "苗栗縣", "彰化縣",
-                              "南投縣", "雲林縣", "嘉義縣", "屏東縣", "宜蘭縣", "花蓮縣",
-                              "臺東縣", "澎湖縣", "金門縣", "連江縣"
+                              "臺北市",
+                              "新北市",
+                              "桃園市",
+                              "臺中市",
+                              "臺南市",
+                              "高雄市",
+                              "基隆市",
+                              "新竹市",
+                              "嘉義市",
+                              "新竹縣",
+                              "苗栗縣",
+                              "彰化縣",
+                              "南投縣",
+                              "雲林縣",
+                              "嘉義縣",
+                              "屏東縣",
+                              "宜蘭縣",
+                              "花蓮縣",
+                              "臺東縣",
+                              "澎湖縣",
+                              "金門縣",
+                              "連江縣"
                             ],
                             selectedValue: _city,
                             onChanged: (String? value) {
@@ -595,9 +658,6 @@ class _InfoSetupPageState extends State<InfoSetupPage> {
   }
 }
 
-
-
-
 //波浪背景
 class BackgroundPainter extends CustomPainter {
   @override
@@ -610,12 +670,16 @@ class BackgroundPainter extends CustomPainter {
     path.moveTo(0, -size.height * 0.2);
     path.lineTo(0, size.height * 0.3);
     path.quadraticBezierTo(
-      size.width * 0.2, size.height * 0.75,
-      size.width * 0.5, size.height * 0.75,
+      size.width * 0.2,
+      size.height * 0.75,
+      size.width * 0.5,
+      size.height * 0.75,
     );
     path.quadraticBezierTo(
-      size.width * 0.5, size.height * 0.3,
-      size.width, size.height * 0.4,
+      size.width * 0.5,
+      size.height * 0.3,
+      size.width,
+      size.height * 0.4,
     );
     path.lineTo(size.width, -size.height * 0.2);
     path.close();
@@ -629,12 +693,16 @@ class BackgroundPainter extends CustomPainter {
     final secondPath = Path();
     secondPath.moveTo(0, size.height * 0.3);
     secondPath.quadraticBezierTo(
-      size.width * 0.25, size.height * 0.4,
-      size.width * 0.5, size.height * 0.35,
+      size.width * 0.25,
+      size.height * 0.4,
+      size.width * 0.5,
+      size.height * 0.35,
     );
     secondPath.quadraticBezierTo(
-      size.width * 0.75, size.height * 0.3,
-      size.width, size.height * 0.4,
+      size.width * 0.75,
+      size.height * 0.3,
+      size.width,
+      size.height * 0.4,
     );
     secondPath.lineTo(size.width, size.height);
     secondPath.lineTo(0, size.height);

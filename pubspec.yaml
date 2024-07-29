@@ -38,12 +38,15 @@ dependencies:
   cupertino_icons: ^1.0.6
   google_sign_in: ^6.2.1
   flutter_line_sdk: ^2.3.8
+  sign_in_with_apple: ^6.1.1
   flutter_dotenv: ^5.1.0
   flutter_otp_text_field: ^1.1.3+2
   dropdown_button2: ^2.3.9
   flutter_rounded_date_picker: ^3.0.4
   intl: ^0.19.0
-  crypto: ^3.0.3
+  crypto: ^3.0.3 # For SHA256
+  shared_preferences: ^2.2.3
+  
 
 dev_dependencies:
   flutter_test:
@@ -66,6 +69,17 @@ flutter:
     - assets/logo.png
     - assets/google.png
     - assets/line.png
+
+    - assets/homePage/coin.png
+    - assets/homePage/sign.png
+    - assets/homePage/daily_task.png
+    - assets/homePage/brain_game.png
+    - assets/homePage/pet.png
+    - assets/homePage/sport.png
+    - assets/homePage/alarm.png
+    - assets/homePage/store.png
+    - assets/homePage/mood.png
+
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

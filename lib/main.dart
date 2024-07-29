@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:usrcare/TestPage.dart';
 import 'package:usrcare/utils/ColorUtil.dart';
 import 'package:usrcare/views/EmailVerificationPage.dart';
 import 'package:usrcare/views/HomePage.dart';
@@ -9,18 +8,17 @@ import 'package:usrcare/views/LoginPage.dart';
 
 import 'package:flutter_line_sdk/flutter_line_sdk.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:usrcare/views/SettingPage.dart';
 import 'package:usrcare/views/WelcomePage.dart';
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
-  
+
   //載入 LineSDK
   LineSDK.instance.setup(dotenv.env['LINE_CHANNEL_ID']!).then((_) {
     // print("LineSDK Prepared");
   });
-  
 
   runApp(const MyApp());
 }
@@ -34,8 +32,6 @@ class MyApp extends StatelessWidget {
       theme: appTheme,
       initialRoute: '/',
       routes: {
-        // '/': (context) => const HomePage(),
-        // '/': (context) => const TestPage(),
         '/': (context) => const WelcomePage(),
         '/register': (context) => const RegisterPage(),
         '/EmailVerification': (context) => EmailVerificationPage(),
@@ -45,6 +41,7 @@ class MyApp extends StatelessWidget {
         '/login/pwdRecovery': (context) => const PasswordRecoveryPage(),
         '/login/pwdReset': (context) => const PasswordResetPage(),
         '/home': (context) => const HomePage(),
+        '/setting': (context) => const SettingPage(),
       },
       supportedLocales: const [
         Locale('zh', 'TW'),
@@ -56,7 +53,6 @@ class MyApp extends StatelessWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       locale: const Locale('zh', 'TW'),
-
     );
   }
 }
@@ -65,7 +61,7 @@ class MyApp extends StatelessWidget {
 final ThemeData appTheme = ThemeData(
   primarySwatch: Colors.blue,
 
-  scaffoldBackgroundColor: Colors.grey.shade900,
+  scaffoldBackgroundColor: ColorUtil.bg_lightBlue,
 
   textTheme: const TextTheme(
     bodyLarge: TextStyle(color: Colors.black, fontSize: 30),
@@ -75,7 +71,8 @@ final ThemeData appTheme = ThemeData(
 
   appBarTheme: const AppBarTheme(
     color: Colors.blue,
-    titleTextStyle: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),
+    titleTextStyle: TextStyle(
+        color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),
     centerTitle: true,
   ),
 
@@ -89,7 +86,7 @@ final ThemeData appTheme = ThemeData(
       ),
     ),
   ),
-  
+
   // inputDecorationTheme: InputDecorationTheme(
   //   border: OutlineInputBorder(
   //     borderRadius: BorderRadius.circular(10),
