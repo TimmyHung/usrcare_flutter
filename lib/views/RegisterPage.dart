@@ -7,6 +7,7 @@ import 'package:usrcare/api/APIModels.dart';
 import 'package:usrcare/api/APIService.dart';
 import 'package:usrcare/utils/ColorUtil.dart';
 import 'package:usrcare/utils/MiscUtil.dart';
+import 'package:usrcare/utils/SharedPreference.dart';
 import 'package:usrcare/widgets/Dialog.dart';
 import 'package:usrcare/widgets/DropDown.dart';
 import 'package:usrcare/widgets/TextField.dart';
@@ -280,6 +281,7 @@ class _AccountSetupPageState extends State<AccountSetupPage> {
       }
 
       Navigator.pushNamed(context, '/register/InfoSetup', arguments: {
+        "authType": "default",
         "email": email,
         "account": account,
         "password": password
@@ -384,35 +386,69 @@ class _InfoSetupPageState extends State<InfoSetupPage> {
         _cityError == null &&
         _districtError == null &&
         _neighborhoodError == null) {
-      final Map<String, dynamic> arguments =
-          ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
-      final String email = arguments['email'];
-      final String account = arguments['account'];
-      final String password = arguments['password'];
-      final String salt = generateSalt();
-      final hashedPassword = hashPassword(password, salt);
+      final Map<String, dynamic> arguments = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
+      final String authType = arguments["authType"];
       String gender = _gender! == "男性" ? "male" : "female";
+      late String username;
+      late String userToken;
 
-      final User user = User(
-          username: account,
-          password: hashedPassword,
-          salt: salt,
-          email: email,
-          name: _nameController.text,
-          gender: gender,
-          birthday: _birthdayController.text,
-          city: _city!,
-          district: _districtController.text,
-          neighbor: _neighborhoodController.text);
+      switch (authType) {
+        case "default":
+          final String email = arguments['email'];
+          final String account = arguments['account'];
+          final String password = arguments['password'];
+          final String salt = generateSalt();
+          final hashedPassword = hashPassword(password, salt);
 
-      final response = await api.registerUser(user);
-      dynamic handledResponse =
-          handleHttpResponses(context, response, "創建帳號時發生錯誤");
-      if (handledResponse == null) {
-        return;
+          final User user = User(
+              username: account,
+              password: hashedPassword,
+              salt: salt,
+              email: email,
+              name: _nameController.text,
+              gender: gender,
+              birthday: _birthdayController.text,
+              city: _city!,
+              district: _districtController.text,
+              neighbor: _neighborhoodController.text);
+
+          final response = await api.registerUser(user);
+          dynamic handledResponse = handleHttpResponses(context, response, "創建帳號時發生錯誤");
+          if (handledResponse == null) {
+            return;
+          }
+          username = handledResponse["name"] ?? _nameController.text;
+          userToken = handledResponse["user_token"];
+
+          break;
+        case "oauth":
+          final String idToken = arguments['id_token'];
+
+          final User user = User(
+              id_token: idToken,
+              name: _nameController.text,
+              gender: gender,
+              birthday: _birthdayController.text,
+              city: _city!,
+              district: _districtController.text,
+              neighbor: _neighborhoodController.text);
+
+          final response = await api.oauthRegister("apple",user);
+          dynamic handledResponse = handleHttpResponses(context, response, "創建帳號時發生錯誤");
+          if (handledResponse == null) {
+            return;
+          }
+          username = handledResponse["name"];
+          userToken = handledResponse["user_token"];
+          break;
+        default:
+          showCustomDialog(context, "註冊時發生錯誤", "未知的註冊方式");
+          break;
       }
 
-      final userToken = handledResponse['user_token'];
+
+      SharedPreferencesService().saveData(StorageKeys.userToken, userToken);
+      SharedPreferencesService().saveData(StorageKeys.userName, username);
 
       Navigator.pushNamed(context, '/home');
     }

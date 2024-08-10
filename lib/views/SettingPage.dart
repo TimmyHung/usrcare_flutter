@@ -18,11 +18,9 @@ class _SettingPageState extends State<SettingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: SizedBox(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
+      body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+          padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
             children: [
               Stack(
@@ -56,7 +54,7 @@ class _SettingPageState extends State<SettingPage> {
               ),
               Container(
                 margin: const EdgeInsets.only(top: 16),
-                height: MediaQuery.of(context).size.height * 0.83,
+                height: MediaQuery.of(context).size.height * 0.81,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(15),

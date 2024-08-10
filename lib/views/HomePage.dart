@@ -64,14 +64,14 @@ class _HomePageState extends State<HomePage> {
       canPop: false,
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        body: Container(
-          width: MediaQuery.of(context).size.width,
-          decoration: BoxDecoration(
-            color: ColorUtil.bg_lightBlue,
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Padding(
+        body: SafeArea(
+          child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 25),
+            width: MediaQuery.of(context).size.width,
+            decoration: BoxDecoration(
+              color: ColorUtil.bg_lightBlue,
+              borderRadius: BorderRadius.circular(10),
+            ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -119,7 +119,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 5),
                 Column(
                   children: [
                     SizedBox(
@@ -150,7 +150,8 @@ class _HomePageState extends State<HomePage> {
                                 Column(
                                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                   children: [
-                                    SizedBox(
+                                     SizedBox(
+                                      width: MediaQuery.of(context).size.width * 0.42,
                                       child: FittedBox(
                                         fit: BoxFit.scaleDown,
                                         child: Text(name, style: const TextStyle(fontSize: 30)),
@@ -171,18 +172,17 @@ class _HomePageState extends State<HomePage> {
                                           borderRadius: BorderRadius.circular(15),
                                         ),
                                         child: Padding(
-                                          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+                                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                                           child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                             children: [
                                               Image.asset(
                                                 'assets/homePage/coin.png',
                                                 fit: BoxFit.scaleDown,
                                                 height: 50,
                                               ),
-                                              const SizedBox(width: 5),
+                                              const Spacer(),
                                               SizedBox(
-                                                width: 80,
+                                                width: MediaQuery.of(context).size.width * 0.2,
                                                 child: FittedBox(
                                                   fit: BoxFit.scaleDown,
                                                   child: Text(
@@ -194,6 +194,7 @@ class _HomePageState extends State<HomePage> {
                                                   ),
                                                 ),
                                               ),
+                                              const Spacer(),
                                             ],
                                           ),
                                         ),
@@ -296,9 +297,10 @@ class _HomePageState extends State<HomePage> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 25),
+                    const SizedBox(height: 5),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
                       children: [
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -353,7 +355,7 @@ class _HomePageState extends State<HomePage> {
         onPressed();
       },
       child: Container(
-        height: type == 1 ? 60 : 140,
+        height: type == 1 ? 60 : MediaQuery.of(context).size.width * 0.34,
         width: MediaQuery.of(context).size.width * 0.42,
         decoration: BoxDecoration(
           border: Border.all(color: borderColor, width: 3),
@@ -367,11 +369,16 @@ class _HomePageState extends State<HomePage> {
             children: [
               Image.asset(iconPath),
               const SizedBox(width: 10),
-              Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 30,
-                  color: Colors.black,
+              Flexible(
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    title,
+                    style: const TextStyle(
+                      fontSize: 30,
+                      color: Colors.black,
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -381,11 +388,16 @@ class _HomePageState extends State<HomePage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Image.asset(iconPath, height: 70),
-              Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 30,
-                  color: Colors.black,
+               Flexible(
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    title,
+                    style: const TextStyle(
+                      fontSize: 30,
+                      color: Colors.black,
+                    ),
+                  ),
                 ),
               ),
             ],

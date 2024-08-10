@@ -17,7 +17,11 @@ void showCustomDialog(BuildContext context, dynamic title, dynamic message, {boo
         title: title is String ? Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(title, style: const TextStyle(fontSize: 30)),
+            Flexible(
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(title, style: const TextStyle(fontSize: 30))),
+            ),
             if(closeButton != null && closeButton)
               ElevatedButton(onPressed: (){Navigator.pop(context);}, child: const Text("X"))
           ],

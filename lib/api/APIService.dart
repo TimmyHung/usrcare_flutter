@@ -55,10 +55,16 @@ class APIService {
   //   return http.post(url, headers: headers, body: json.encode(credentials));
   // }
 
+  Future<http.Response> oauthLogin(String oauthType,Map<String, dynamic> credentials) {
+    final url = Uri.parse('$baseUrl/authentication/oauth/$oauthType');
+    return http.post(url, headers: headers, body: json.encode(credentials));
+  }
+
   Future<http.Response> authenticate(Map<String, dynamic> credentials) {
     final url = Uri.parse('$baseUrl/authentication');
     return http.post(url, headers: headers, body: json.encode(credentials));
   }
+  
 
   Future<http.Response> validateToken(String version) {
     final url = Uri.parse('$baseUrl/token');

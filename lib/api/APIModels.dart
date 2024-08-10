@@ -1,8 +1,9 @@
 class User {
-  final String username;
-  final String password;
-  final String salt;
-  final String email;
+  final String? id_token;
+  final String? username;
+  final String? password;
+  final String? salt;
+  final String? email;
   final String name;
   final String gender;
   final String birthday;
@@ -16,10 +17,11 @@ class User {
   final String? ERelation; // 可選
 
   User({
-    required this.username,
-    required this.password,
-    required this.salt,
-    required this.email,
+    this.id_token,
+    this.username,
+    this.password,
+    this.salt,
+    this.email,
     required this.name,
     required this.gender,
     required this.birthday,
@@ -35,6 +37,7 @@ class User {
 
   Map<String, dynamic> toJson() {
     return {
+      'id_token': id_token,
       'username': username,
       'password': password,
       'salt': salt,
