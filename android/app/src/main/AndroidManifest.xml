@@ -26,12 +26,7 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-        </activity>
-
-        <!-- Sign in with Apple callback activity -->
-        <activity
-            android:name="com.tku.usrcare.sign_in_with_apple.SignInWithAppleCallback"
-            android:exported="true">
+            
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />

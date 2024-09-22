@@ -103,10 +103,10 @@ class APIService {
     return http.post(url, headers: headers, body: json.encode(record));
   }
 
-  Future<http.Response> getMentalRecordResult() {
-    final url = Uri.parse('$baseUrl/mental_record/result');
-    return http.get(url, headers: headers);
-  }
+  // Future<http.Response> getMentalRecordResult() {
+  //   final url = Uri.parse('$baseUrl/mental_record/result');
+  //   return http.get(url, headers: headers);
+  // }
 
   // 每日心情相關
   Future<http.Response> postMood(MoodRecord moodRecord) {

@@ -47,6 +47,8 @@ dependencies:
   intl: ^0.19.0
   crypto: ^3.0.3 # For SHA256
   shared_preferences: ^2.2.3
+  uni_links: ^0.5.1
+  # flutter_unity_widget: ^2022.2.1
 
 flutter_launcher_icons:
   android: "launcher_icon"
@@ -78,15 +80,15 @@ flutter:
     - assets/google.png
     - assets/line.png
 
-    - assets/homePage/coin.png
-    - assets/homePage/sign.png
-    - assets/homePage/daily_task.png
-    - assets/homePage/brain_game.png
-    - assets/homePage/pet.png
-    - assets/homePage/sport.png
-    - assets/homePage/alarm.png
-    - assets/homePage/store.png
-    - assets/homePage/mood.png
+    - assets/HomePage_Icons/coin.png
+    - assets/HomePage_Icons/sign.png
+    - assets/HomePage_Icons/daily_task.png
+    - assets/HomePage_Icons/brain_game.png
+    - assets/HomePage_Icons/pet.png
+    - assets/HomePage_Icons/sport.png
+    - assets/HomePage_Icons/alarm.png
+    - assets/HomePage_Icons/store.png
+    - assets/HomePage_Icons/mood.png
 
 
   # The following line ensures that the Material Icons font is

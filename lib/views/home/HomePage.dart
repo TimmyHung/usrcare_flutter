@@ -176,7 +176,7 @@ class _HomePageState extends State<HomePage> {
                                           child: Row(
                                             children: [
                                               Image.asset(
-                                                'assets/homePage/coin.png',
+                                                'assets/HomePage_Icons/coin.png',
                                                 fit: BoxFit.scaleDown,
                                                 height: 50,
                                               ),
@@ -305,36 +305,36 @@ class _HomePageState extends State<HomePage> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            _buildGridButton("簽簽樂", "assets/homePage/sign.png", Colors.red, 1, (){print("OK");}),
+                            _buildGridButton("簽簽樂", "assets/HomePage_Icons/sign.png", Colors.red, 1, (){print("芊芊樂");}),
                             const SizedBox(width: 10),
-                            _buildGridButton("每日任務", "assets/homePage/daily_task.png", const Color.fromARGB(255,232,125,0), 1, (){print("OK2");}),
+                            _buildGridButton("每日任務", "assets/HomePage_Icons/daily_task.png", const Color.fromARGB(255,232,125,0), 1, (){print("OK2");}),
                           ],
                         ),
                         const SizedBox(height: 20),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            _buildGridButton("動腦小遊戲", "assets/homePage/brain_game.png", const Color.fromARGB(255,212,152,0), 2, (){print("OK");}),
+                            _buildGridButton("動腦小遊戲", "assets/HomePage_Icons/brain_game.png", const Color.fromARGB(255,212,152,0), 2, (){Navigator.pushNamed(context, "/game");}),
                             const SizedBox(width: 10),
-                            _buildGridButton("寵物陪伴", "assets/homePage/pet.png", const Color.fromARGB(255,0,143,0), 2, (){print("OK");}),
+                            _buildGridButton("寵物陪伴", "assets/HomePage_Icons/pet.png", const Color.fromARGB(255,0,143,0), 2, (){print("OK");}),
                           ],
                         ),
                         const SizedBox(height: 10),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            _buildGridButton("愛來運動", "assets/homePage/sport.png", const Color.fromARGB(255,0,107,185), 2, (){print("OK");}),
+                            _buildGridButton("愛來運動", "assets/HomePage_Icons/sport.png", const Color.fromARGB(255,0,107,185), 2, (){print("OK");}),
                             const SizedBox(width: 10),
-                            _buildGridButton("鬧鐘小提醒", "assets/homePage/alarm.png", const Color.fromARGB(255,0,0,146), 2, (){print("OK");}),
+                            _buildGridButton("鬧鐘小提醒", "assets/HomePage_Icons/alarm.png", const Color.fromARGB(255,0,0,146), 2, (){print("OK");}),
                           ],
                         ),
                         const SizedBox(height: 10),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            _buildGridButton("好物雜貨鋪", "assets/homePage/store.png", const Color.fromARGB(255,80,0,182), 2, (){print("OK");}),
+                            _buildGridButton("好物雜貨鋪", "assets/HomePage_Icons/store.png", const Color.fromARGB(255,80,0,182), 2, (){print("OK");}),
                             const SizedBox(width: 10),
-                            _buildGridButton("心情量表", "assets/homePage/mood.png", const Color.fromARGB(255,202,0,109), 2, (){print("OK");}),
+                            _buildGridButton("心情量表", "assets/HomePage_Icons/mood.png", const Color.fromARGB(255,202,0,109), 2, (){Navigator.pushNamed(context, "/mood");}),
                           ],
                         ),
                       ],
@@ -368,7 +368,7 @@ class _HomePageState extends State<HomePage> {
             mainAxisSize: MainAxisSize.max,
             children: [
               Image.asset(iconPath),
-              const SizedBox(width: 10),
+              const SizedBox(width: 0),
               Flexible(
                 child: FittedBox(
                   fit: BoxFit.scaleDown,
