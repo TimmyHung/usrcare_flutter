@@ -82,6 +82,7 @@ class _MoodPageState extends State<MoodPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: const Color.fromARGB(255, 252, 202, 229),
       appBar: AppBar(
         centerTitle: true,
@@ -305,6 +306,7 @@ class _QuestionPageState extends State<QuestionPage> {
     var options = currentQuestion['ans'];
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
       appBar: AppBar(
         centerTitle: true,
@@ -435,6 +437,7 @@ class ResultPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
       appBar: AppBar(
         centerTitle: true,
@@ -527,7 +530,6 @@ class _TypeWriter_PageState extends State<TypeWriter_Page> {
   bool isLoadingMore = false;
   bool hasMoreData = true;
   int batch = 1;
-  final int batchSize = 15;
 
   @override
   void initState() {
@@ -550,11 +552,11 @@ class _TypeWriter_PageState extends State<TypeWriter_Page> {
 
     var response = await widget.apiService.getTypeWriterHistory(
       context,
-      batchSize: batchSize,
       batch: batch,
     );
     var result = handleHttpResponses(context, response, "無法取得心情打字機歷史紀錄");
     var moodRecordData = result["data"];
+    var totalRecords = result["total_records"];
     if (moodRecordData != null && mounted) {
       setState(() {
         if (moodRecordData.isEmpty) {
@@ -566,30 +568,15 @@ class _TypeWriter_PageState extends State<TypeWriter_Page> {
         }
         isLoading = false;
         isLoadingMore = false;
+        if(moodHistory.length >= totalRecords){
+          hasMoreData = false;
+        }
       });
     } else {
       setState(() {
         isLoading = false;
         isLoadingMore = false;
         hasMoreData = false;
-      });
-    }
-  }
-
-  // 取得最新一筆歷史紀錄(在User送出新的一筆心情紀錄)
-  Future<void> _fetchLatestMoodHistory() async {
-    var response = await widget.apiService.getTypeWriterHistory(
-      context,
-      batchSize: 1,
-      batch: 1,
-    );
-    var result = handleHttpResponses(context, response, "無法取得最新的心情打字機歷史紀錄");
-    var moodRecordData = result["data"];
-    
-    if (moodRecordData != null && moodRecordData.isNotEmpty && mounted) {
-      setState(() {
-        // 將最新的一筆資料插入到List的最上方
-        moodHistory.insert(0, moodRecordData[0]);
       });
     }
   }
@@ -686,9 +673,15 @@ class _TypeWriter_PageState extends State<TypeWriter_Page> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: const Text(
-                '關閉',
-                style: TextStyle(fontSize: 18, color: Colors.blue),
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black),
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                child: const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 20.0),
+                  child: Text("關閉", style: TextStyle(fontSize: 22, color: Colors.blueGrey, fontWeight: FontWeight.bold)),
+                ),
               ),
             ),
           ],
@@ -702,6 +695,7 @@ class _TypeWriter_PageState extends State<TypeWriter_Page> {
     final TextEditingController textController = TextEditingController();
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: const Color.fromARGB(255, 252, 202, 229),
       appBar: AppBar(
         centerTitle: true,
@@ -754,7 +748,7 @@ class _TypeWriter_PageState extends State<TypeWriter_Page> {
                   TextField(
                     controller: textController,
                     style: const TextStyle(fontSize: 24),
-                    maxLines: 7,
+                    maxLines: 6,
                     decoration: InputDecoration(
                       hintText: "點這裡輸入您的心情...",
                       hintStyle: const TextStyle(fontSize: 24),
@@ -788,18 +782,31 @@ class _TypeWriter_PageState extends State<TypeWriter_Page> {
                       TextButton(
                         onPressed: () async {
                           String userInput = textController.text.trim();
+                          final DateTime rawDateTime = DateTime.now();
+                          //將時間轉換為ISO8601格式
+                          final String creationTime_ISO8601 = DateFormat('yyyy-MM-ddTHH:mm:ss').format(rawDateTime);
+                          final String creationTime = '${DateFormat('EEE, dd MMM yyyy HH:mm:ss').format(rawDateTime)} GMT';
                           if (userInput.isEmpty) {
                             showCustomDialog(context, "提示", "請先輸入您的心情內容再送出。", closeButton: true);
                             return;
                           }
-                          var response = await widget.apiService.postTypewriter(userInput, context);
-                          var x = handleHttpResponses(context, response, "無法取得心情打字機回應物件");
-                          final responseSuggestion = x["suggestion"];
+                          var response = await widget.apiService.postTypewriter(userInput, creationTime_ISO8601, context);
+                          var aiReply = handleHttpResponses(context, response, "無法取得心情打字機回應物件");
+                          final responseSuggestion = aiReply["suggestion"];
                           _showResponseDetailDialog(context, userInput, responseSuggestion);
                           // 清除使用者的輸入內容
                           textController.clear();
-                          // 更新歷史紀錄
-                          await _fetchLatestMoodHistory();
+                          
+                          // 更新資料至歷史紀錄
+                          var newRecord = {
+                            "AI_reply": json.encode(aiReply),
+                            "user_input": userInput,
+                            "start_time": creationTime,
+                          };
+
+                          setState(() {
+                            moodHistory.insert(0, newRecord);
+                          });
                         },
                         child: Container(
                           decoration: BoxDecoration(
@@ -851,14 +858,14 @@ class _TypeWriter_PageState extends State<TypeWriter_Page> {
                                 // 加載更多的進度條
                                 return const Padding(
                                   padding: EdgeInsets.symmetric(vertical: 10),
-                                  child: Center(child: CircularProgressIndicator()),
+                                  child: Center(child: CircularProgressIndicator(color: Colors.black,)),
                                 );
                               }
 
                               var record = moodHistory[index];
                               var userInput = record['user_input'] ?? '無心情內容';
                               var aiReply = record['AI_reply'];
-                              var aiSuggestion = aiReply != null ? json.decode(aiReply)['suggestion'] : '暫無建議';
+                              var aiSuggestion = json.decode(aiReply)['suggestion'] ?? (json.decode(aiReply)['message'] ?? '暫無建議');
                               var formattedDate = formatDate(record['start_time']);
 
                               return GestureDetector(
