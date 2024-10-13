@@ -24,7 +24,7 @@ class EmailVerificationPage extends StatelessWidget {
     OTPRequest otpRequest = OTPRequest(email: email, OTP: verificationCode);
 
     final response =
-        await apiService.emailOtpVerification_RegisterONLY(otpRequest);
+        await apiService.emailOtpVerification_RegisterONLY(otpRequest, context);
     final handledResponse =
         handleHttpResponses(context, response, "OTP驗證時發生錯誤");
     if (handledResponse == null) {

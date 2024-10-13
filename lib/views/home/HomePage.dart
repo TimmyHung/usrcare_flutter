@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:usrcare/api/APIService.dart';
 import 'package:usrcare/strings.dart';
 import 'package:usrcare/utils/ColorUtil.dart';
@@ -35,15 +36,32 @@ class _HomePageState extends State<HomePage> {
       token = loadedToken;
     });
 
-    _loadData();
+    _validateToken();
+  }
+
+  Future<void> _validateToken() async{
+    final APIService apiService = APIService(token: token);
+    final PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    final String appVersion = packageInfo.version;
+
+    var response = await apiService.validateToken(appVersion, context);
+    var x = handleHttpResponses(context, response, null);
+
+    if(x != null){
+      _loadData();
+    }else{
+      await SharedPreferencesService().clearAllData();
+      Navigator.pushNamed(context, "/");
+      showCustomDialog(context, "請重新登入", "您的帳戶已在其它裝置上登入，請重新登入以繼續使用。", closeButton: true);
+    }
   }
 
   Future<void> _loadData() async {
     final APIService apiService = APIService(token: token);
 
-    final pointsResponse = apiService.getPoints();
-    final vocabularyResponse = apiService.getVocabulary();
-    final historyStoryResponse = apiService.getHistoryStory();
+    final pointsResponse = apiService.getPoints(context);
+    final vocabularyResponse = apiService.getVocabulary(context);
+    final historyStoryResponse = apiService.getHistoryStory(context);
 
     final results = await Future.wait([pointsResponse, vocabularyResponse, historyStoryResponse]);
 

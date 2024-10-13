@@ -90,7 +90,7 @@ class _WelcomePageState extends State<WelcomePage> {
         "code": credential.authorizationCode,
         "id_token": credential.identityToken,
       };
-      var response = await apiService.oauthLogin("apple", credentials);
+      var response = await apiService.oauthLogin("apple", credentials, context);
       var x = handleHttpResponses(context, response, "登入時發生錯誤");
       if(x == null){
         return;

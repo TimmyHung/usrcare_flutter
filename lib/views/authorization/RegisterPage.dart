@@ -39,7 +39,7 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   void _checkEmailExists(BuildContext context) async {
-    final response = await apiService.checkEmail(_email);
+    final response = await apiService.checkEmail(_email, context);
 
     if (response.statusCode == 200) {
       var responseBody = json.decode(response.body);
@@ -334,7 +334,7 @@ class _AccountSetupPageState extends State<AccountSetupPage> {
   }
 
   Future<bool?> _checkAccountExists(String username) async {
-    final response = await apiService.checkUsername(username);
+    final response = await apiService.checkUsername(username, context);
     if (response.statusCode == 200) {
       final responseBody = json.decode(response.body);
       return responseBody['exist'];
@@ -412,7 +412,7 @@ class _InfoSetupPageState extends State<InfoSetupPage> {
               district: _districtController.text,
               neighbor: _neighborhoodController.text);
 
-          final response = await api.registerUser(user);
+          final response = await api.registerUser(user, context);
           dynamic handledResponse = handleHttpResponses(context, response, "創建帳號時發生錯誤");
           if (handledResponse == null) {
             return;
@@ -433,7 +433,7 @@ class _InfoSetupPageState extends State<InfoSetupPage> {
               district: _districtController.text,
               neighbor: _neighborhoodController.text);
 
-          final response = await api.oauthRegister("apple",user);
+          final response = await api.oauthRegister("apple", user, context);
           dynamic handledResponse = handleHttpResponses(context, response, "創建帳號時發生錯誤");
           if (handledResponse == null) {
             return;

@@ -42,7 +42,7 @@ class _LoginPageState extends State<LoginPage> {
       'password': passwordController.text,
     };
 
-    dynamic response = await api.checkUsername(credentials['username']!);
+    dynamic response = await api.checkUsername(credentials['username']!, context);
     dynamic x = handleHttpResponses(context, response, "驗證帳號時發生錯誤");
     if (!x["exist"]) {
       showCustomDialog(context, "登入失敗", "帳號或密碼輸入錯誤");
@@ -52,7 +52,7 @@ class _LoginPageState extends State<LoginPage> {
     String salt = await _getSalt();
     credentials['password'] = hashPassword(credentials['password']!, salt);
 
-    response = await api.authenticate(credentials);
+    response = await api.authenticate(credentials, context);
     x = handleHttpResponses(context, response, null);
     if (x == null) {
       showCustomDialog(context, "登入失敗", "帳號或密碼輸入錯誤");
@@ -67,7 +67,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<String> _getSalt() async {
-    final response = await api.getSalt(accountController.text);
+    final response = await api.getSalt(accountController.text, context);
     final x = handleHttpResponses(context, response, "取得加密鹽巴時發生錯誤");
     if (x == null) {
       return "";
@@ -206,7 +206,7 @@ class _PasswordRecoveryPageState extends State<PasswordRecoveryPage> {
 
   void _checkEmailExists(BuildContext context) async {
     print("信箱:$_email");
-    final response = await apiService.forgotPassword(_email);
+    final response = await apiService.forgotPassword(_email, context);
     final responseBody = json.decode(response.body);
     switch (responseBody["status"]) {
       case "single":

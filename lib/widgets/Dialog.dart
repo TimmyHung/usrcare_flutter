@@ -20,13 +20,13 @@ void showCustomDialog(BuildContext context, dynamic title, dynamic message, {boo
             Flexible(
               child: FittedBox(
                 fit: BoxFit.scaleDown,
-                child: Text(title, style: const TextStyle(fontSize: 30))),
+                child: Text(title, style: const TextStyle(fontSize: 28))),
             ),
             if(closeButton != null && closeButton)
               ElevatedButton(onPressed: (){Navigator.pop(context);}, child: const Text("X"))
           ],
         ): title,
-        content: message is String ? Text(message, style: const TextStyle(fontSize: 20)) : message,
+        content: message is String ? Text(message, style: const TextStyle(fontSize: 24)) : message,
       );
     },
   );

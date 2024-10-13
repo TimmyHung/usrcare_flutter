@@ -51,14 +51,13 @@ class _MyAppState extends State<MyApp> {
       if (uri != null) {
         final appleUserID = uri.queryParameters['code'];
         final appleJWT = uri.queryParameters['id_token'];
-        print("JWT:$appleJWT");
         APIService apiService = APIService();
         final credential = {
           "code": appleUserID,
           "id_token": appleJWT,
         };
-        final response = await apiService.oauthLogin("apple",credential);
-        var x = handleHttpResponses(context, response, "Apple登入時發生錯誤");
+        final response = await apiService.oauthLogin("apple",credential, context);
+        handleHttpResponses(context, response, "Apple登入時發生錯誤");
       }
     });
   }
