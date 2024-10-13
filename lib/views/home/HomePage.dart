@@ -67,12 +67,15 @@ class _HomePageState extends State<HomePage> {
 
     final pointsData = handleHttpResponses(context, results[0], "取得用戶金幣時發生錯誤");
     final vocabularyData = handleHttpResponses(context, results[1], "取得每日單字時發生錯誤");
-    final historyStoryData = handleHttpResponses(context, results[2], "取得歷史上的今天/冷知識時發生錯誤");
-
+    final historyStoryData = handleHttpResponses(context, results[2], null);
     setState(() {
       points = pointsData["points"].toString();
       vocabulary = [vocabularyData["english"], vocabularyData["phonetic_notation"], vocabularyData["chinese"]];
-      history_story = [historyStoryData["title"], historyStoryData["event"], historyStoryData["detail"], historyStoryData["date"]];
+      if(historyStoryData != null) {
+        history_story = [historyStoryData["title"], historyStoryData["event"], historyStoryData["detail"], historyStoryData["date"]];
+      }else{
+        history_story = ["今天還沒有故事", "請再等等！", " "];
+      }
     });
   }
 
@@ -269,21 +272,24 @@ class _HomePageState extends State<HomePage> {
                           //歷史上的今天/冷知識
                           GestureDetector(
                             onTap: (){
-                              showCustomDialog(context, history_story[0], 
-                              SingleChildScrollView(
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    if (history_story[3].length != 0) ...[
-                                      const SizedBox(height: 20),
-                                      Text(history_story[3]),
-                                    ],
-                                    Text(history_story[1], style: const TextStyle(fontSize: 25)),
-                                    const SizedBox(height: 30),
-                                    Text(history_story[2], style: const TextStyle(fontSize: 25)),
-                                  ],
-                                ),
-                              ), closeButton: true);
+                              if(history_story[0] != "今天還沒有故事") {
+                                showCustomDialog(context, history_story[0], 
+                                  SingleChildScrollView(
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        if (history_story[3].length != 0) ...[
+                                          const SizedBox(height: 20),
+                                          Text(history_story[3]),
+                                        ],
+                                        Text(history_story[1], style: const TextStyle(fontSize: 25)),
+                                        const SizedBox(height: 30),
+                                        Text(history_story[2], style: const TextStyle(fontSize: 25)),
+                                      ],
+                                    ),
+                                  ), closeButton: true
+                                );
+                              }
                             },
                             child: Container(
                               decoration: BoxDecoration(
@@ -303,7 +309,7 @@ class _HomePageState extends State<HomePage> {
                                     child: Padding(
                                       padding: const EdgeInsets.only(right: 8.0, bottom: 8.0),
                                       child: Text(
-                                        "點擊閱讀更多...",
+                                        history_story[0] != "今天還沒有故事" ? "點擊閱讀更多..." :"晚點再來看看...",
                                         style: TextStyle(fontSize: 20, color: Colors.grey[800]),
                                       ),
                                     ),

@@ -1,4 +1,4 @@
-package com.example.usrcare
+package com.tku.usrcare
 
 import io.flutter.embedding.android.FlutterActivity
 
