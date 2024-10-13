@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:usrcare/api/APIModels.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/material.dart';
@@ -99,7 +100,7 @@ class APIService {
     }
   }
 
-  Future<http.Response> oauthLogin(String oauthType, Map<String, dynamic> credentials, BuildContext context, {bool showLoading = false}) async {
+  Future<http.Response> oauthLogin(String oauthType, Map<String, dynamic> credentials, BuildContext context, {bool showLoading = true}) async {
     if (showLoading) showLoadingDialog(context);
     final url = Uri.parse('$baseUrl/v1/authentication/oauth/$oauthType');
     try {
@@ -213,12 +214,16 @@ class APIService {
   }
 
   // 心情打字機
-  Future<http.Response> postTypewriter(String typewriter, BuildContext context, {bool showLoading = true}) async {
+  Future<http.Response> postTypewriter(String typewriter, String creationTime, BuildContext context, {bool showLoading = true}) async {
     if (showLoading) showLoadingDialog(context);
+    
     final url = Uri.parse('$baseUrl/v2/mood/typewriter');
+
     final body = {
       'typewriter': typewriter,
+      'creation_time': creationTime,
     };
+
     try {
       return await http.post(url, headers: headers, body: json.encode(body));
     } finally {
@@ -226,9 +231,9 @@ class APIService {
     }
   }
 
+
   Future<http.Response> getTypeWriterHistory(
       BuildContext context, {
-      required int batchSize,
       required int batch,
       bool showLoading = false,
     }) async {
@@ -237,7 +242,6 @@ class APIService {
     // 組合URL
     final url = Uri.parse('$baseUrl/v2/mood/typewriter/history')
         .replace(queryParameters: {
-      'batchSize': batchSize.toString(),
       'batch': batch.toString(),
     });
 
@@ -388,13 +392,12 @@ class __LoadingDialogState extends State<_LoadingDialog> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // 圓形圖片背景
           Container(
             width: 300,
             height: 300,
             decoration: const BoxDecoration(
-              color: Colors.white, // 白色背景
-              shape: BoxShape.circle, // 圓形
+              color: Colors.white,
+              shape: BoxShape.circle,
             ),
             padding: const EdgeInsets.all(10),
             child: ClipOval(
@@ -405,17 +408,18 @@ class __LoadingDialogState extends State<_LoadingDialog> {
             ),
           ),
           const SizedBox(height: 20),
-          // 圓角矩形文字背景
           Container(
-            width: 205,
+            width: 250,
             decoration: BoxDecoration(
-              color: Colors.white, // 白色背景
-              borderRadius: BorderRadius.circular(20), // 圓角矩形
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
             ),
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            child: Text(
-              _loadingText, // 動態顯示的載入中文字
-              style: const TextStyle(fontSize: 33, color: Colors.black),
+            child: Center(
+              child: Text(
+                _loadingText,
+                style: const TextStyle(fontSize: 33, color: Colors.black),
+              ),
             ),
           ),
         ],

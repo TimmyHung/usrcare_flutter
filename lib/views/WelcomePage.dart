@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:usrcare/api/APIService.dart';
 import 'package:usrcare/strings.dart';
+import 'package:usrcare/utils/DeepLinkService.dart';
 import 'package:usrcare/utils/MiscUtil.dart';
 import 'package:usrcare/utils/SharedPreference.dart';
 import 'package:usrcare/widgets/Button.dart';
@@ -18,11 +22,19 @@ class WelcomePage extends StatefulWidget {
 
 class _WelcomePageState extends State<WelcomePage> {
   UserProfile? _userProfile;
+  final DeepLinkService _deepLinkService = DeepLinkService();
 
   @override
   void initState() {
     super.initState();
+    _deepLinkService.init(context);
     _checkLoginStatus();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _deepLinkService.init(context);
   }
 
   void _checkLoginStatus()async{
@@ -36,62 +48,57 @@ class _WelcomePageState extends State<WelcomePage> {
     }
   }
 
-  void GoogleLogin() async{
-    GoogleSignIn googleSignIn = GoogleSignIn(
-      scopes: ['email', 'profile', 'openid'],
-    );
+  void _GoogleLogin() async {
+     const iOS_Clientid = "1059217142915-h9mm433edqc9kjvql43gbtaol985l6nl.apps.googleusercontent.com";
+     const android_Clientid = "1059217142915-d8g811mbb67lbstm68829jturtjr5s55.apps.googleusercontent.com";
+     GoogleSignIn googleSignIn = GoogleSignIn(
+       scopes: ['email', 'profile', 'openid'],
+       clientId: Platform.isIOS ? iOS_Clientid : android_Clientid,
+     );
 
-    try {
-      GoogleSignInAccount? account = await googleSignIn.signIn();
-      if (account != null) {
-        print("Google Sign-In successful: ${account.email}, ${account.displayName}");
-        Navigator.pushNamed(context, "/home");
-      } else {
-        print("Google Sign-In cancelled");
-      }
-    } catch (error) {
-      print("Google Sign-In failed: $error");
-    }
-  }
+     try {
+        GoogleSignInAccount? account = await googleSignIn.signIn();
+        if (account != null) {
+          GoogleSignInAuthentication auth = await account.authentication;
 
-  void LineLogin() async {
+          APIService apiService = APIService();
+          final credentials = {
+            "id_token": auth.idToken,
+          };
+          var response = await apiService.oauthLogin("google", credentials, context);
+          var x = handleHttpResponses(context, response, "Google登入時發生錯誤");
+          if(x == null){
+            return;
+          }
+          String? userToken = x["user_token"];
+          String? userName = x["name"];
+          if(userToken != null && userName != null){
+            SharedPreferencesService().saveData(StorageKeys.userToken, userToken);
+            SharedPreferencesService().saveData(StorageKeys.userName, userName);
+            Navigator.pushNamed(context, "/home");
+          }else{
+            Navigator.pushNamed(context, "/register/InfoSetup", arguments: {
+              "authType": "oauth-google",
+              "id_token": auth.idToken,
+            });
+          }
+       }
+     } catch (error) {
+       print("Google Sign-In failed. Error details: $error");
+       showCustomDialog(context, "Google登入失敗", "詳細錯誤: $error");
+     }
+   }
+
+
+  void _LineLogin() async {
     try {
       final result = await LineSDK.instance.login();
-      setState(() {
-        _userProfile = result.userProfile;
-        print(_userProfile);
-        // user id -> result.userProfile?.userId
-        // user name -> result.userProfile?.displayName
-        // user avatar -> result.userProfile?.pictureUrl
-        // etc...
-      });
-    } on Exception catch (e) {
-      print(e);
-    }
-  }
-
-  void AppleLogin() async{
-     try{
-      final credential = await SignInWithApple.getAppleIDCredential(
-        scopes: [
-          AppleIDAuthorizationScopes.email,
-          AppleIDAuthorizationScopes.fullName,
-        ],
-        webAuthenticationOptions: WebAuthenticationOptions(
-          clientId: 'com.tku.usrcare.auth',
-          redirectUri: Uri.parse('https://api.tkuusraicare.org/v1/authentication/oauth/apple/callback',),
-        ),
-        // TODO: Remove these if you have no need for them
-        // nonce: 'example-nonce',
-        // state: 'example-state',
-      );
       APIService apiService = APIService();
       final credentials = {
-        "code": credential.authorizationCode,
-        "id_token": credential.identityToken,
+        "id_token": result.accessToken.value,
       };
-      var response = await apiService.oauthLogin("apple", credentials, context);
-      var x = handleHttpResponses(context, response, "登入時發生錯誤");
+      var response = await apiService.oauthLogin("line", credentials, context);
+      var x = handleHttpResponses(context, response, "Line登入時發生錯誤");
       if(x == null){
         return;
       }
@@ -103,12 +110,51 @@ class _WelcomePageState extends State<WelcomePage> {
         Navigator.pushNamed(context, "/home");
       }else{
         Navigator.pushNamed(context, "/register/InfoSetup", arguments: {
-          "authType": "oauth",
+          "authType": "oauth-line",
+          "id_token": result.accessToken.value,
+        });
+      }
+    } on Exception catch (error) {
+      print("Line Sing-In failed: $error");
+    }
+  }
+
+  void _AppleLogin() async{
+     try{
+      final credential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+        webAuthenticationOptions: WebAuthenticationOptions(
+          clientId: 'com.tku.usrcare.auth',
+          redirectUri: Uri.parse('https://api.tkuusraicare.org/v1/authentication/oauth/apple/callback',),
+        ),
+      );
+      APIService apiService = APIService();
+      final credentials = {
+        "code": credential.authorizationCode,
+        "id_token": credential.identityToken,
+      };
+      var response = await apiService.oauthLogin("apple", credentials, context);
+      var x = handleHttpResponses(context, response, "Apple登入時發生錯誤");
+      if(x == null){
+        return;
+      }
+      String? userToken = x["user_token"];
+      String? userName = x["name"];
+      if(userToken != null && userName != null){
+        SharedPreferencesService().saveData(StorageKeys.userToken, userToken);
+        SharedPreferencesService().saveData(StorageKeys.userName, userName);
+        Navigator.pushNamed(context, "/home");
+      }else{
+        Navigator.pushNamed(context, "/register/InfoSetup", arguments: {
+          "authType": "oauth-apple",
           "id_token": credential.identityToken,
         });
       }
-    }on Exception catch(e){
-      print(e);
+    }on Exception catch(error){
+      print("Apple Sign-in error: $error");
     }
   }
 
@@ -120,135 +166,34 @@ class _WelcomePageState extends State<WelcomePage> {
         resizeToAvoidBottomInset: false,
         body: Stack(
           children: [
-            Positioned.fill(
-              child: CustomPaint(
-                painter: BackgroundPainter(),
-              ),
-            ),
-            Container(
-              width: MediaQuery.of(context).size.width,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(150),
-                        color: Colors.white,
+            const BackgroundPainter(),
+            SafeArea(
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  return SingleChildScrollView(
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        minHeight: constraints.maxHeight,
                       ),
-                      padding: const EdgeInsets.all(10),
-                      child: ClipOval(
-                        child: Image.asset(
-                          'assets/logo.png',
-                          height: 200,
-                          width: 200,
-                          fit: BoxFit.cover,
+                      child: IntrinsicHeight(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 25),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Spacer(),
+                              _buildLogoAndTitle(),
+                              const Spacer(),
+                              _buildWelcomeAndButtons(),
+                              _buildSocialLoginOptions(),
+                              const SizedBox(height: 20),
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                    const SizedBox(height: 20),
-                    const Text(
-                      GetString.appName,
-                      style: TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 100),
-                    const Text(
-                      GetString.welcomeTitle,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 30,
-                        color: Colors.black,
-                      ),
-                    ),
-                    const SizedBox(height: 30),
-                    CustomButton(
-                      text: GetString.register,
-                      type: ButtonType.primary,
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/register');
-                      },
-                    ),
-                    const SizedBox(height: 15),
-                    CustomButton(
-                      text: GetString.login,
-                      type: ButtonType.secondary,
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/login');
-                      },
-                    ),
-                    const SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          child: Container(
-                            margin: const EdgeInsets.only(right: 10.0),
-                            color: Colors.black54,
-                            height: 2,
-                          ),
-                        ),
-                        const Text("或使用以下方式繼續", style: TextStyle(fontSize: 20)),
-                        Expanded(
-                          child: Container(
-                            margin: const EdgeInsets.only(left: 10.0),
-                            color: Colors.black54,
-                            height: 2,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: CustomButton(
-                            text: SizedBox(
-                              height: 35,
-                              width: 35,
-                              child: Image.asset('assets/google.png', height: 35)),
-                            type: ButtonType.secondary,
-                            onPressed: () {
-                              GoogleLogin();
-                            },
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: CustomButton(
-                            text: SizedBox(
-                              height: 35,
-                              width: 35,
-                              child: Image.asset('assets/line.png', height: 35)),
-                            type: ButtonType.secondary,
-                            onPressed: () {
-                              // LineLogin();
-                            },
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: CustomButton(
-                            text: const SizedBox(
-                              height: 70,
-                              width: 70,
-                              child: Icon(Icons.apple, size: 70, color: Colors.black)),
-                            type: ButtonType.secondary,
-                            onPressed: () {
-                              AppleLogin();
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                  );
+                },
               ),
             ),
           ],
@@ -256,9 +201,128 @@ class _WelcomePageState extends State<WelcomePage> {
       ),
     );
   }
+
+  Widget _buildLogoAndTitle() {
+    return Column(
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(150),
+            color: Colors.white,
+          ),
+          padding: const EdgeInsets.all(10),
+          child: ClipOval(
+            child: Image.asset(
+              'assets/logo.png',
+              height: 220,
+              width: 220,
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+        const SizedBox(height: 20),
+        const Text(
+          GetString.appName,
+          style: TextStyle(
+            fontSize: 32,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildWelcomeAndButtons() {
+    return Column(
+      children: [
+        const Text(
+          GetString.welcomeTitle,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 28,
+            color: Colors.black,
+          ),
+        ),
+        const SizedBox(height: 30),
+        CustomButton(
+          text: GetString.register,
+          type: ButtonType.primary,
+          onPressed: () {
+            Navigator.pushNamed(context, '/register');
+          },
+        ),
+        const SizedBox(height: 15),
+        CustomButton(
+          text: GetString.login,
+          type: ButtonType.secondary,
+          onPressed: () {
+            Navigator.pushNamed(context, '/login');
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSocialLoginOptions() {
+    return Column(
+      children: [
+        const Padding(
+          padding: EdgeInsets.symmetric(vertical: 10),
+          child: Row(
+            children: [
+              Expanded(child: Divider(color: Colors.black54, thickness: 2)),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10),
+                child: Text("或使用以下方式繼續", style: TextStyle(fontSize: 20)),
+              ),
+              Expanded(child: Divider(color: Colors.black54, thickness: 2)),
+            ],
+          ),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            _socialLoginButton('assets/google.png', _GoogleLogin),
+            const SizedBox(width: 15),
+            _socialLoginButton('assets/line.png', _LineLogin),
+            const SizedBox(width: 15),
+            _socialLoginButton('assets/apple.png', _AppleLogin, isApple: true),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _socialLoginButton(String assetName, VoidCallback onPressed, {bool isApple = false}) {
+    return Expanded(
+      child: CustomButton(
+        text: SizedBox(
+          height: 35,
+          width: 35,
+          child: isApple
+              ? const Icon(Icons.apple, size: 35, color: Colors.black)
+              : Image.asset(assetName, height: 35),
+        ),
+        type: ButtonType.secondary,
+        onPressed: onPressed,
+      ),
+    );
+  }
 }
 
-class BackgroundPainter extends CustomPainter {
+class BackgroundPainter extends StatelessWidget {
+  const BackgroundPainter({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(
+      painter: _BackgroundPainterCustomPainter(),
+      size: MediaQuery.of(context).size,
+    );
+  }
+}
+
+class _BackgroundPainterCustomPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
@@ -266,21 +330,21 @@ class BackgroundPainter extends CustomPainter {
       ..style = PaintingStyle.fill;
 
     final path = Path();
-    path.moveTo(0, -50);  // 向上移動 50 單位
-    path.lineTo(0, size.height * 0.45 - 50);
+    path.moveTo(0, 0);
+    path.lineTo(0, size.height * 0.45);
     path.quadraticBezierTo(
       size.width * 0.2,
-      size.height - 50,
+      size.height,
       size.width * 0.5,
-      size.height - 50,
+      size.height,
     );
     path.quadraticBezierTo(
       size.width * 0.5,
-      size.height * 0.45 - 50,
+      size.height * 0.45,
       size.width,
-      size.height * 0.55 - 50,
+      size.height * 0.55,
     );
-    path.lineTo(size.width, -50);
+    path.lineTo(size.width, 0);
     path.close();
 
     canvas.drawPath(path, paint);
@@ -290,18 +354,18 @@ class BackgroundPainter extends CustomPainter {
       ..style = PaintingStyle.fill;
 
     final secondPath = Path();
-    secondPath.moveTo(0, size.height * 0.45 - 50);
+    secondPath.moveTo(0, size.height * 0.45);
     secondPath.quadraticBezierTo(
       size.width * 0.25,
-      size.height * 0.56 - 50,
+      size.height * 0.56,
       size.width * 0.5,
-      size.height * 0.51 - 50,
+      size.height * 0.51,
     );
     secondPath.quadraticBezierTo(
       size.width * 0.75,
-      size.height * 0.45 - 50,
+      size.height * 0.45,
       size.width,
-      size.height * 0.55 - 50,
+      size.height * 0.55,
     );
     secondPath.lineTo(size.width, size.height);
     secondPath.lineTo(0, size.height);
@@ -311,7 +375,5 @@ class BackgroundPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return false;
-  }
+  bool shouldRepaint(CustomPainter oldDelegate) => false;
 }

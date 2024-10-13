@@ -63,7 +63,7 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       body: Stack(
         children: [
           Positioned.fill(
@@ -145,8 +145,7 @@ class AccountSetupPage extends StatefulWidget {
 class _AccountSetupPageState extends State<AccountSetupPage> {
   final TextEditingController accountController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController repeatPasswordController =
-      TextEditingController();
+  final TextEditingController repeatPasswordController = TextEditingController();
   final APIService apiService = APIService();
 
   bool _passwordVisible = false;
@@ -157,113 +156,116 @@ class _AccountSetupPageState extends State<AccountSetupPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: Stack(
-        children: [
-          Positioned.fill(
-            child: CustomPaint(
-              painter: BackgroundPainter(),
+    return Stack(
+      children: [
+        Positioned.fill(
+          child: CustomPaint(
+            painter: BackgroundPainter(),
+          ),
+        ),
+        Scaffold(
+          resizeToAvoidBottomInset: true,
+          backgroundColor: Colors.transparent,
+          body: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 25),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const SizedBox(height: 60),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: CustomButton(
+                    text: '',
+                    type: ButtonType.circular,
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.popUntil(context, ModalRoute.withName("/register"));
+                    },
+                    icon: const Icon(Icons.arrow_back),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  '建立新帳號（1/2)',
+                  style: TextStyle(
+                    fontSize: 35,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                // 滾動的輸入欄位和按鈕部分
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 120),
+                        CustomTextField(
+                          label: '帳號',
+                          controller: accountController,
+                          inputType: InputType.text,
+                          errorText: _accountError,
+                        ),
+                        const SizedBox(height: 10),
+                        CustomTextField(
+                          label: '密碼',
+                          inputType: InputType.password,
+                          controller: passwordController,
+                          suffixIcon: _passwordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                          onSuffixIconPressed: () {
+                            setState(() {
+                              _passwordVisible = !_passwordVisible;
+                            });
+                          },
+                          obscureText: !_passwordVisible,
+                          errorText: _passwordError,
+                        ),
+                        const SizedBox(height: 10),
+                        CustomTextField(
+                          label: '再次輸入密碼',
+                          inputType: InputType.password,
+                          controller: repeatPasswordController,
+                          suffixIcon: _repeatPasswordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                          onSuffixIconPressed: () {
+                            setState(() {
+                              _repeatPasswordVisible = !_repeatPasswordVisible;
+                            });
+                          },
+                          obscureText: !_repeatPasswordVisible,
+                          errorText: _repeatPasswordError,
+                        ),
+                        const SizedBox(height: 20),
+                        SizedBox(
+                          width: double.infinity,
+                          child: CustomButton(
+                            text: '下一步',
+                            type: ButtonType.primary,
+                            onPressed: () {
+                              _registerProcess(context);
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
-          Container(
-            width: MediaQuery.of(context).size.width,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 80),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: CustomButton(
-                      text: '',
-                      type: ButtonType.circular,
-                      onPressed: () {
-                        Navigator.pop(context);
-                        Navigator.popUntil(
-                            context, ModalRoute.withName("/register"));
-                      },
-                      icon: const Icon(Icons.arrow_back),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  const Text(
-                    '建立新帳號（1/2)',
-                    style: TextStyle(
-                      fontSize: 35,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const Spacer(),
-                  const Spacer(),
-                  CustomTextField(
-                    label: '帳號',
-                    controller: accountController,
-                    inputType: InputType.text,
-                    errorText: _accountError,
-                  ),
-                  const SizedBox(height: 10),
-                  CustomTextField(
-                    label: '密碼',
-                    inputType: InputType.password,
-                    controller: passwordController,
-                    suffixIcon: _passwordVisible
-                        ? Icons.visibility
-                        : Icons.visibility_off,
-                    onSuffixIconPressed: () {
-                      setState(() {
-                        _passwordVisible = !_passwordVisible;
-                      });
-                    },
-                    obscureText: !_passwordVisible,
-                    errorText: _passwordError,
-                  ),
-                  const SizedBox(height: 10),
-                  CustomTextField(
-                    label: '再次輸入密碼',
-                    inputType: InputType.password,
-                    controller: repeatPasswordController,
-                    suffixIcon: _repeatPasswordVisible
-                        ? Icons.visibility
-                        : Icons.visibility_off,
-                    onSuffixIconPressed: () {
-                      setState(() {
-                        _repeatPasswordVisible = !_repeatPasswordVisible;
-                      });
-                    },
-                    obscureText: !_repeatPasswordVisible,
-                    errorText: _repeatPasswordError,
-                  ),
-                  const SizedBox(height: 20),
-                  SizedBox(
-                    width: double.infinity,
-                    child: CustomButton(
-                      text: '下一步',
-                      type: ButtonType.primary,
-                      onPressed: () {
-                        _registerProcess(context);
-                      },
-                    ),
-                  ),
-                  const Spacer(),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
+
 
   Future<void> _registerProcess(BuildContext context) async {
     final account = accountController.text;
     final password = passwordController.text;
     final repeatPassword = repeatPasswordController.text;
-    final arguments =
-        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
+    final arguments = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
     final email = arguments["email"];
 
     if (!_validateInputs(account, password, repeatPassword)) {
@@ -357,7 +359,7 @@ class _InfoSetupPageState extends State<InfoSetupPage> {
   final TextEditingController _birthdayController = TextEditingController();
   final TextEditingController _districtController = TextEditingController();
   final TextEditingController _neighborhoodController = TextEditingController();
-  final APIService api = APIService();
+  final APIService apiService = APIService();
 
   String? _gender;
   String? _city;
@@ -387,12 +389,12 @@ class _InfoSetupPageState extends State<InfoSetupPage> {
         _districtError == null &&
         _neighborhoodError == null) {
       final Map<String, dynamic> arguments = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
-      final String authType = arguments["authType"];
+      final List<String> authType = arguments["authType"].split("-");
       String gender = _gender! == "男性" ? "male" : "female";
       late String username;
       late String userToken;
 
-      switch (authType) {
+      switch (authType[0]) {
         case "default":
           final String email = arguments['email'];
           final String account = arguments['account'];
@@ -412,7 +414,7 @@ class _InfoSetupPageState extends State<InfoSetupPage> {
               district: _districtController.text,
               neighbor: _neighborhoodController.text);
 
-          final response = await api.registerUser(user, context);
+          final response = await apiService.registerUser(user, context);
           dynamic handledResponse = handleHttpResponses(context, response, "創建帳號時發生錯誤");
           if (handledResponse == null) {
             return;
@@ -433,7 +435,7 @@ class _InfoSetupPageState extends State<InfoSetupPage> {
               district: _districtController.text,
               neighbor: _neighborhoodController.text);
 
-          final response = await api.oauthRegister("apple", user, context);
+          final response = await apiService.oauthRegister(authType[1], user, context);
           dynamic handledResponse = handleHttpResponses(context, response, "創建帳號時發生錯誤");
           if (handledResponse == null) {
             return;
@@ -498,198 +500,168 @@ class _InfoSetupPageState extends State<InfoSetupPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: Stack(
-        children: [
-          Positioned.fill(
-            child: CustomPaint(
-              painter: BackgroundPainter(),
-            ),
+    return Stack(
+      children: [
+        // 固定的背景，不受 Scaffold 影響
+        Positioned.fill(
+          child: CustomPaint(
+            painter: BackgroundPainter(),
           ),
-          Container(
-            width: MediaQuery.of(context).size.width,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 80),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: CustomButton(
-                      text: '',
-                      type: ButtonType.circular,
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      icon: const Icon(Icons.arrow_back),
-                    ),
+        ),
+        Scaffold(
+          resizeToAvoidBottomInset: true,
+          backgroundColor: Colors.transparent, // 背景透明，讓 CustomPaint 的背景顯示出來
+          body: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 25),
+            child: Column(
+              children: [
+                const SizedBox(height: 60),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: CustomButton(
+                    text: '',
+                    type: ButtonType.circular,
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    icon: const Icon(Icons.arrow_back),
                   ),
-                  const SizedBox(height: 20),
-                  const Text(
-                    '建立新帳號（2/2)',
-                    style: TextStyle(
-                      fontSize: 35,
-                      fontWeight: FontWeight.bold,
-                    ),
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  '建立新帳號（2/2)',
+                  style: TextStyle(
+                    fontSize: 35,
+                    fontWeight: FontWeight.bold,
                   ),
-                  const SizedBox(height: 120),
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          CustomTextField(
-                            label: '姓名',
-                            controller: _nameController,
-                            inputType: InputType.text,
-                            errorText: _nameError,
-                            onChanged: _validateName,
-                          ),
-                          const SizedBox(height: 10),
-                          CustomDropdownButton(
-                            label: '性別',
-                            options: const ["男性", "女性"],
-                            selectedValue: _gender,
-                            onChanged: (String? value) {
-                              setState(() {
-                                _gender = value;
-                                _validateGender(value);
-                              });
-                            },
-                            errorText: _genderError,
-                          ),
-                          const SizedBox(height: 10),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text("生日",
-                                  style: TextStyle(
-                                      fontSize: 22, color: Colors.black)),
-                              TextField(
-                                controller: _birthdayController,
-                                style: Theme.of(context).textTheme.bodySmall,
-                                showCursor: false,
-                                decoration: InputDecoration(
-                                  errorStyle: const TextStyle(
-                                      color: Colors.red, fontSize: 20),
-                                  errorText: _birthdayError,
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
+                ),
+                const SizedBox(height: 20),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        // const SizedBox(height: 120),
+                        CustomTextField(
+                          label: '姓名',
+                          controller: _nameController,
+                          inputType: InputType.text,
+                          errorText: _nameError,
+                          onChanged: _validateName,
+                        ),
+                        const SizedBox(height: 10),
+                        CustomDropdownButton(
+                          label: '性別',
+                          options: const ["男性", "女性"],
+                          selectedValue: _gender,
+                          onChanged: (String? value) {
+                            setState(() {
+                              _gender = value;
+                              _validateGender(value);
+                            });
+                          },
+                          errorText: _genderError,
+                        ),
+                        const SizedBox(height: 10),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text("生日", style: TextStyle(fontSize: 22, color: Colors.black)),
+                            TextField(
+                              readOnly: true,
+                              controller: _birthdayController,
+                              style: Theme.of(context).textTheme.bodySmall,
+                              showCursor: false,
+                              decoration: InputDecoration(
+                                filled: true,
+                                fillColor: Colors.white,
+                                errorStyle: const TextStyle(color: Colors.red, fontSize: 20),
+                                errorText: _birthdayError,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
                                 ),
-                                onChanged: _validateBirthday,
-                                onTap: () async {
-                                  DateTime? newDateTime =
-                                      await showRoundedDatePicker(
-                                    context: context,
-                                    initialDate: DateTime.now(),
-                                    firstDate:
-                                        DateTime(DateTime.now().year - 110),
-                                    lastDate: DateTime.now(),
-                                    borderRadius: 16,
-                                    theme: ThemeData(
-                                      primaryColor: ColorUtil.bg_lightBlue,
-                                      colorScheme: ColorScheme.fromSwatch(),
-                                      dialogBackgroundColor: Colors.white,
-                                      textTheme: const TextTheme(
-                                        titleMedium: TextStyle(
-                                            color: Colors.black, fontSize: 25),
-                                        bodyLarge: TextStyle(
-                                            color: Colors.black, fontSize: 22),
-                                        bodyMedium: TextStyle(
-                                            color: Colors.black, fontSize: 20),
-                                        bodySmall: TextStyle(
-                                            color: Colors.black, fontSize: 20),
-                                      ),
-                                    ),
-                                  );
-                                  if (newDateTime != null) {
-                                    setState(() {
-                                      _birthdayController.text = newDateTime
-                                          .toString()
-                                          .substring(0, 10);
-                                      _validateBirthday(
-                                          _birthdayController.text);
-                                    });
-                                  }
-                                },
                               ),
-                            ],
-                          ),
-                          const SizedBox(height: 10),
-                          CustomDropdownButton(
-                            label: '居住縣市',
-                            options: const [
-                              "臺北市",
-                              "新北市",
-                              "桃園市",
-                              "臺中市",
-                              "臺南市",
-                              "高雄市",
-                              "基隆市",
-                              "新竹市",
-                              "嘉義市",
-                              "新竹縣",
-                              "苗栗縣",
-                              "彰化縣",
-                              "南投縣",
-                              "雲林縣",
-                              "嘉義縣",
-                              "屏東縣",
-                              "宜蘭縣",
-                              "花蓮縣",
-                              "臺東縣",
-                              "澎湖縣",
-                              "金門縣",
-                              "連江縣"
-                            ],
-                            selectedValue: _city,
-                            onChanged: (String? value) {
-                              setState(() {
-                                _city = value;
-                                _validateCity(value);
-                              });
-                            },
-                            errorText: _cityError,
-                          ),
-                          const SizedBox(height: 10),
-                          CustomTextField(
-                            label: '居住鄉鎮市區',
-                            controller: _districtController,
-                            inputType: InputType.text,
-                            errorText: _districtError,
-                            onChanged: _validateDistrict,
-                          ),
-                          const SizedBox(height: 10),
-                          CustomTextField(
-                            label: '居住村里',
-                            controller: _neighborhoodController,
-                            inputType: InputType.text,
-                            errorText: _neighborhoodError,
-                            onChanged: _validateNeighborhood,
-                          ),
-                          const SizedBox(height: 20),
-                          SizedBox(
-                            width: double.infinity,
-                            child: CustomButton(
-                              text: '完成',
-                              type: ButtonType.primary,
-                              onPressed: _validateAndSubmit,
+                              onChanged: _validateBirthday,
+                              onTap: () async {
+                                DateTime? newDateTime = await showRoundedDatePicker(
+                                  context: context,
+                                  initialDate: DateTime.now(),
+                                  firstDate: DateTime(DateTime.now().year - 110),
+                                  lastDate: DateTime.now(),
+                                  borderRadius: 16,
+                                  theme: ThemeData(
+                                    primaryColor: ColorUtil.bg_lightBlue,
+                                    colorScheme: ColorScheme.fromSwatch(),
+                                    dialogBackgroundColor: Colors.white,
+                                    textTheme: const TextTheme(
+                                      titleMedium: TextStyle(color: Colors.black, fontSize: 25),
+                                      bodyLarge: TextStyle(color: Colors.black, fontSize: 22),
+                                      bodyMedium: TextStyle(color: Colors.black, fontSize: 20),
+                                      bodySmall: TextStyle(color: Colors.black, fontSize: 20),
+                                    ),
+                                  ),
+                                );
+                                if (newDateTime != null) {
+                                  setState(() {
+                                    _birthdayController.text = newDateTime.toString().substring(0, 10);
+                                    _validateBirthday(_birthdayController.text);
+                                  });
+                                }
+                              },
                             ),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        CustomDropdownButton(
+                          label: '居住縣市',
+                          options: const [
+                            "臺北市", "新北市", "桃園市", "臺中市", "臺南市", "高雄市", "基隆市", "新竹市", "嘉義市",
+                            "新竹縣", "苗栗縣", "彰化縣", "南投縣", "雲林縣", "嘉義縣", "屏東縣", "宜蘭縣", "花蓮縣",
+                            "臺東縣", "澎湖縣", "金門縣", "連江縣"
+                          ],
+                          selectedValue: _city,
+                          onChanged: (String? value) {
+                            setState(() {
+                              _city = value;
+                              _validateCity(value);
+                            });
+                          },
+                          errorText: _cityError,
+                        ),
+                        const SizedBox(height: 10),
+                        CustomTextField(
+                          label: '居住鄉鎮市區',
+                          controller: _districtController,
+                          inputType: InputType.text,
+                          errorText: _districtError,
+                          onChanged: _validateDistrict,
+                        ),
+                        const SizedBox(height: 10),
+                        CustomTextField(
+                          label: '居住村里',
+                          controller: _neighborhoodController,
+                          inputType: InputType.text,
+                          errorText: _neighborhoodError,
+                          onChanged: _validateNeighborhood,
+                        ),
+                        const SizedBox(height: 20),
+                        SizedBox(
+                          width: double.infinity,
+                          child: CustomButton(
+                            text: '完成',
+                            type: ButtonType.primary,
+                            onPressed: _validateAndSubmit,
                           ),
-                        ],
-                      ),
+                        ),
+                        const SizedBox(height: 80),
+                      ],
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

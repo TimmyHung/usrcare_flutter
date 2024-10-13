@@ -55,6 +55,8 @@ class CustomTextField extends StatelessWidget {
           style: Theme.of(context).textTheme.bodySmall,
           onChanged: onChanged,
           decoration: InputDecoration(
+            filled: true,
+            fillColor: Colors.white,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
             ),

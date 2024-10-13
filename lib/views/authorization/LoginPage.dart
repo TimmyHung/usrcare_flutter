@@ -19,7 +19,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   TextEditingController accountController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  APIService api = APIService();
+  APIService apiService = APIService();
 
   bool _passwordVisible = false;
   bool _disableLoginButton = true;
@@ -41,10 +41,11 @@ class _LoginPageState extends State<LoginPage> {
       'username': accountController.text,
       'password': passwordController.text,
     };
-
-    dynamic response = await api.checkUsername(credentials['username']!, context);
+    apiService.showLoadingDialog(context);
+    dynamic response = await apiService.checkUsername(credentials['username']!, context);
     dynamic x = handleHttpResponses(context, response, "驗證帳號時發生錯誤");
     if (!x["exist"]) {
+      apiService.hideLoadingDialog(context);
       showCustomDialog(context, "登入失敗", "帳號或密碼輸入錯誤");
       return;
     }
@@ -52,9 +53,10 @@ class _LoginPageState extends State<LoginPage> {
     String salt = await _getSalt();
     credentials['password'] = hashPassword(credentials['password']!, salt);
 
-    response = await api.authenticate(credentials, context);
+    response = await apiService.authenticate(credentials, context);
     x = handleHttpResponses(context, response, null);
     if (x == null) {
+      apiService.hideLoadingDialog(context);
       showCustomDialog(context, "登入失敗", "帳號或密碼輸入錯誤");
       return;
     }
@@ -63,11 +65,12 @@ class _LoginPageState extends State<LoginPage> {
     SharedPreferencesService().saveData(StorageKeys.userToken, token);
     SharedPreferencesService().saveData(StorageKeys.userName, name);
 
+    apiService.hideLoadingDialog(context);
     Navigator.pushReplacementNamed(context, '/home');
   }
 
   Future<String> _getSalt() async {
-    final response = await api.getSalt(accountController.text, context);
+    final response = await apiService.getSalt(accountController.text, context);
     final x = handleHttpResponses(context, response, "取得加密鹽巴時發生錯誤");
     if (x == null) {
       return "";
@@ -205,7 +208,6 @@ class _PasswordRecoveryPageState extends State<PasswordRecoveryPage> {
   }
 
   void _checkEmailExists(BuildContext context) async {
-    print("信箱:$_email");
     final response = await apiService.forgotPassword(_email, context);
     final responseBody = json.decode(response.body);
     switch (responseBody["status"]) {

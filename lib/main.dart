@@ -5,6 +5,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:uni_links/uni_links.dart';
 import 'package:usrcare/api/APIService.dart';
 import 'package:usrcare/utils/ColorUtil.dart';
+import 'package:usrcare/utils/DeepLinkService.dart';
 import 'package:usrcare/utils/MiscUtil.dart';
 import 'package:usrcare/views/authorization/EmailVerificationPage.dart';
 import 'package:usrcare/views/home/GamePage.dart';
@@ -18,11 +19,13 @@ import 'package:usrcare/views/SettingPage.dart';
 import 'package:usrcare/views/WelcomePage.dart';
 import 'package:usrcare/views/home/MoodPage.dart';
 
+// main.dart
+import 'package:flutter/material.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
 
-  //載入 LineSDK
   LineSDK.instance.setup(dotenv.env['LINE_CHANNEL_ID']!).then((_) {
     // print("LineSDK Prepared");
   });
@@ -38,29 +41,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  StreamSubscription? _sub;
-
-  @override
-  void initState() {
-    super.initState();
-    initUniLinks();
-  }
-
-  Future<void> initUniLinks() async {
-    _sub = uriLinkStream.listen((Uri? uri) async {
-      if (uri != null) {
-        final appleUserID = uri.queryParameters['code'];
-        final appleJWT = uri.queryParameters['id_token'];
-        APIService apiService = APIService();
-        final credential = {
-          "code": appleUserID,
-          "id_token": appleJWT,
-        };
-        final response = await apiService.oauthLogin("apple",credential, context);
-        handleHttpResponses(context, response, "Apple登入時發生錯誤");
-      }
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -81,16 +61,20 @@ class _MyAppState extends State<MyApp> {
         '/game': (context) => const GamePage(),
         '/mood': (context) => const MoodPage(),
       },
+      // 只支援繁體中文
       supportedLocales: const [
         Locale('zh', 'TW'),
-        Locale('en', 'US'),
       ],
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      locale: const Locale('zh', 'TW'),
+      locale: const Locale('zh', 'TW'), // 設定為繁體中文
+      localeResolutionCallback: (locale, supportedLocales) {
+        // 強制回傳繁體中文
+        return const Locale('zh', 'TW');
+      },
     );
   }
 }
