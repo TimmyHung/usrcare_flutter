@@ -20,7 +20,7 @@ void showCustomDialog(BuildContext context, dynamic title, dynamic message, {boo
             Flexible(
               child: FittedBox(
                 fit: BoxFit.scaleDown,
-                child: Text(title, style: const TextStyle(fontSize: 28))),
+                child: Text(title, style: const TextStyle(fontSize: 28, color: Colors.blueGrey))),
             ),
             if(closeButton != null && closeButton)
               ElevatedButton(onPressed: (){Navigator.pop(context);}, child: const Text("X"))
@@ -38,26 +38,29 @@ void showConfirmDialog(BuildContext context, String title, String message, Funct
     context: context,
     builder: (context){
     return AlertDialog(
-        title: Text(title, style: const TextStyle(fontSize: 24,fontWeight: FontWeight.bold)),
+        title: Text(title, style: const TextStyle(fontSize: 28,fontWeight: FontWeight.bold)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Padding(
               padding: const EdgeInsets.only(top: 10,bottom: 20),
-              child: Text(message, style: const TextStyle(fontSize: 22)),
+              child: Text(message, style: const TextStyle(fontSize: 26)),
             ),
             SizedBox(
+              height: 50,
               width: double.infinity,
               child: ElevatedButton(onPressed: (){
                 Navigator.of(context).pop();
                 onConfirm();
-              }, child: Text(confirmText ?? '確定')),
+              }, child: Text(confirmText ?? '確定', style: const TextStyle(fontSize: 24)),),
             ),
+            const SizedBox(height: 10),
             SizedBox(
+              height: 50,
               width: double.infinity,
               child: ElevatedButton(onPressed: (){
                 Navigator.of(context).pop();
-              }, child: Text(cancelText ?? '取消')),
+              }, child: Text(cancelText ?? '取消', style: const TextStyle(fontSize: 24))),
             ),
           ],
         ),

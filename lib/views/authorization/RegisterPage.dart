@@ -452,7 +452,7 @@ class _InfoSetupPageState extends State<InfoSetupPage> {
       SharedPreferencesService().saveData(StorageKeys.userToken, userToken);
       SharedPreferencesService().saveData(StorageKeys.userName, username);
 
-      Navigator.pushNamed(context, '/home');
+      Navigator.pushNamed(context, "/home",arguments: {"token": userToken,"name": username,});
     }
   }
 

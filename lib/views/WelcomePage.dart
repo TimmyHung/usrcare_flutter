@@ -1,12 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:usrcare/api/APIService.dart';
 import 'package:usrcare/strings.dart';
-import 'package:usrcare/utils/DeepLinkService.dart';
 import 'package:usrcare/utils/MiscUtil.dart';
 import 'package:usrcare/utils/SharedPreference.dart';
 import 'package:usrcare/widgets/Button.dart';
@@ -21,33 +19,6 @@ class WelcomePage extends StatefulWidget {
 }
 
 class _WelcomePageState extends State<WelcomePage> {
-  UserProfile? _userProfile;
-  final DeepLinkService _deepLinkService = DeepLinkService();
-
-  @override
-  void initState() {
-    super.initState();
-    _deepLinkService.init(context);
-    _checkLoginStatus();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _deepLinkService.init(context);
-  }
-
-  void _checkLoginStatus()async{
-    var userToken = await SharedPreferencesService().getData(StorageKeys.userToken) ?? "";
-    var userName = await SharedPreferencesService().getData(StorageKeys.userName) ?? "";
-
-    if(userToken.isNotEmpty && userName.isNotEmpty){
-      Navigator.pushNamed(context, "/home");
-    }else{
-      await SharedPreferencesService().clearAllData();
-    }
-  }
-
   void _GoogleLogin() async {
      const iOS_Clientid = "1059217142915-h9mm433edqc9kjvql43gbtaol985l6nl.apps.googleusercontent.com";
      const android_Clientid = "1059217142915-d8g811mbb67lbstm68829jturtjr5s55.apps.googleusercontent.com";
@@ -75,7 +46,7 @@ class _WelcomePageState extends State<WelcomePage> {
           if(userToken != null && userName != null){
             SharedPreferencesService().saveData(StorageKeys.userToken, userToken);
             SharedPreferencesService().saveData(StorageKeys.userName, userName);
-            Navigator.pushNamed(context, "/home");
+            Navigator.pushNamed(context, "/home",arguments: {"token": userToken,"name": userName,},);
           }else{
             Navigator.pushNamed(context, "/register/InfoSetup", arguments: {
               "authType": "oauth-google",
@@ -107,7 +78,7 @@ class _WelcomePageState extends State<WelcomePage> {
       if(userToken != null && userName != null){
         SharedPreferencesService().saveData(StorageKeys.userToken, userToken);
         SharedPreferencesService().saveData(StorageKeys.userName, userName);
-        Navigator.pushNamed(context, "/home");
+        Navigator.pushNamed(context, "/home",arguments: {"token": userToken,"name": userName,},);
       }else{
         Navigator.pushNamed(context, "/register/InfoSetup", arguments: {
           "authType": "oauth-line",
@@ -146,7 +117,7 @@ class _WelcomePageState extends State<WelcomePage> {
       if(userToken != null && userName != null){
         SharedPreferencesService().saveData(StorageKeys.userToken, userToken);
         SharedPreferencesService().saveData(StorageKeys.userName, userName);
-        Navigator.pushNamed(context, "/home");
+        Navigator.pushNamed(context, "/home",arguments: {"token": userToken,"name": userName,},);
       }else{
         Navigator.pushNamed(context, "/register/InfoSetup", arguments: {
           "authType": "oauth-apple",

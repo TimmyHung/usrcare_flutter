@@ -1,12 +1,7 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:uni_links/uni_links.dart';
-import 'package:usrcare/api/APIService.dart';
 import 'package:usrcare/utils/ColorUtil.dart';
-import 'package:usrcare/utils/DeepLinkService.dart';
-import 'package:usrcare/utils/MiscUtil.dart';
+import 'package:usrcare/views/SplashPage.dart';
 import 'package:usrcare/views/authorization/EmailVerificationPage.dart';
 import 'package:usrcare/views/home/GamePage.dart';
 import 'package:usrcare/views/home/HomePage.dart';
@@ -15,21 +10,14 @@ import 'package:usrcare/views/authorization/LoginPage.dart';
 
 import 'package:flutter_line_sdk/flutter_line_sdk.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:usrcare/views/SettingPage.dart';
+import 'package:usrcare/views/setting/SettingPage.dart';
 import 'package:usrcare/views/WelcomePage.dart';
 import 'package:usrcare/views/home/MoodPage.dart';
-
-// main.dart
-import 'package:flutter/material.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
-
-  LineSDK.instance.setup(dotenv.env['LINE_CHANNEL_ID']!).then((_) {
-    // print("LineSDK Prepared");
-  });
-
+  LineSDK.instance.setup(dotenv.env['LINE_CHANNEL_ID']!);
   runApp(const MyApp());
 }
 
@@ -48,7 +36,8 @@ class _MyAppState extends State<MyApp> {
       theme: appTheme,
       initialRoute: '/',
       routes: {
-        '/': (context) => const WelcomePage(),
+        '/': (context) => const SplashPage(),
+        '/welcome': (context) => const WelcomePage(),
         '/register': (context) => const RegisterPage(),
         '/EmailVerification': (context) => EmailVerificationPage(),
         '/register/AccountSetup': (context) => const AccountSetupPage(),
@@ -61,7 +50,6 @@ class _MyAppState extends State<MyApp> {
         '/game': (context) => const GamePage(),
         '/mood': (context) => const MoodPage(),
       },
-      // 只支援繁體中文
       supportedLocales: const [
         Locale('zh', 'TW'),
       ],
@@ -70,9 +58,8 @@ class _MyAppState extends State<MyApp> {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      locale: const Locale('zh', 'TW'), // 設定為繁體中文
+      locale: const Locale('zh', 'TW'),
       localeResolutionCallback: (locale, supportedLocales) {
-        // 強制回傳繁體中文
         return const Locale('zh', 'TW');
       },
     );

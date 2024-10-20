@@ -66,7 +66,7 @@ class _LoginPageState extends State<LoginPage> {
     SharedPreferencesService().saveData(StorageKeys.userName, name);
 
     apiService.hideLoadingDialog(context);
-    Navigator.pushReplacementNamed(context, '/home');
+    Navigator.pushReplacementNamed(context, "/home",arguments: {"token": token,"name": name,},);
   }
 
   Future<String> _getSalt() async {
@@ -94,7 +94,6 @@ class _LoginPageState extends State<LoginPage> {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 80),
               child: Column(
-                // mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(bottom: 130),

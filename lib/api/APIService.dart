@@ -343,12 +343,18 @@ class APIService {
 
   Future<http.Response> videoAnalysisWebhook(String videoName, BuildContext context, {bool showLoading = false}) async {
     if (showLoading) showLoadingDialog(context);
-    final url = Uri.parse('$baseUrl/video/analysis/webhook/$videoName');
+    final url = Uri.parse('$baseUrl/v1/video/analysis/webhook/$videoName');
     try {
       return await http.get(url, headers: headers);
     } finally {
       if (showLoading) hideLoadingDialog(context);
     }
+  }
+
+  // 最低版本限制
+  Future<http.Response> getMinimumAppVersion() async {
+    final url = Uri.parse('$baseUrl/v1/force_update_version');
+    return await http.get(url, headers: headers);
   }
 
 }
@@ -372,15 +378,15 @@ class __LoadingDialogState extends State<_LoadingDialog> {
     super.initState();
     _timer = Timer.periodic(const Duration(milliseconds: 200), (timer) {
       setState(() {
-        _dotCount = (_dotCount + 1) % 4; // 循環點數：0 到 3
-        _loadingText = "載入中. ${". " * _dotCount}"; // 根據點數變化顯示 "載入中."
+        _dotCount = (_dotCount + 1) % 4;
+        _loadingText = "載入中. ${". " * _dotCount}";
       });
     });
   }
 
   @override
   void dispose() {
-    _timer.cancel(); // 在對話框銷毀時取消計時器
+    _timer.cancel();
     super.dispose();
   }
 
