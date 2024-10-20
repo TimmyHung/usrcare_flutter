@@ -1,0 +1,36 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <audio id="correct-audio" src="correct.mp3"></audio>
+        <link rel="stylesheet" href="style.css">
+        <title>困難版猜數字小遊戲</title>
+    </head>
+<body>
+    <h1>幾A幾B小遊戲</h1>
+    <button id="show-rules-button" style="font-size: 16px;">遊戲規則</button>
+    <div class="rules" style="display: none">
+        <h2 style="font-size: 20px;">遊戲規則</h2>
+        <ul>
+            <li>遊戲中有一個由4個不同的數字組成的隨機數字</li>
+            <li>玩家可以猜測一個4位數字，並提交它作為猜測</li>
+            <li>如果玩家的猜測中有數字和位置都正確，則他們獲得"A"的反饋</li>
+            <li>如果玩家的猜測中有數字正確但位置不正確，則他們獲得"B"的反饋</li>
+            <li>玩家的目標是通過不斷猜測來確定目標數字，直到猜中為止</li>
+        </ul>
+    </div>
+    <div id="game-container">
+        <div id="guess-input">
+            <input type="text" id="guess" placeholder="請輸入4位不重複的數字">
+            <button id="submit">提交</button>
+        </div>
+        <div id="result"></div>
+        <div id="guess-history">
+        </div>
+        <div id="restart-button-container">
+            <button id="restart-button">再來一局</button>
+        </div>
+</div>
+    <script src="script.js"></script>
+</body>
+</html>

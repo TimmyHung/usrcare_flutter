@@ -47,7 +47,7 @@ class _MyAppState extends State<MyApp> {
         '/login/pwdReset': (context) => const PasswordResetPage(),
         '/home': (context) => const HomePage(),
         '/setting': (context) => const SettingPage(),
-        '/game': (context) => const GamePage(),
+        // '/game': (context) => const GamePage(),
         '/mood': (context) => const MoodPage(),
       },
       supportedLocales: const [
@@ -95,15 +95,4 @@ final ThemeData appTheme = ThemeData(
       ),
     ),
   ),
-
-  // inputDecorationTheme: InputDecorationTheme(
-  //   border: OutlineInputBorder(
-  //     borderRadius: BorderRadius.circular(10),
-  //   ),
-  //   labelStyle: const TextStyle(
-  //     color: Colors.white,
-  //     fontSize: 18,
-  //   ),
-  //   // suffixIconColor: Colors.green,
-  // ),
 );

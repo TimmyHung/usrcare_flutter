@@ -51,13 +51,14 @@ dependencies:
   package_info_plus: ^8.0.3
   url_launcher: ^6.3.1
   new_version_plus: ^0.0.12
+  webview_flutter: ^4.10.0
   # flutter_unity_widget: ^2022.2.1
 
 flutter_launcher_icons:
   android: "launcher_icon"
   remove_alpha_ios: true
   ios: true
-  image_path: "assets/icon/icon.png"
+  image_path: "assets/Icons/app_icon.png"
 #dart run flutter_launcher_icons:main -f pubspec.yaml
   
 
@@ -83,15 +84,25 @@ flutter:
     - assets/google.png
     - assets/line.png
 
-    - assets/HomePage_Icons/coin.png
-    - assets/HomePage_Icons/sign.png
-    - assets/HomePage_Icons/daily_task.png
-    - assets/HomePage_Icons/brain_game.png
-    - assets/HomePage_Icons/pet.png
-    - assets/HomePage_Icons/sport.png
-    - assets/HomePage_Icons/alarm.png
-    - assets/HomePage_Icons/store.png
-    - assets/HomePage_Icons/mood.png
+    - assets/HomePage_Icons/
+
+    - assets/Web_Game/WhackMoleGame/
+    - assets/Web_Game/SudokuGame/
+    - assets/Web_Game/SudokuGame/level_img/
+    - assets/Web_Game/SudokuGame/easy_mode/
+    - assets/Web_Game/SudokuGame/normal_mode/
+    - assets/Web_Game/SudokuGame/hard_mode/
+    - assets/Web_Game/NumberGuessGame/
+    - assets/Web_Game/NumberGuessGame/DaVinciCode/
+    - assets/Web_Game/NumberGuessGame/1A2B/
+    - assets/Web_Game/MemoryCardGame/
+    - assets/Web_Game/MemoryCardGame/img/
+    - assets/Web_Game/MemoryCardGame/level_img/
+    - assets/Web_Game/MemoryCardGame/voice/
+    - assets/Web_Game/MemoryCardGame/easy_mode/
+    - assets/Web_Game/MemoryCardGame/normal_mode/
+    - assets/Web_Game/MemoryCardGame/hard_mode/
+    - assets/Web_Game/MemoryCardGame/extreme_mode/
 
 
   # The following line ensures that the Material Icons font is

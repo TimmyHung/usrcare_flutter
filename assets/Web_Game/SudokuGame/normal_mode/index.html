@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Sudoku Game</title>
+</head>
+<body>
+    <h1>數獨小遊戲</h1>
+    <h2>[  中級模式  ]</h2>
+
+    <button id="instructionsButton">遊戲說明</button>
+
+    <div class="container">
+        <span id="timer">00:00</span>
+        <table id="sudokuTable"></table>
+        <button id="submitButton">提交</button>
+    </div>
+
+    <button id="startButton">開始遊戲</button>
+
+    <!-- 浮動視窗 -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closemyModal()">&times;</span>
+            <p id="modalText">遊戲結束，你贏了！</p>
+            <button id="playAgainButton" onclick="playAgain()">再玩一次</button>
+        </div>
+    </div>
+
+    <div id="game-info" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>遊戲說明</h2>
+            <p>歡迎來到數獨遊戲！</p>
+            <p>遊戲目標是將 9x9 的方格填滿，使每一行、每一列和每一個 3x3 的小方格包含所有的數字從 1 到 9，且不重複。</p>
+            <p>以下是遊戲規則：</p>
+            <ol>
+                <li>遊戲開始時，一些方格已經填入數字，這些是已知的數字。</li>
+                <li>你需要用數字 1 到 9 填入其餘的方格。</li>
+                <li>每一行、每一列和每一個 3x3 的小方格都必須包含 1 到 9 的所有數字，且不能重複。</li>
+                <li>你不能更改已知的數字。</li>
+            </ol>
+            <p>點擊「開始遊戲」來開始。使用文本框輸入你的答案。</p>
+            <p>點擊「提交」來檢查你的答案。</p>
+            <p>祝你遊戲愉快！</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

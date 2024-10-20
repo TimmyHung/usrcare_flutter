@@ -1,0 +1,38 @@
+#diff-container {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.game-dox {
+    display: flex;
+    align-items: center;
+    margin-bottom: 2em;
+}
+
+.game {
+    width: 10em;
+    padding: 10px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    color: #007bff;
+    font-size: 2em;
+    text-decoration: none;
+}
+
+.game:hover {
+    color: #0056b3;
+    background-color: #e0e0e0;
+}
+
+.game img {
+    max-width: 1.5em;
+    margin-right: 10px;
+}
+
+a {
+    text-align: center;
+}

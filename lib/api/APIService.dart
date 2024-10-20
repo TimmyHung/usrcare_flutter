@@ -306,25 +306,11 @@ class APIService {
   }
 
   // 遊戲
-  Future<http.Response> postGameRecordCard(GameRecordCard gameRecordCard, BuildContext context, {bool showLoading = false}) async {
-    if (showLoading) showLoadingDialog(context);
-    final url = Uri.parse('$baseUrl/v1/game_record/card');
-    try {
-      return await http.post(url, headers: headers, body: json.encode(gameRecordCard.toJson()));
-    } finally {
-      if (showLoading) hideLoadingDialog(context);
-    }
+  Future<http.Response> postGameRecord_WebBased(Map<String, dynamic> gameData, BuildContext context) async {
+    final url = Uri.parse('$baseUrl/v1/game_record/web-based');
+    return await http.post(url, headers: headers, body: json.encode(gameData));
   }
 
-  Future<http.Response> postGameRecordOcean(GameRecordOcean gameRecordOcean, BuildContext context, {bool showLoading = false}) async {
-    if (showLoading) showLoadingDialog(context);
-    final url = Uri.parse('$baseUrl/v1/game_record/ocean');
-    try {
-      return await http.post(url, headers: headers, body: json.encode(gameRecordOcean.toJson()));
-    } finally {
-      if (showLoading) hideLoadingDialog(context);
-    }
-  }
 
   // 愛來運動
   Future<http.StreamedResponse> uploadVideo(List<int> videoFile, BuildContext context, {bool showLoading = false}) async {

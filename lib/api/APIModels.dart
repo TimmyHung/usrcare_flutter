@@ -138,38 +138,6 @@ class PointsDeduction {
   }
 }
 
-class GameRecordCard {
-  final int level;
-  final String startTime;
-  final String endTime;
-  final String totalSteps;
-  final List<String> flipCount;
-  final int helpTotalCount;
-  final List<String> helpRecord;
-
-  GameRecordCard({
-    required this.level,
-    required this.startTime,
-    required this.endTime,
-    required this.totalSteps,
-    required this.flipCount,
-    required this.helpTotalCount,
-    required this.helpRecord,
-  });
-
-  Map<String, dynamic> toJson() {
-    return {
-      'level': level,
-      'startTime': startTime,
-      'endTime': endTime,
-      'totalSteps': totalSteps,
-      'flipCount': flipCount,
-      'helpTotalCount': helpTotalCount,
-      'helpRecord': helpRecord,
-    };
-  }
-}
-
 class GameRecordOcean {
   final int level;
   final String startTime;
