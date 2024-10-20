@@ -501,7 +501,7 @@ class ResultPage extends StatelessWidget {
                         backgroundColor: const Color.fromARGB(255, 245, 127, 191),
                       ),
                       onPressed: () {
-                        Navigator.pushNamed(context, "/home");
+                        Navigator.popUntil(context, ModalRoute.withName('/home'));
                       },
                       child: const Text("返回並獲得獎勵"),
                     ),

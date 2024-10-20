@@ -22,37 +22,22 @@ class _HomePageState extends State<HomePage> {
   List vocabulary = ["載入中...", " ", " "];
   List history_story = ["載入中...", " ", " "];
 
+  bool _isDataLoaded = false;
+
   @override
   void initState() {
     super.initState();
-    _getLocalUserData();
   }
 
-  Future<void> _getLocalUserData() async{
-    final loadedName = await SharedPreferencesService().getData(StorageKeys.userName) ?? "Null";
-    final loadedToken = await SharedPreferencesService().getData(StorageKeys.userToken) ?? "Null";
-    setState(() {
-      name = loadedName;
-      token = loadedToken;
-    });
-
-    _validateToken();
-  }
-
-  Future<void> _validateToken() async{
-    final APIService apiService = APIService(token: token);
-    final PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    final String appVersion = packageInfo.version;
-
-    var response = await apiService.validateToken(appVersion, context);
-    var x = handleHttpResponses(context, response, null);
-
-    if(x != null){
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if(!_isDataLoaded){
+      final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+      token = args['token']!;
+      name = args['name']!;
       _loadData();
-    }else{
-      await SharedPreferencesService().clearAllData();
-      Navigator.pushNamed(context, "/");
-      showCustomDialog(context, "請重新登入", "您的帳戶已在其它裝置上登入，請重新登入以繼續使用。", closeButton: true);
+      _isDataLoaded = true;
     }
   }
 
@@ -331,7 +316,7 @@ class _HomePageState extends State<HomePage> {
                           children: [
                             _buildGridButton("簽簽樂", "assets/HomePage_Icons/sign.png", Colors.red, 1, (){print("芊芊樂");}),
                             const SizedBox(width: 10),
-                            _buildGridButton("每日任務", "assets/HomePage_Icons/daily_task.png", const Color.fromARGB(255,232,125,0), 1, (){print("OK2");}),
+                            _buildGridButton("每日任務", "assets/HomePage_Icons/daily_task.png", const Color.fromARGB(255,232,125,0), 1, (){}),
                           ],
                         ),
                         const SizedBox(height: 20),
