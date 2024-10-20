@@ -5,6 +5,7 @@ import 'package:usrcare/strings.dart';
 import 'package:usrcare/utils/ColorUtil.dart';
 import 'package:usrcare/utils/MiscUtil.dart';
 import 'package:usrcare/utils/SharedPreference.dart';
+import 'package:usrcare/views/home/GamePage.dart';
 import 'package:usrcare/widgets/Button.dart';
 import 'package:usrcare/widgets/Dialog.dart';
 
@@ -21,6 +22,7 @@ class _HomePageState extends State<HomePage> {
   String points = "載入中";
   List vocabulary = ["載入中...", " ", " "];
   List history_story = ["載入中...", " ", " "];
+  APIService? apiService;
 
   bool _isDataLoaded = false;
 
@@ -42,11 +44,11 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _loadData() async {
-    final APIService apiService = APIService(token: token);
+    apiService = APIService(token: token);
 
-    final pointsResponse = apiService.getPoints(context);
-    final vocabularyResponse = apiService.getVocabulary(context);
-    final historyStoryResponse = apiService.getHistoryStory(context);
+    final pointsResponse = apiService!.getPoints(context);
+    final vocabularyResponse = apiService!.getVocabulary(context);
+    final historyStoryResponse = apiService!.getHistoryStory(context);
 
     final results = await Future.wait([pointsResponse, vocabularyResponse, historyStoryResponse]);
 
@@ -323,7 +325,16 @@ class _HomePageState extends State<HomePage> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            _buildGridButton("動腦小遊戲", "assets/HomePage_Icons/brain_game.png", const Color.fromARGB(255,212,152,0), 2, (){Navigator.pushNamed(context, "/game");}),
+                            _buildGridButton("動腦小遊戲", "assets/HomePage_Icons/brain_game.png", const Color.fromARGB(255,212,152,0), 2, (){
+                              if (apiService != null) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => GamePage(apiService: apiService!)),
+                                );
+                              }else{
+                                showToast(context, "資料載入中，請稍後再試一次。");
+                              }
+                            }),
                             const SizedBox(width: 10),
                             _buildGridButton("寵物陪伴", "assets/HomePage_Icons/pet.png", const Color.fromARGB(255,0,143,0), 2, (){print("OK");}),
                           ],

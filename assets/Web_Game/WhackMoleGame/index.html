@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <audio id="goodMoleSound" src="good-mole-sound.mp3"></audio>
+    <link rel="stylesheet" href="style.css">
+    <title>打地鼠遊戲</title>
+</head>
+<body>
+    <h1>打地鼠遊戲</h1>
+    <button id="showInstructionsButton">遊戲說明</button>
+    
+    <div id="game-instructions" style="display: none">
+    <h2>遊戲說明</h2>
+    <p style="display: inline-block; text-align: center; margin-right:6px;">
+        <img src="mouse.png" alt="好老鼠" style="width: 45px; height: 45px; vertical-align: middle;">
+        <br>好老鼠
+    </p>
+    <p style="display: inline-block; text-align: center; margin: auto;">
+        <img src="rat.png" alt="壞老鼠" style="width: 45px; height: 45px; vertical-align: middle;">
+        <br>壞老鼠
+    </p>
+    <ul style="display: inline-block; text-align: left; margin:auto;">
+        <li>點擊好老鼠加2分</li>
+        <li>點擊壞老鼠扣5秒</li>
+        <li>60秒內獲得盡可能多的分數</li>
+    </ul>
+</div>
+
+    
+    <div id="msg">
+        <span id="score" style="margin-left: auto; margin-right: auto;">得分：0分</span>
+        <span id="time" style="margin-right: auto;">時間：60秒</span>
+    </div>
+    
+    <div id="gameContainer">
+        <div class="hole-container">
+            <div class="hole" id="hole1"></div>
+        </div>
+        <div class="hole-container">
+            <div class="hole" id="hole2"></div>
+        </div>    
+        <div class="hole-container">
+            <div class="hole" id="hole3"></div>
+        </div>    
+        <div class="hole-container">   
+            <div class="hole" id="hole4"></div>
+        </div>    
+        <div class="hole-container">    
+            <div class="hole" id="hole5"></div>
+        </div>   
+        <div class="hole-container">
+            <div class="hole" id="hole6"></div>
+       </div>      
+       <div class="hole-container"> 
+            <div class="hole" id="hole7"></div>
+       </div>    
+       <div class="hole-container">
+            <div class="hole" id="hole8"></div>
+       </div>    
+       <div class="hole-container">
+            <div class="hole" id="hole9"></div>
+       </div>   
+    </div>
+    <div id="popup" class="popup">
+        <div class="popup-content">
+        <h2>遊戲结束</h2>
+        <p>你的得分是: <span id="finalScore">0</span>分</p>
+        <button id="playAgainButton">再来一局</button>
+        </div>
+    </div>
+
+    <button id="startButton">遊戲開始</button>
+    <script src="script.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

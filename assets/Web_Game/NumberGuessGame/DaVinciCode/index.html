@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <audio id="correct-audio" src="correct.mp3"></audio>
+    <link rel="stylesheet" href="style.css">
+    <title>簡單版猜數字遊戲</title>
+</head>
+<body>
+    <div class="container">
+        <h1>終極密碼</h1>
+        <div id="i1">
+            <label for="text">輸入猜測的數字：</label>
+            <input type="text" id="text" placeholder="請輸入一個1-100的數字">
+            <button id="guess">猜</button>
+            <br>
+            <span>猜的次數：<span id="count">0</span></span>
+            <br>
+            <div id="result-container">
+                結果：<span class="result" id="result"></span>
+            </div>
+            <br>
+            <button id="reBu">重新開始</button>
+        </div>
+    </div>
+
+    <!-- 猜對數字後的結束彈窗 -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <p id="modalText">恭喜你猜對了！</p>
+            <button id="playAgainButton" onclick="playAgain()">再玩一次</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

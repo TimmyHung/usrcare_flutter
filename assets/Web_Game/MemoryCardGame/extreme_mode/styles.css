@@ -1,0 +1,113 @@
+/* timer */
+#timer-container {
+    background-color: #f7d794;
+    padding: 10px;
+    border-radius: 10px;
+    margin-top: 20px;
+    text-align: center;
+}
+
+#timer {
+    font-size: 24px;
+    color: #2d3436;
+}
+
+
+/* card */
+.game-card {
+    width: 3.5em;
+    height: 3.5em;
+    background-color: #ccc;
+    margin: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    color: aliceblue;
+    cursor: pointer;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.game-card img {
+    max-width: 75%;
+    max-height: 75%;
+}
+
+.close-image {
+    display: none;
+}
+
+.game-board {
+    display: grid;
+    grid-template-columns: 22% 22% 22% 22%;
+    gap: 10px;
+    margin: 20px auto;
+}
+
+.selected {
+    background-color: green;
+}
+
+.matched {
+    background-color: darkcyan;
+    opacity: 0.5;
+}
+
+
+/* info */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 10% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    border-radius: 10px;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* buttom */
+#btm {
+    text-align: center;
+    margin-top: 20px;
+}
+
+#btm a {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #3498db;
+    color: #fff;
+    text-decoration: none;
+    font-size: 18px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+#btm a:hover {
+    background-color: #2980b9;
+}
