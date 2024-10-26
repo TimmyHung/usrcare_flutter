@@ -99,7 +99,7 @@ class _WelcomePageState extends State<WelcomePage> {
         ],
         webAuthenticationOptions: WebAuthenticationOptions(
           clientId: 'com.tku.usrcare.auth',
-          redirectUri: Uri.parse('https://api.tkuusraicare.org/v1/authentication/oauth/apple/callback',),
+          redirectUri: Uri.parse('https://api.tkuusraicare.org/v1/authentication/oauth/apple/callback/signinwithapple',),
         ),
       );
       APIService apiService = APIService();
@@ -253,26 +253,24 @@ class _WelcomePageState extends State<WelcomePage> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            _socialLoginButton('assets/google.png', _GoogleLogin),
+            _socialLoginButton(Image.asset('assets/google.png', height: 35), _GoogleLogin),
             const SizedBox(width: 15),
-            _socialLoginButton('assets/line.png', _LineLogin),
+            _socialLoginButton(Image.asset('assets/line.png', height: 35), _LineLogin),
             const SizedBox(width: 15),
-            _socialLoginButton('assets/apple.png', _AppleLogin, isApple: true),
+            _socialLoginButton(const Icon(Icons.apple, size: 35, color: Colors.black), _AppleLogin, isApple: true),
           ],
         ),
       ],
     );
   }
 
-  Widget _socialLoginButton(String assetName, VoidCallback onPressed, {bool isApple = false}) {
+  Widget _socialLoginButton(Widget IconWidget, VoidCallback onPressed, {bool isApple = false}) {
     return Expanded(
       child: CustomButton(
         text: SizedBox(
           height: 35,
           width: 35,
-          child: isApple
-              ? const Icon(Icons.apple, size: 35, color: Colors.black)
-              : Image.asset(assetName, height: 35),
+          child: IconWidget,
         ),
         type: ButtonType.secondary,
         onPressed: onPressed,

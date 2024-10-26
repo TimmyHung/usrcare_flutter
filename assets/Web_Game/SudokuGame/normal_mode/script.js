@@ -1,9 +1,9 @@
 // 在開始遊戲時初始化使用者數據
 let userData = {
     win_flag: false,
-    diff: 0.1,
+    diff: 0.3,
     sudokuPuzzle: generateEmptyPuzzle(),
-    timerInterval: null
+    timerInterval: new Date()
 };
 
 // let win_flag = false;

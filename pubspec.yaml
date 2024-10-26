@@ -50,8 +50,10 @@ dependencies:
   uni_links: ^0.5.1
   package_info_plus: ^8.0.3
   url_launcher: ^6.3.1
-  new_version_plus: ^0.0.12
   webview_flutter: ^4.10.0
+  table_calendar: ^3.1.2
+  smooth_page_indicator: ^1.2.0+3
+  provider: ^6.1.2
   # flutter_unity_widget: ^2022.2.1
 
 flutter_launcher_icons:
@@ -84,6 +86,8 @@ flutter:
     - assets/google.png
     - assets/line.png
 
+    - assets/Icons/
+    - assets/Icons/daily_mood/
     - assets/HomePage_Icons/
 
     - assets/Web_Game/WhackMoleGame/

@@ -92,20 +92,6 @@ class PasswordReset {
   }
 }
 
-class MoodRecord {
-  final String mood;
-  final String time;
-
-  MoodRecord({required this.mood, required this.time});
-
-  Map<String, dynamic> toJson() {
-    return {
-      'mood': mood,
-      'time': time,
-    };
-  }
-}
-
 class TypewriterRecord {
   final String typewriter;
 

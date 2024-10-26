@@ -10,7 +10,12 @@ import 'package:usrcare/widgets/Dialog.dart';
 
 dynamic handleHttpResponses(BuildContext context, dynamic response, String? errorTitle) {
   if(kDebugMode) {
-    print("HttpCode: ${response.statusCode} \nBody: ${json.decode(response.body)}");
+    try{
+      print("HttpCode: ${response.statusCode} \nBody: ${json.decode(response.body)}");
+    }catch(err){
+      print(response);
+      return null;
+    }
   }
   if (response.statusCode == 200 || response.statusCode == 201) {
     final responseBody = json.decode(response.body);

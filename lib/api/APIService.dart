@@ -130,6 +130,47 @@ class APIService {
     }
   }
 
+  // OAuth綁定相關
+  Future<http.Response> oauthBindingList(BuildContext context, {bool showLoading = false}) async {
+    if (showLoading) showLoadingDialog(context);
+    final url = Uri.parse('$baseUrl/v1/oauth/binding/inquiry');
+    try {
+      return await http.get(url, headers: headers);
+    } finally {
+      if (showLoading) hideLoadingDialog(context);
+    }
+  }
+
+  Future<http.Response> oauthBinding(String oauthType, Map<String, dynamic> credentials, BuildContext context, {bool showLoading = true}) async {
+    if (showLoading) showLoadingDialog(context);
+    final url = Uri.parse('$baseUrl/v1/oauth/binding/$oauthType');
+    try {
+      return await http.post(url, headers: headers, body: json.encode(credentials));
+    } finally {
+      if (showLoading) hideLoadingDialog(context);
+    }
+  }
+  
+  Future<http.Response> oauthBindingReplacement(String oauthType, Map<String, dynamic> credentials, BuildContext context, {bool showLoading = true}) async {
+    if (showLoading) showLoadingDialog(context);
+    final url = Uri.parse('$baseUrl/v1/oauth/binding/replacement/$oauthType');
+    try {
+      return await http.post(url, headers: headers, body: json.encode(credentials));
+    } finally {
+      if (showLoading) hideLoadingDialog(context);
+    }
+  }
+
+  Future<http.Response> oauthUnBinding(String oauthType, BuildContext context, {bool showLoading = true}) async {
+    if (showLoading) showLoadingDialog(context);
+    final url = Uri.parse('$baseUrl/v1/oauth/binding/cancelation/$oauthType');
+    try {
+      return await http.delete(url, headers: headers);
+    } finally {
+      if (showLoading) hideLoadingDialog(context);
+    }
+  }
+
   // 忘記密碼/重設密碼相關
   Future<http.Response> forgotPassword(String email, BuildContext context, {bool showLoading = false}) async {
     if (showLoading) showLoadingDialog(context);
@@ -193,11 +234,15 @@ class APIService {
   }
 
   // 每日心情相關
-  Future<http.Response> postMood(MoodRecord moodRecord, BuildContext context, {bool showLoading = false}) async {
+  Future<http.Response> postMood(int moodScore, String time, BuildContext context, {bool showLoading = false}) async {
     if (showLoading) showLoadingDialog(context);
-    final url = Uri.parse('$baseUrl/v1/mood/${moodRecord.mood}');
+    final url = Uri.parse('$baseUrl/v1/mood/$moodScore');
+    final body = {
+      'time': time,
+    };
+
     try {
-      return await http.post(url, headers: headers, body: json.encode(moodRecord.toJson()));
+      return await http.post(url, headers: headers, body: json.encode(body));
     } finally {
       if (showLoading) hideLoadingDialog(context);
     }
@@ -218,7 +263,6 @@ class APIService {
     if (showLoading) showLoadingDialog(context);
     
     final url = Uri.parse('$baseUrl/v2/mood/typewriter');
-
     final body = {
       'typewriter': typewriter,
       'creation_time': creationTime,

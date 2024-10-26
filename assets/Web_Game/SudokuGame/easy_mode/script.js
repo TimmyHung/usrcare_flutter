@@ -4,7 +4,6 @@ let userData = {
     diff: 0.1,
     sudokuPuzzle: generateEmptyPuzzle(),
     timerInterval: new Date(),
-    mistake: 0
 };
 
 // let win_flag = false;

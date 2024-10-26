@@ -3,13 +3,17 @@ import 'package:shared_preferences/shared_preferences.dart';
 enum StorageKeys {
   userToken,
   userName,
-  // 其他需要的鍵
+  checkinDates,
+  skipUpdateVersion,
+  oauthBindingList,
 }
 
 const Map<StorageKeys, String> storageKeysMap = {
   StorageKeys.userToken: 'user_token',
   StorageKeys.userName: 'user_name',
-  // 其他鍵的對應字符串
+  StorageKeys.checkinDates: 'checkin_dates',
+  StorageKeys.skipUpdateVersion: 'skip_update_version',
+  StorageKeys.oauthBindingList: 'oauth_binding_list',
 };
 
 extension StorageKeysExtension on StorageKeys {
@@ -38,6 +42,14 @@ class SharedPreferencesService {
 
   Future<void> clearAllData() async {
     final prefs = await SharedPreferences.getInstance();
+
+    final String? skipUpdateVersion = prefs.getString(StorageKeys.skipUpdateVersion.key);
+
     await prefs.clear();
+
+    if (skipUpdateVersion != null) {
+      await prefs.setString(StorageKeys.skipUpdateVersion.key, skipUpdateVersion);
+    }
   }
+
 }

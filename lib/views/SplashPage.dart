@@ -8,7 +8,8 @@ import 'package:usrcare/utils/MiscUtil.dart';
 import 'package:usrcare/utils/SharedPreference.dart';
 import 'package:usrcare/utils/DeepLinkService.dart';
 import 'package:usrcare/widgets/Dialog.dart';
-import 'package:new_version_plus/new_version_plus.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -27,7 +28,7 @@ class _SplashPageState extends State<SplashPage> {
   void initState() {
     super.initState();
     _deepLinkService.init(context);
-    _versionTest();  // 先進行版本檢查
+    _versionTest();
   }
 
   @override
@@ -71,21 +72,20 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   void _versionTest() async {
-    final newVersion = NewVersionPlus(
-      iOSId: 'com.tku.usrcare',
-      iOSAppStoreCountry: "zh_TW",
-      androidId: 'com.tku.usrcare',
-      androidPlayStoreCountry: "zh_TW",
-      androidHtmlReleaseNotes: true,
-    );
-    final version = await newVersion.getVersionStatus();
+    final versionStatus = await _getVersionStatus();
 
-    if (version == null) {
+    if (versionStatus == null) {
       _checkLoginStatus();
       return;
     }
-    
-    final needUpdate = version.canUpdate;
+
+    final String? skippedVersion = await SharedPreferencesService().getData(StorageKeys.skipUpdateVersion);
+    if (skippedVersion == versionStatus["storeVersion"]) {
+      _checkLoginStatus();
+      return;
+    }
+
+    final needUpdate = versionStatus["canUpdate"];
     if (needUpdate) {
       APIService apiService = APIService();
       final response = await apiService.getMinimumAppVersion();
@@ -93,23 +93,62 @@ class _SplashPageState extends State<SplashPage> {
       final String? minimum_version = Platform.isIOS ? x["iOS"] : x["Android"];
 
       if(minimum_version != null){
-        forceUpdate = _compareVersion(minimum_version, version.localVersion) > 0;
+        forceUpdate = _compareVersion(minimum_version, versionStatus["localVersion"]) > 0;
       }
-      _showUpdateDialog(version);
+      _showUpdateDialog(versionStatus);
     } else {
       _checkLoginStatus();
     }
   }
 
+  Future<Map<String, dynamic>?> _getVersionStatus() async {
+    final PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    final String localVersion = packageInfo.version;
+    const String bundleId = "com.tku.usrcare";
 
-  void _showUpdateDialog(VersionStatus version) {
+    final String appStoreUrl = Platform.isIOS
+        ? 'https://itunes.apple.com/lookup?bundleId=$bundleId'
+        : 'https://play.google.com/store/apps/details?id=$bundleId';
+
+    try {
+      final response = await http.get(Uri.parse(appStoreUrl));
+      if (response.statusCode == 200) {
+        if (Platform.isIOS) {
+          final jsonResponse = jsonDecode(response.body);
+          final String appStoreVersion = jsonResponse['results'][0]['version'];
+          return {
+            "canUpdate": _compareVersion(appStoreVersion, localVersion) > 0,
+            "localVersion": localVersion,
+            "storeVersion": appStoreVersion,
+            "appStoreLink": jsonResponse['results'][0]['trackViewUrl'],
+          };
+        } else {
+          final regex = RegExp(r'\[\[\[\"(\d+\.\d+(\.[a-z]+)?(\.[^"]*)?)\"\]\]');
+          final storeVersion = regex.firstMatch(response.body)?.group(1);
+          return storeVersion != null
+              ? {
+                  "canUpdate": _compareVersion(storeVersion, localVersion) > 0,
+                  "localVersion": localVersion,
+                  "storeVersion": storeVersion,
+                  "appStoreLink": appStoreUrl,
+                }
+              : null;
+        }
+      }
+    } catch (e) {
+      print('取得版本資訊時發生錯誤: $e');
+    }
+    return null;
+  }
+
+  void _showUpdateDialog(Map<String, dynamic> versionStatus) {
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
           actionsAlignment: MainAxisAlignment.center,
-          title: Center(child: Text("發現新版本 ${version.storeVersion}", style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 30))),
+          title: Center(child: Text("發現新版本 ${versionStatus['storeVersion']}", style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 30))),
           content: Text(
             forceUpdate
                 ? "目前版本已不再支援，為了您的資料安全與APP穩定性，請立即更新至最新版本。"
@@ -125,16 +164,15 @@ class _SplashPageState extends State<SplashPage> {
                   child: ElevatedButton(
                     child: const Text("前往更新", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
                     onPressed: () {
-                      // Navigator.of(context).pop();
-                      _launchUrl(version.appStoreLink);
+                      _launchUrl(versionStatus['appStoreLink']);
                     },
                   ),
                 ),
                 TextButton(
-                  onPressed: forceUpdate ? null : () {
-                    Navigator.of(context).pop();
-                    _showUpdateDialog(version);
-                    // _checkLoginStatus();
+                  onPressed: forceUpdate ? null : () async {
+                    await SharedPreferencesService().saveData(StorageKeys.skipUpdateVersion, versionStatus["storeVersion"]);
+                    Navigator.pop(context);
+                    _checkLoginStatus();
                   },
                   child: Text(forceUpdate ? "無法跳過本次更新" : "跳過本次更新",style: const TextStyle(fontSize: 18, color: Colors.grey)),
                 ),

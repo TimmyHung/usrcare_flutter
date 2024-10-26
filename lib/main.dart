@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:provider/provider.dart';
+import 'package:usrcare/providers/OAuthBindingList_Provider.dart';
 import 'package:usrcare/utils/ColorUtil.dart';
 import 'package:usrcare/views/SplashPage.dart';
 import 'package:usrcare/views/authorization/EmailVerificationPage.dart';
-import 'package:usrcare/views/home/GamePage.dart';
 import 'package:usrcare/views/home/HomePage.dart';
 import 'package:usrcare/views/authorization/RegisterPage.dart';
 import 'package:usrcare/views/authorization/LoginPage.dart';
 
 import 'package:flutter_line_sdk/flutter_line_sdk.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:usrcare/views/setting/SettingPage.dart';
 import 'package:usrcare/views/WelcomePage.dart';
 import 'package:usrcare/views/home/MoodPage.dart';
 
@@ -18,7 +18,14 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
   LineSDK.instance.setup(dotenv.env['LINE_CHANNEL_ID']!);
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => OAuthBindingList_Provider()),
+      ],
+      child: const MyApp()
+    )
+  );
 }
 
 class MyApp extends StatefulWidget {
@@ -46,9 +53,10 @@ class _MyAppState extends State<MyApp> {
         '/login/pwdRecovery': (context) => const PasswordRecoveryPage(),
         '/login/pwdReset': (context) => const PasswordResetPage(),
         '/home': (context) => const HomePage(),
-        '/setting': (context) => const SettingPage(),
+        // '/setting': (context) => const SettingPage(),
         // '/game': (context) => const GamePage(),
         '/mood': (context) => const MoodPage(),
+        // '/checkin': (context) => const CheckInPage(),
       },
       supportedLocales: const [
         Locale('zh', 'TW'),

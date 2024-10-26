@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
 
-void showToast(BuildContext context, String message) {
-  ScaffoldMessenger.of(context).showSnackBar(
+void showToast(BuildContext context, String msg, {int duration = 1500}) {
+  final scaffold = ScaffoldMessenger.of(context);
+  scaffold.clearSnackBars();
+  scaffold.showSnackBar(
     SnackBar(
-      content: Text(message),
+      duration: Duration(milliseconds: duration),
+      behavior: SnackBarBehavior.floating,
+      margin: const EdgeInsets.only(bottom: 55, left: 16, right: 16),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+      content: Text(msg, textAlign: TextAlign.center, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),),
     ),
   );
 }
+
 
 void showCustomDialog(BuildContext context, dynamic title, dynamic message, {bool? closeButton}) {
   showDialog(
