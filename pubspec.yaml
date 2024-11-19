@@ -54,7 +54,9 @@ dependencies:
   table_calendar: ^3.1.2
   smooth_page_indicator: ^1.2.0+3
   provider: ^6.1.2
+  flutter_local_notifications: ^18.0.1
   # flutter_unity_widget: ^2022.2.1
+  permission_handler: ^11.3.1
 
 flutter_launcher_icons:
   android: "launcher_icon"

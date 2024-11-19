@@ -36,6 +36,7 @@ class _HomePageState extends State<HomePage> {
 
   late PageController _pageController;
   Timer? _timer;
+  bool _isUserScrolling = false;
 
   @override
   void initState() {
@@ -55,7 +56,8 @@ class _HomePageState extends State<HomePage> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (!_isDataLoaded) {
-      final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+      final args =
+          ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
       token = args['token']!;
       name = args['name']!;
       apiService = APIService(token: token);
@@ -67,9 +69,17 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _startAutoScroll() {
+    _timer?.cancel();
+
+    if (_isUserScrolling) {
+      return;
+    }
+
     _timer = Timer.periodic(const Duration(seconds: 8), (Timer timer) {
       if (_pageController.hasClients) {
-        int nextPage = (_pageController.page!.round() + 1) % 100 == 0 ? 51 : _pageController.page!.round() + 1;
+        int nextPage = (_pageController.page!.round() + 1) % 100 == 0
+            ? 51
+            : _pageController.page!.round() + 1;
         _pageController.animateToPage(
           nextPage,
           duration: const Duration(milliseconds: 400),
@@ -80,9 +90,11 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _checkOAuthBinding() async {
-    final oauthBindingProvider = Provider.of<OAuthBindingList_Provider>(context, listen: false);
+    final oauthBindingProvider =
+        Provider.of<OAuthBindingList_Provider>(context, listen: false);
 
-    final localOauthBindingList = await SharedPreferencesService().getData(StorageKeys.oauthBindingList);
+    final localOauthBindingList =
+        await SharedPreferencesService().getData(StorageKeys.oauthBindingList);
 
     if (localOauthBindingList != null) {
       final decoded = jsonDecode(localOauthBindingList);
@@ -91,7 +103,8 @@ class _HomePageState extends State<HomePage> {
       final response = await apiService!.oauthBindingList(context);
       final x = handleHttpResponses(context, response, "取得OAuth已綁定資料時發生問題");
       oauthBindingProvider.setBindingList(Map<String, bool>.from(x));
-      SharedPreferencesService().saveData(StorageKeys.oauthBindingList, jsonEncode(oauthBindingProvider.oauthBindingList));
+      SharedPreferencesService().saveData(StorageKeys.oauthBindingList,
+          jsonEncode(oauthBindingProvider.oauthBindingList));
     }
   }
 
@@ -100,14 +113,20 @@ class _HomePageState extends State<HomePage> {
     final vocabularyResponse = apiService!.getVocabulary(context);
     final historyStoryResponse = apiService!.getHistoryStory(context);
 
-    final results = await Future.wait([pointsResponse, vocabularyResponse, historyStoryResponse]);
+    final results = await Future.wait(
+        [pointsResponse, vocabularyResponse, historyStoryResponse]);
 
     final pointsData = handleHttpResponses(context, results[0], "取得用戶金幣時發生錯誤");
-    final vocabularyData = handleHttpResponses(context, results[1], "取得每日單字時發生錯誤");
+    final vocabularyData =
+        handleHttpResponses(context, results[1], "取得每日單字時發生錯誤");
     final historyStoryData = handleHttpResponses(context, results[2], null);
     setState(() {
       points = pointsData["points"].toString();
-      vocabulary = [vocabularyData["english"], vocabularyData["phonetic_notation"], vocabularyData["chinese"]];
+      vocabulary = [
+        vocabularyData["english"],
+        vocabularyData["phonetic_notation"],
+        vocabularyData["chinese"]
+      ];
       if (historyStoryData != null) {
         history_story = [
           historyStoryData["title"],
@@ -121,17 +140,20 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-
   void _checkCheckin() async {
-    final localCheckinDatesString = await SharedPreferencesService().getData(StorageKeys.checkinDates);
+    final localCheckinDatesString =
+        await SharedPreferencesService().getData(StorageKeys.checkinDates);
 
     if (localCheckinDatesString != null) {
-      local_checkin_dates = Set<String>.from(jsonDecode(localCheckinDatesString));
+      local_checkin_dates =
+          Set<String>.from(jsonDecode(localCheckinDatesString));
     } else {
       final response = await apiService!.getCheckin(context);
       final x = handleHttpResponses(context, response, "取得每日心情記錄時發生問題");
-      local_checkin_dates = Set<String>.from(x["checkin_dates"].map((date) => date.substring(0, 10)));
-      SharedPreferencesService().saveData(StorageKeys.checkinDates, jsonEncode(local_checkin_dates.toList()));
+      local_checkin_dates = Set<String>.from(
+          x["checkin_dates"].map((date) => date.substring(0, 10)));
+      SharedPreferencesService().saveData(
+          StorageKeys.checkinDates, jsonEncode(local_checkin_dates.toList()));
     }
 
     DateTime now = DateTime.now();
@@ -164,7 +186,10 @@ class _HomePageState extends State<HomePage> {
                             fit: BoxFit.scaleDown,
                             child: Text(
                               DateFormat('MM月dd日(E)', 'zh_TW').format(now),
-                              style: const TextStyle(fontSize: 30, color: Colors.black, fontWeight: FontWeight.bold),
+                              style: const TextStyle(
+                                  fontSize: 30,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold),
                             ),
                           ),
                         ),
@@ -179,12 +204,18 @@ class _HomePageState extends State<HomePage> {
                                 child: ElevatedButton(
                                   onPressed: () async {
                                     local_checkin_dates.add(formattedDate);
-                                    SharedPreferencesService().saveData(StorageKeys.checkinDates,
-                                        jsonEncode(local_checkin_dates.toList()));
+                                    SharedPreferencesService().saveData(
+                                        StorageKeys.checkinDates,
+                                        jsonEncode(
+                                            local_checkin_dates.toList()));
                                     Navigator.pop(context);
                                     final response = await apiService!.postMood(
-                                        mood_score, DateFormat('yyyy-MM-ddTHH:mm:ss').format(now), context);
-                                    handleHttpResponses(context, response, "上傳今日心情分數時發生問題");
+                                        mood_score,
+                                        DateFormat('yyyy-MM-ddTHH:mm:ss')
+                                            .format(now),
+                                        context);
+                                    handleHttpResponses(
+                                        context, response, "上傳今日心情分數時發生問題");
                                   },
                                   style: ElevatedButton.styleFrom(
                                     padding: EdgeInsets.zero,
@@ -194,7 +225,8 @@ class _HomePageState extends State<HomePage> {
                                   child: Image.asset(
                                     'assets/Icons/daily_mood/$mood_score.png',
                                     fit: BoxFit.cover,
-                                    width: MediaQuery.of(context).size.width * 0.135,
+                                    width: MediaQuery.of(context).size.width *
+                                        0.135,
                                   ),
                                 ),
                               );
@@ -268,7 +300,9 @@ class _HomePageState extends State<HomePage> {
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => SettingPage(apiService: apiService!)),
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  SettingPage(apiService: apiService!)),
                         );
                       },
                       icon: const Icon(Icons.settings_outlined),
@@ -281,22 +315,42 @@ class _HomePageState extends State<HomePage> {
                     SizedBox(
                       height: 180,
                       width: MediaQuery.of(context).size.width,
-                      child: PageView.builder(
-                        controller: _pageController,
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, index) {
-                          int pageIndex = index % 3;
-                          switch (pageIndex) {
-                            case 0:
-                              return _buildFirstPage();
-                            case 1:
-                              return _buildSecondPage();
-                            case 2:
-                              return _buildThirdPage();
-                            default:
-                              return Container();
+                      child: NotificationListener<ScrollNotification>(
+                        onNotification: (ScrollNotification notification) {
+                          if (notification is ScrollStartNotification) {
+                            setState(() {
+                              _isUserScrolling = true;
+                            });
+                            _timer?.cancel();
+                          } else if (notification is ScrollEndNotification) {
+                            setState(() {
+                              _isUserScrolling = false;
+                            });
+                            _startAutoScroll();
                           }
+                          return true;
                         },
+                        child: PageView.builder(
+                          controller: _pageController,
+                          scrollDirection: Axis.horizontal,
+                          onPageChanged: (index) {
+                            // 只需要在需要時處理頁面變化的邏輯
+                          },
+                          physics: const BouncingScrollPhysics(),
+                          itemBuilder: (context, index) {
+                            int pageIndex = index % 3;
+                            switch (pageIndex) {
+                              case 0:
+                                return _buildFirstPage();
+                              case 1:
+                                return _buildSecondPage();
+                              case 2:
+                                return _buildThirdPage();
+                              default:
+                                return Container();
+                            }
+                          },
+                        ),
                       ),
                     ),
                     const SizedBox(height: 5),
@@ -305,7 +359,8 @@ class _HomePageState extends State<HomePage> {
                       count: 3,
                       onDotClicked: (index) {
                         int currentPage = _pageController.page!.round();
-                        int targetPage = currentPage - (currentPage % 3) + index;
+                        int targetPage =
+                            currentPage - (currentPage % 3) + index;
                         _pageController.animateToPage(
                           targetPage,
                           duration: const Duration(milliseconds: 400),
@@ -330,69 +385,97 @@ class _HomePageState extends State<HomePage> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            _buildGridButton("簽簽樂", "assets/HomePage_Icons/sign.png", Colors.red, 1, () {
+                            _buildGridButton(
+                                "簽簽樂",
+                                "assets/HomePage_Icons/sign.png",
+                                Colors.red,
+                                1, () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => CheckInPage(checkinDates: local_checkin_dates),
+                                  builder: (context) => CheckInPage(
+                                      checkinDates: local_checkin_dates),
                                 ),
                               );
                             }),
                             const SizedBox(width: 10),
-                            _buildGridButton("每日任務", "assets/HomePage_Icons/daily_task.png",
-                                const Color.fromARGB(255, 232, 125, 0), 1, () {
-                                  showToast(context, "休學");
-                                }),
+                            _buildGridButton(
+                                "每日任務",
+                                "assets/HomePage_Icons/daily_task.png",
+                                const Color.fromARGB(255, 232, 125, 0),
+                                1, () {
+                              showToast(context, "休學");
+                            }),
                           ],
                         ),
                         const SizedBox(height: 20),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            _buildGridButton("動腦小遊戲", "assets/HomePage_Icons/brain_game.png",
-                                const Color.fromARGB(255, 212, 152, 0), 2, () {
+                            _buildGridButton(
+                                "動腦小遊戲",
+                                "assets/HomePage_Icons/brain_game.png",
+                                const Color.fromARGB(255, 212, 152, 0),
+                                2, () {
                               if (apiService != null) {
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(builder: (context) => GamePage(apiService: apiService!)),
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          GamePage(apiService: apiService!)),
                                 );
                               } else {
                                 showToast(context, "資料載入中，請稍後再試一次。");
                               }
                             }),
                             const SizedBox(width: 10),
-                            _buildGridButton("寵物陪伴", "assets/HomePage_Icons/pet.png",
-                                const Color.fromARGB(255, 0, 143, 0), 2, () {
-                                  showToast(context, "你的寵物死了");
-                                }),
+                            _buildGridButton(
+                                "寵物陪伴",
+                                "assets/HomePage_Icons/pet.png",
+                                const Color.fromARGB(255, 0, 143, 0),
+                                2, () {
+                              showToast(context, "你的寵物死了");
+                            }),
                           ],
                         ),
                         const SizedBox(height: 10),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            _buildGridButton("愛來運動", "assets/HomePage_Icons/sport.png",
-                                const Color.fromARGB(255, 0, 107, 185), 2, () {
-                                  showToast(context, "你不愛運動");
-                                }),
+                            _buildGridButton(
+                                "愛來運動",
+                                "assets/HomePage_Icons/sport.png",
+                                const Color.fromARGB(255, 0, 107, 185),
+                                2, () {
+                              showToast(context, "你不愛運動");
+                            }),
                             const SizedBox(width: 10),
-                            _buildGridButton("鬧鐘小提醒", "assets/HomePage_Icons/alarm.png",
-                                const Color.fromARGB(255, 0, 0, 146), 2, () {
-                                  showToast(context, "鬧鐘壞掉了");
-                                }),
+                            _buildGridButton(
+                                "鬧鐘小提醒",
+                                "assets/HomePage_Icons/alarm.png",
+                                const Color.fromARGB(255, 0, 0, 146),
+                                2, () {
+                              Navigator.pushNamed(context, "/alarm");
+                            }),
                           ],
                         ),
                         const SizedBox(height: 10),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            _buildGridButton("好物雜貨鋪", "assets/HomePage_Icons/store.png",
-                                const Color.fromARGB(255, 80, 0, 182), 2, () {
-                                  showToast(context, "老闆捲款跑路了");
-                                }),
+                            _buildGridButton(
+                                "好物雜貨鋪",
+                                "assets/HomePage_Icons/store.png",
+                                const Color.fromARGB(255, 80, 0, 182),
+                                2, () {
+                              showToast(context, "老闆捲款跑路了");
+                            }),
                             const SizedBox(width: 10),
-                            _buildGridButton("心情量表", "assets/HomePage_Icons/mood.png",
-                                const Color.fromARGB(255, 202, 0, 109), 2, () {
+                            _buildGridButton(
+                                "心情量表",
+                                "assets/HomePage_Icons/mood.png",
+                                const Color.fromARGB(255, 202, 0, 109),
+                                2, () {
                               Navigator.pushNamed(context, "/mood");
                             }),
                           ],
@@ -452,7 +535,8 @@ class _HomePageState extends State<HomePage> {
                     borderRadius: BorderRadius.circular(15),
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                     child: Row(
                       children: [
                         Image.asset(
@@ -517,8 +601,14 @@ class _HomePageState extends State<HomePage> {
           children: [
             const Spacer(),
             const Text("每日英語", style: TextStyle(fontSize: 30)),
-            FittedBox(fit: BoxFit.scaleDown, child: Text(vocabulary[0], style: const TextStyle(fontSize: 30))),
-            FittedBox(fit: BoxFit.scaleDown, child: Text(vocabulary[1], style: const TextStyle(fontSize: 30))),
+            FittedBox(
+                fit: BoxFit.scaleDown,
+                child:
+                    Text(vocabulary[0], style: const TextStyle(fontSize: 30))),
+            FittedBox(
+                fit: BoxFit.scaleDown,
+                child:
+                    Text(vocabulary[1], style: const TextStyle(fontSize: 30))),
             const SizedBox(height: 10),
             Align(
               alignment: Alignment.bottomRight,
@@ -590,7 +680,8 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildGridButton(String title, String iconPath, Color borderColor, int type, Function onPressed) {
+  Widget _buildGridButton(String title, String iconPath, Color borderColor,
+      int type, Function onPressed) {
     return InkWell(
       onTap: () {
         onPressed();

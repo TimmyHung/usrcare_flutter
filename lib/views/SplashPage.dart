@@ -10,6 +10,7 @@ import 'package:usrcare/utils/DeepLinkService.dart';
 import 'package:usrcare/widgets/Dialog.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:permission_handler/permission_handler.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -28,7 +29,7 @@ class _SplashPageState extends State<SplashPage> {
   void initState() {
     super.initState();
     _deepLinkService.init(context);
-    _versionTest();
+    _checkNotificationPermission();
   }
 
   @override
@@ -38,8 +39,10 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   Future<void> _checkLoginStatus() async {
-    userToken = await SharedPreferencesService().getData(StorageKeys.userToken) ?? "";
-    userName = await SharedPreferencesService().getData(StorageKeys.userName) ?? "";
+    userToken =
+        await SharedPreferencesService().getData(StorageKeys.userToken) ?? "";
+    userName =
+        await SharedPreferencesService().getData(StorageKeys.userName) ?? "";
 
     if (userToken.isNotEmpty && userName.isNotEmpty) {
       await _validateTokenAndNavigate();
@@ -58,7 +61,8 @@ class _SplashPageState extends State<SplashPage> {
     var x = handleHttpResponses(context, response, null);
 
     if (x != null) {
-      Navigator.pushReplacementNamed(context,"/home",arguments: {"token": userToken,"name": userName});
+      Navigator.pushReplacementNamed(context, "/home",
+          arguments: {"token": userToken, "name": userName});
     } else {
       await SharedPreferencesService().clearAllData();
       Navigator.pushNamed(context, "/welcome");
@@ -71,6 +75,95 @@ class _SplashPageState extends State<SplashPage> {
     }
   }
 
+  Future<void> _checkNotificationPermission() async {
+    final status = await Permission.notification.status;
+
+    if (status.isGranted) {
+      _versionTest();
+    } else {
+      _showNotificationPermissionDialog();
+    }
+  }
+
+  void _showNotificationPermissionDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text(
+            '需要通知權限',
+            style: TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: const Text(
+            '為了提供您最好的服務體驗，我們需要通知權限來發送重要的提醒。',
+            style: TextStyle(fontSize: 20),
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () async {
+                Navigator.pop(context);
+                final result = await Permission.notification.request();
+                if (result.isGranted) {
+                  _versionTest();
+                } else {
+                  // 如果用戶拒絕，引導他們去設定頁面
+                  _showSettingsDialog();
+                }
+              },
+              child: const Text(
+                '開啟通知',
+                style: TextStyle(fontSize: 20),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showSettingsDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text(
+            '需要通知權限',
+            style: TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: const Text(
+            '請在設定中啟用通知權限，以便順利使用本應用程式的完整功能。',
+            style: TextStyle(fontSize: 23),
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () async {
+                await openAppSettings();
+                // 等待用戶從設定頁面返回
+                if (mounted) {
+                  Navigator.pop(context);
+                  // 重新檢查權限
+                  _checkNotificationPermission();
+                }
+              },
+              child: const Text(
+                '前往設定',
+                style: TextStyle(fontSize: 20),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void _versionTest() async {
     final versionStatus = await _getVersionStatus();
 
@@ -79,7 +172,8 @@ class _SplashPageState extends State<SplashPage> {
       return;
     }
 
-    final String? skippedVersion = await SharedPreferencesService().getData(StorageKeys.skipUpdateVersion);
+    final String? skippedVersion =
+        await SharedPreferencesService().getData(StorageKeys.skipUpdateVersion);
     if (skippedVersion == versionStatus["storeVersion"]) {
       _checkLoginStatus();
       return;
@@ -92,8 +186,9 @@ class _SplashPageState extends State<SplashPage> {
       final x = handleHttpResponses(context, response, "取得APP最低版本限制時發生錯誤");
       final String? minimum_version = Platform.isIOS ? x["iOS"] : x["Android"];
 
-      if(minimum_version != null){
-        forceUpdate = _compareVersion(minimum_version, versionStatus["localVersion"]) > 0;
+      if (minimum_version != null) {
+        forceUpdate =
+            _compareVersion(minimum_version, versionStatus["localVersion"]) > 0;
       }
       _showUpdateDialog(versionStatus);
     } else {
@@ -123,7 +218,8 @@ class _SplashPageState extends State<SplashPage> {
             "appStoreLink": jsonResponse['results'][0]['trackViewUrl'],
           };
         } else {
-          final regex = RegExp(r'\[\[\[\"(\d+\.\d+(\.[a-z]+)?(\.[^"]*)?)\"\]\]');
+          final regex =
+              RegExp(r'\[\[\[\"(\d+\.\d+(\.[a-z]+)?(\.[^"]*)?)\"\]\]');
           final storeVersion = regex.firstMatch(response.body)?.group(1);
           return storeVersion != null
               ? {
@@ -148,7 +244,12 @@ class _SplashPageState extends State<SplashPage> {
       builder: (BuildContext context) {
         return AlertDialog(
           actionsAlignment: MainAxisAlignment.center,
-          title: Center(child: Text("發現新版本 ${versionStatus['storeVersion']}", style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 30))),
+          title: Center(
+              child: Text("發現新版本 ${versionStatus['storeVersion']}",
+                  style: const TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 30))),
           content: Text(
             forceUpdate
                 ? "目前版本已不再支援，為了您的資料安全與APP穩定性，請立即更新至最新版本。"
@@ -162,19 +263,26 @@ class _SplashPageState extends State<SplashPage> {
                   width: double.infinity,
                   height: 50,
                   child: ElevatedButton(
-                    child: const Text("前往更新", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                    child: const Text("前往更新",
+                        style: TextStyle(
+                            fontSize: 24, fontWeight: FontWeight.bold)),
                     onPressed: () {
                       _launchUrl(versionStatus['appStoreLink']);
                     },
                   ),
                 ),
                 TextButton(
-                  onPressed: forceUpdate ? null : () async {
-                    await SharedPreferencesService().saveData(StorageKeys.skipUpdateVersion, versionStatus["storeVersion"]);
-                    Navigator.pop(context);
-                    _checkLoginStatus();
-                  },
-                  child: Text(forceUpdate ? "無法跳過本次更新" : "跳過本次更新",style: const TextStyle(fontSize: 18, color: Colors.grey)),
+                  onPressed: forceUpdate
+                      ? null
+                      : () async {
+                          await SharedPreferencesService().saveData(
+                              StorageKeys.skipUpdateVersion,
+                              versionStatus["storeVersion"]);
+                          Navigator.pop(context);
+                          _checkLoginStatus();
+                        },
+                  child: Text(forceUpdate ? "無法跳過本次更新" : "跳過本次更新",
+                      style: const TextStyle(fontSize: 18, color: Colors.grey)),
                 ),
               ],
             )
@@ -189,8 +297,10 @@ class _SplashPageState extends State<SplashPage> {
     List<String> v2Components = version2.split('.');
 
     for (int i = 0; i < v1Components.length || i < v2Components.length; i++) {
-      int v1Component = i < v1Components.length ? int.parse(v1Components[i]) : 0;
-      int v2Component = i < v2Components.length ? int.parse(v2Components[i]) : 0;
+      int v1Component =
+          i < v1Components.length ? int.parse(v1Components[i]) : 0;
+      int v2Component =
+          i < v2Components.length ? int.parse(v2Components[i]) : 0;
       if (v1Component > v2Component) {
         return 1;
       } else if (v1Component < v2Component) {
@@ -217,12 +327,12 @@ class _SplashPageState extends State<SplashPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              padding: const EdgeInsets.all(16),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                shape: BoxShape.circle,
-              ),
-              child: Image.asset("assets/logo.png")),
+                padding: const EdgeInsets.all(16),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
+                ),
+                child: Image.asset("assets/logo.png")),
           ],
         ),
       ),

@@ -6,6 +6,11 @@ enum StorageKeys {
   checkinDates,
   skipUpdateVersion,
   oauthBindingList,
+  alarms,
+  medicinePresets,
+  activityPresets,
+  waterPresets,
+  restPresets,
 }
 
 const Map<StorageKeys, String> storageKeysMap = {
@@ -14,6 +19,11 @@ const Map<StorageKeys, String> storageKeysMap = {
   StorageKeys.checkinDates: 'checkin_dates',
   StorageKeys.skipUpdateVersion: 'skip_update_version',
   StorageKeys.oauthBindingList: 'oauth_binding_list',
+  StorageKeys.alarms: 'alarms',
+  StorageKeys.medicinePresets: 'medicine_presets',
+  StorageKeys.activityPresets: 'activity_presets',
+  StorageKeys.waterPresets: 'water_presets',
+  StorageKeys.restPresets: 'rest_presets',
 };
 
 extension StorageKeysExtension on StorageKeys {
@@ -43,13 +53,14 @@ class SharedPreferencesService {
   Future<void> clearAllData() async {
     final prefs = await SharedPreferences.getInstance();
 
-    final String? skipUpdateVersion = prefs.getString(StorageKeys.skipUpdateVersion.key);
+    final String? skipUpdateVersion =
+        prefs.getString(StorageKeys.skipUpdateVersion.key);
 
     await prefs.clear();
 
     if (skipUpdateVersion != null) {
-      await prefs.setString(StorageKeys.skipUpdateVersion.key, skipUpdateVersion);
+      await prefs.setString(
+          StorageKeys.skipUpdateVersion.key, skipUpdateVersion);
     }
   }
-
 }
