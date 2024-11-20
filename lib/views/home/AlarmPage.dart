@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:usrcare/utils/AlarmNotificationService.dart';
 import 'package:usrcare/widgets/Dialog.dart';
@@ -820,25 +821,44 @@ class _AlarmSettingDialogState extends State<_AlarmSettingDialog> {
                       InkWell(
                         onTap: () async {
                           FocusScope.of(context).unfocus();
-                          final TimeOfDay? time = await showTimePicker(
+                          TimeOfDay selectedTime = _selectedTime;
+                          await showModalBottomSheet(
                             context: context,
-                            initialTime: _selectedTime,
-                            builder: (context, child) {
-                              return Theme(
-                                data: Theme.of(context).copyWith(
-                                  textTheme: const TextTheme(
-                                    bodyLarge: TextStyle(fontSize: 24),
-                                  ),
+                            isScrollControlled: true,
+                            backgroundColor: Colors.transparent,
+                            builder: (BuildContext context) {
+                              DateTime initialDateTime = DateTime(
+                                0,
+                                0,
+                                0,
+                                _selectedTime.hour,
+                                _selectedTime.minute,
+                              );
+                              return Container(
+                                height: MediaQuery.of(context).size.height * 0.4,
+                                decoration: const BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
                                 ),
-                                child: child!,
+                                child: CupertinoDatePicker(
+                                  mode: CupertinoDatePickerMode.time,
+                                  initialDateTime: initialDateTime,
+                                  use24hFormat: true,
+                                  itemExtent: 38,
+                                  onDateTimeChanged: (DateTime newDateTime) {
+                                    selectedTime = TimeOfDay(
+                                      hour: newDateTime.hour,
+                                      minute: newDateTime.minute,
+                                    );
+                                  },
+                                ),
                               );
                             },
-                          );
-                          if (time != null) {
+                          ).then((_) {
                             setState(() {
-                              _selectedTime = time;
+                              _selectedTime = selectedTime;
                             });
-                          }
+                          });
                         },
                         child: Container(
                           padding: const EdgeInsets.all(16),
@@ -858,6 +878,8 @@ class _AlarmSettingDialogState extends State<_AlarmSettingDialog> {
                           ),
                         ),
                       ),
+
+
                       const SizedBox(height: 24),
                       const Text(
                         '重複',
@@ -918,7 +940,7 @@ class _AlarmSettingDialogState extends State<_AlarmSettingDialog> {
                               ),
                               onPressed: _showDeleteConfirmDialog,
                               child: const Text(
-                                '刪除醒',
+                                '刪除提醒',
                                 style: TextStyle(
                                   fontSize: 24,
                                   color: Colors.white,

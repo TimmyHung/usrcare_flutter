@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:usrcare/api/APIService.dart';
-import 'package:usrcare/strings.dart';
 import 'package:usrcare/utils/MiscUtil.dart';
 import 'package:usrcare/utils/SharedPreference.dart';
 import 'package:usrcare/widgets/Dialog.dart';
@@ -348,9 +347,6 @@ class _PasswordResetPageState extends State<PasswordResetPage> {
 
   @override
   Widget build(BuildContext context) {
-    List users = ModalRoute.of(context)?.settings.arguments as List;
-    print(users);
-
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Stack(

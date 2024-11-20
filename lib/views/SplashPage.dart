@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -19,23 +18,106 @@ class SplashPage extends StatefulWidget {
   _SplashPageState createState() => _SplashPageState();
 }
 
-class _SplashPageState extends State<SplashPage> {
+class _SplashPageState extends State<SplashPage> with WidgetsBindingObserver {
   final DeepLinkService _deepLinkService = DeepLinkService();
   bool forceUpdate = false;
   late String userToken;
   late String userName;
+  bool _isDialogShowing = false;
+  PermissionStatus _previousNotificationStatus = PermissionStatus.denied;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _deepLinkService.init(context);
-    _checkNotificationPermission();
+    _checkAndRequestNotificationPermission();
+    // Initialize _previousNotificationStatus
+    Permission.notification.status.then((status) {
+      _previousNotificationStatus = status;
+    });
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _deepLinkService.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.resumed) {
+      final status = await Permission.notification.status;
+      if (status.isGranted) {
+        if (_isDialogShowing) {
+          Navigator.of(context, rootNavigator: true).pop();
+          _isDialogShowing = false;
+        }
+        if (_previousNotificationStatus != PermissionStatus.granted) {
+          // Notification permission has just been granted
+          _versionTest();
+        }
+      } else {
+        if (!_isDialogShowing) {
+          _showNotificationPermissionDialog();
+        }
+      }
+      _previousNotificationStatus = status;
+    }
+  }
+
+  Future<void> _checkAndRequestNotificationPermission() async {
+    final status = await Permission.notification.status;
+
+    if (status.isGranted) {
+      _versionTest();
+    } else {
+      _showNotificationPermissionDialog();
+    }
+  }
+
+  void _showNotificationPermissionDialog() {
+    if (_isDialogShowing) return; // Avoid showing the dialog multiple times
+    _isDialogShowing = true;
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          actionsAlignment: MainAxisAlignment.center,
+          title: const Text(
+            '需要通知權限',
+            style: TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: const Text(
+            '為了提供您最好的服務體驗，我們需要通知權限來發送重要的提醒，請在設定中啟用通知權限。',
+            style: TextStyle(fontSize: 24),
+          ),
+          actions: [
+            SizedBox(
+              width: double.infinity,
+              height: 50,
+              child: ElevatedButton(
+                onPressed: () async {
+                  await openAppSettings();
+                },
+                child: const Text(
+                  '前往設定',
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    ).then((_) {
+      _isDialogShowing = false;
+    });
   }
 
   Future<void> _checkLoginStatus() async {
@@ -61,8 +143,10 @@ class _SplashPageState extends State<SplashPage> {
     var x = handleHttpResponses(context, response, null);
 
     if (x != null) {
-      Navigator.pushReplacementNamed(context, "/home",
-          arguments: {"token": userToken, "name": userName});
+      if (ModalRoute.of(context)?.settings.name != '/home') {
+        Navigator.pushReplacementNamed(context, "/home",
+            arguments: {"token": userToken, "name": userName});
+      }
     } else {
       await SharedPreferencesService().clearAllData();
       Navigator.pushNamed(context, "/welcome");
@@ -73,95 +157,6 @@ class _SplashPageState extends State<SplashPage> {
         closeButton: true,
       );
     }
-  }
-
-  Future<void> _checkNotificationPermission() async {
-    final status = await Permission.notification.status;
-
-    if (status.isGranted) {
-      _versionTest();
-    } else {
-      _showNotificationPermissionDialog();
-    }
-  }
-
-  void _showNotificationPermissionDialog() {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text(
-            '需要通知權限',
-            style: TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          content: const Text(
-            '為了提供您最好的服務體驗，我們需要通知權限來發送重要的提醒。',
-            style: TextStyle(fontSize: 20),
-          ),
-          actions: [
-            ElevatedButton(
-              onPressed: () async {
-                Navigator.pop(context);
-                final result = await Permission.notification.request();
-                if (result.isGranted) {
-                  _versionTest();
-                } else {
-                  // 如果用戶拒絕，引導他們去設定頁面
-                  _showSettingsDialog();
-                }
-              },
-              child: const Text(
-                '開啟通知',
-                style: TextStyle(fontSize: 20),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _showSettingsDialog() {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text(
-            '需要通知權限',
-            style: TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          content: const Text(
-            '請在設定中啟用通知權限，以便順利使用本應用程式的完整功能。',
-            style: TextStyle(fontSize: 23),
-          ),
-          actions: [
-            ElevatedButton(
-              onPressed: () async {
-                await openAppSettings();
-                // 等待用戶從設定頁面返回
-                if (mounted) {
-                  Navigator.pop(context);
-                  // 重新檢查權限
-                  _checkNotificationPermission();
-                }
-              },
-              child: const Text(
-                '前往設定',
-                style: TextStyle(fontSize: 20),
-              ),
-            ),
-          ],
-        );
-      },
-    );
   }
 
   void _versionTest() async {
@@ -297,10 +292,8 @@ class _SplashPageState extends State<SplashPage> {
     List<String> v2Components = version2.split('.');
 
     for (int i = 0; i < v1Components.length || i < v2Components.length; i++) {
-      int v1Component =
-          i < v1Components.length ? int.parse(v1Components[i]) : 0;
-      int v2Component =
-          i < v2Components.length ? int.parse(v2Components[i]) : 0;
+      int v1Component = i < v1Components.length ? int.parse(v1Components[i]) : 0;
+      int v2Component = i < v2Components.length ? int.parse(v2Components[i]) : 0;
       if (v1Component > v2Component) {
         return 1;
       } else if (v1Component < v2Component) {
