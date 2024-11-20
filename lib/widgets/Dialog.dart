@@ -38,12 +38,14 @@ void showCustomDialog(BuildContext context, dynamic title, dynamic message,
                                 color: Colors.black,
                                 fontWeight: FontWeight.bold))),
                   ),
-                  if (closeButton != null && closeButton)
+                  if (closeButton != null && closeButton) ...[
+                    const SizedBox(width: 10),
                     ElevatedButton(
                         onPressed: () {
                           Navigator.pop(context);
                         },
                         child: const Text("X"))
+                  ]
                 ],
               )
             : title,

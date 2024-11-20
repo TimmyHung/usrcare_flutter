@@ -117,8 +117,7 @@ class _HomePageState extends State<HomePage> {
         [pointsResponse, vocabularyResponse, historyStoryResponse]);
 
     final pointsData = handleHttpResponses(context, results[0], "取得用戶金幣時發生錯誤");
-    final vocabularyData =
-        handleHttpResponses(context, results[1], "取得每日單字時發生錯誤");
+    final vocabularyData = handleHttpResponses(context, results[1], "取得每日單字時發生錯誤");
     final historyStoryData = handleHttpResponses(context, results[2], null);
     setState(() {
       points = pointsData["points"].toString();
@@ -290,7 +289,9 @@ class _HomePageState extends State<HomePage> {
                     CustomButton(
                       text: '',
                       type: ButtonType.circular,
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pushNamed(context, "/notification");
+                      },
                       icon: const Icon(Icons.notifications_outlined),
                     ),
                     const SizedBox(width: 5),
@@ -642,8 +643,8 @@ class _HomePageState extends State<HomePage> {
                     Text(history_story[3]),
                   ],
                   Text(history_story[1], style: const TextStyle(fontSize: 25)),
-                  const SizedBox(height: 30),
-                  Text(history_story[2], style: const TextStyle(fontSize: 25)),
+                  // const SizedBox(height: 10),
+                  _buildClickableText(history_story[2]),
                 ],
               ),
             ),
@@ -677,6 +678,44 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildClickableText(String text) {
+    final urlPattern = RegExp(r'https?://\S+$');
+    final match = urlPattern.firstMatch(text);
+
+    if (match == null) {
+      return Text(text, style: const TextStyle(fontSize: 25));
+    }
+
+    final url = match.group(0)!;
+    final textWithoutUrl = text.substring(0, match.start);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(textWithoutUrl, style: const TextStyle(fontSize: 25)),
+        const SizedBox(height: 10),
+        SizedBox(
+          width: double.infinity,
+          height: 50,
+          child: ElevatedButton(
+            onPressed: () => launchExternalUrl(url),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: ColorUtil.primary,
+              side: const BorderSide(color: Colors.grey),
+            ),
+            child: const Text(
+              "資料來源",
+              style: TextStyle(
+                fontSize: 26,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 

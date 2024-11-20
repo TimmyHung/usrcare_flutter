@@ -15,6 +15,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:usrcare/views/WelcomePage.dart';
 import 'package:usrcare/views/home/MoodPage.dart';
 import 'package:usrcare/views/home/AlarmPage.dart';
+import 'package:usrcare/views/home/NotificationPage.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -50,13 +51,12 @@ class _MyAppState extends State<MyApp> {
         '/register/AccountSetup': (context) => const AccountSetupPage(),
         '/register/InfoSetup': (context) => const InfoSetupPage(),
         '/login': (context) => const LoginPage(),
-        '/login/pwdRecovery': (context) => const PasswordRecoveryPage(),
-        '/login/pwdReset': (context) => const PasswordResetPage(),
         '/home': (context) => const HomePage(),
-        // '/setting': (context) => const SettingPage(),
-        // '/game': (context) => const GamePage(),
+        '/notification': (context) => const NotificationPage(),
         '/mood': (context) => const MoodPage(),
         '/alarm': (context) => const AlarmPage(),
+        // '/setting': (context) => const SettingPage(),
+        // '/game': (context) => const GamePage(),
         // '/checkin': (context) => const CheckInPage(),
       },
       supportedLocales: const [

@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:usrcare/api/APIService.dart';
-import 'package:usrcare/utils/ColorUtil.dart';
 import 'package:usrcare/utils/MiscUtil.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 

@@ -12,6 +12,8 @@ class CustomTextField extends StatelessWidget {
   final Color? suffixIconColor;
   final TextEditingController? controller;
   final String? errorText;
+  final String? placeholder;
+  final bool enabled;
 
   const CustomTextField({
     super.key,
@@ -24,6 +26,8 @@ class CustomTextField extends StatelessWidget {
     this.suffixIconColor,
     this.controller,
     this.errorText,
+    this.placeholder,
+    this.enabled = true,
   });
 
   @override
@@ -54,12 +58,14 @@ class CustomTextField extends StatelessWidget {
           obscureText: obscureText,
           style: Theme.of(context).textTheme.bodySmall,
           onChanged: onChanged,
+          enabled: enabled,
           decoration: InputDecoration(
             filled: true,
             fillColor: Colors.white,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
             ),
+            hintText: placeholder,
             errorText: errorText,
             errorStyle: const TextStyle(color: Colors.red, fontSize: 20),
             suffixIcon: suffixIcon != null

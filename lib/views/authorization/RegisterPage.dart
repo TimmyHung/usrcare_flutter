@@ -456,12 +456,6 @@ class _InfoSetupPageState extends State<InfoSetupPage> {
     }
   }
 
-  String generateSalt() {
-    //生成64字元的鹽巴
-    final bytes = List<int>.generate(64, (i) => i + 1);
-    return base64Url.encode(bytes);
-  }
-
   void _validateName(String value) {
     setState(() {
       _nameError = value.isEmpty ? '姓名不能為空' : null;

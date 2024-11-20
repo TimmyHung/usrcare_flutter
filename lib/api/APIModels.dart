@@ -85,8 +85,8 @@ class PasswordReset {
 
   Map<String, dynamic> toJson() {
     return {
-      'otp': otp,
-      'newPassword': newPassword,
+      'OTP': otp,
+      'new_password': newPassword,
       'salt': salt,
     };
   }

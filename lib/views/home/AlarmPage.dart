@@ -472,7 +472,6 @@ class _AlarmSettingDialog extends StatefulWidget {
   final String alarmType;
   final Function(AlarmItem) onSave;
   final Function()? onDelete;
-  final Function(AlarmItem)? onAddOrUpdate;
   final AlarmItem? initialAlarm;
 
   const _AlarmSettingDialog({
@@ -480,7 +479,6 @@ class _AlarmSettingDialog extends StatefulWidget {
     required this.alarmType,
     required this.onSave,
     this.onDelete,
-    this.onAddOrUpdate,
     this.initialAlarm,
   });
 
@@ -835,10 +833,12 @@ class _AlarmSettingDialogState extends State<_AlarmSettingDialog> {
                                 _selectedTime.minute,
                               );
                               return Container(
-                                height: MediaQuery.of(context).size.height * 0.4,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.4,
                                 decoration: const BoxDecoration(
                                   color: Colors.white,
-                                  borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                                  borderRadius: BorderRadius.vertical(
+                                      top: Radius.circular(20)),
                                 ),
                                 child: CupertinoDatePicker(
                                   mode: CupertinoDatePickerMode.time,
@@ -878,8 +878,6 @@ class _AlarmSettingDialogState extends State<_AlarmSettingDialog> {
                           ),
                         ),
                       ),
-
-
                       const SizedBox(height: 24),
                       const Text(
                         '重複',

@@ -152,7 +152,7 @@ class _MoodPageState extends State<MoodPage> {
                               if (questionsData[0] != null &&
                                   !questionsData[0]!['available'])
                                 Padding(
-                                  padding: EdgeInsets.only(left: 10),
+                                  padding: const EdgeInsets.only(left: 10),
                                   child: Icon(
                                     Icons.access_time,
                                     color: Colors.grey[800],
@@ -190,7 +190,7 @@ class _MoodPageState extends State<MoodPage> {
                               if (questionsData[1] != null &&
                                   !questionsData[1]!['available'])
                                 Padding(
-                                  padding: EdgeInsets.only(left: 10),
+                                  padding: const EdgeInsets.only(left: 10),
                                   child: Icon(
                                     Icons.access_time,
                                     color: Colors.grey[800],
