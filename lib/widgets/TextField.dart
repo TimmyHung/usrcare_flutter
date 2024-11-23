@@ -63,7 +63,7 @@ class CustomTextField extends StatelessWidget {
             filled: true,
             fillColor: Colors.white,
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(12),
             ),
             hintText: placeholder,
             errorText: errorText,

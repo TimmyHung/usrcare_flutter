@@ -120,7 +120,7 @@ class _ExerciseResultPageState extends State<ExerciseResultPage> with WidgetsBin
           decoration: BoxDecoration(
             color: Colors.white,
             border: Border.all(color: borderColor, width: 3),
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(12),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -234,7 +234,7 @@ class _ExerciseResultPageState extends State<ExerciseResultPage> with WidgetsBin
                                 padding: const EdgeInsets.all(12),
                                 decoration: BoxDecoration(
                                   color: Colors.orange.withOpacity(0.1),
-                                  borderRadius: BorderRadius.circular(8),
+                                  borderRadius: BorderRadius.circular(12),
                                   border: Border.all(color: Colors.orange),
                                 ),
                                 child: const Row(
@@ -287,7 +287,7 @@ class _ExerciseResultPageState extends State<ExerciseResultPage> with WidgetsBin
                                         color: isNearExpiry 
                                             ? Colors.red.withOpacity(0.1)
                                             : Colors.grey.withOpacity(0.1),
-                                        borderRadius: BorderRadius.circular(8),
+                                        borderRadius: BorderRadius.circular(12),
                                         border: Border.all(
                                           color: isNearExpiry ? Colors.red : Colors.grey,
                                         ),
@@ -352,7 +352,7 @@ class _ExerciseResultPageState extends State<ExerciseResultPage> with WidgetsBin
                                         vertical: 12,
                                       ),
                                       shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(8),
+                                        borderRadius: BorderRadius.circular(12),
                                       ),
                                     ),
                                     icon: const Icon(Icons.download, color: Colors.white, size: 24),
@@ -393,7 +393,7 @@ class _ExerciseResultPageState extends State<ExerciseResultPage> with WidgetsBin
             builder: (context, setDialogState) {
               return Dialog(
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 child: Container(
                   decoration: BoxDecoration(
@@ -436,7 +436,7 @@ class _ExerciseResultPageState extends State<ExerciseResultPage> with WidgetsBin
                             height: 8,
                             decoration: BoxDecoration(
                               color: Colors.grey[200],
-                              borderRadius: BorderRadius.circular(4),
+                              borderRadius: BorderRadius.circular(12),
                             ),
                           ),
                           Container(
@@ -444,7 +444,7 @@ class _ExerciseResultPageState extends State<ExerciseResultPage> with WidgetsBin
                             width: MediaQuery.of(context).size.width * progress,
                             decoration: BoxDecoration(
                               color: ColorUtil.primary,
-                              borderRadius: BorderRadius.circular(4),
+                              borderRadius: BorderRadius.circular(12),
                             ),
                           ),
                         ],
@@ -635,6 +635,7 @@ class _ExerciseVideoWidgetState extends State<ExerciseVideoWidget> {
     }
 
     return Container(
+      height: 250,
       decoration: BoxDecoration(
         color: Colors.grey[200],
         border: Border.symmetric(horizontal: BorderSide(color: Colors.grey[400]!, width: 1)),

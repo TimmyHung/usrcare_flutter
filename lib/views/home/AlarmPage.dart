@@ -205,7 +205,7 @@ class _AlarmPageState extends State<AlarmPage> {
           decoration: BoxDecoration(
             color: Colors.white,
             border: Border.all(color: borderColor, width: 3),
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(12),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -252,7 +252,7 @@ class _AlarmPageState extends State<AlarmPage> {
         decoration: BoxDecoration(
           color: Colors.white,
           border: Border.all(color: borderColor, width: 3),
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: BorderRadius.circular(12),
         ),
         width: double.infinity,
         height: 80,
@@ -372,7 +372,7 @@ class _AlarmDetailPageState extends State<_AlarmDetailPage> {
           decoration: BoxDecoration(
             color: Colors.white,
             border: Border.all(color: widget.borderColor, width: 3),
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(12),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -423,7 +423,7 @@ class _AlarmDetailPageState extends State<_AlarmDetailPage> {
                   child: Card(
                     margin: const EdgeInsets.only(bottom: 8),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
+                      borderRadius: BorderRadius.circular(12),
                       side: BorderSide(color: widget.borderColor, width: 2),
                     ),
                     child: Padding(
@@ -788,9 +788,11 @@ class _AlarmSettingDialogState extends State<_AlarmSettingDialog> {
                               controller: _nameController,
                               focusNode: _nameFocusNode,
                               style: const TextStyle(fontSize: 24),
-                              decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
-                                contentPadding: EdgeInsets.symmetric(
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12.0)
+                                ),
+                                contentPadding: const EdgeInsets.symmetric(
                                   horizontal: 16,
                                   vertical: 12,
                                 ),
@@ -802,7 +804,7 @@ class _AlarmSettingDialogState extends State<_AlarmSettingDialog> {
                             icon: const Icon(Icons.edit),
                             label: const Text(
                               '選擇',
-                              style: TextStyle(fontSize: 20),
+                              style: TextStyle(fontSize: 24),
                             ),
                             onPressed: _showPresetsDialog,
                             style: ElevatedButton.styleFrom(
@@ -871,7 +873,7 @@ class _AlarmSettingDialogState extends State<_AlarmSettingDialog> {
                           padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
                             border: Border.all(color: Colors.grey),
-                            borderRadius: BorderRadius.circular(4),
+                            borderRadius: BorderRadius.circular(12),
                           ),
                           child: Row(
                             children: [
@@ -909,7 +911,7 @@ class _AlarmSettingDialogState extends State<_AlarmSettingDialog> {
                                     ? Colors.white
                                     : Colors.black,
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(22.5),
+                                  borderRadius: BorderRadius.circular(12),
                                   side: BorderSide(
                                     color: widget.borderColor,
                                     width: 2,
@@ -940,7 +942,7 @@ class _AlarmSettingDialogState extends State<_AlarmSettingDialog> {
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: const Color(0xFFD32F2F),
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
+                                  borderRadius: BorderRadius.circular(12),
                                 ),
                               ),
                               onPressed: _showDeleteConfirmDialog,

@@ -35,7 +35,7 @@ class _FAQPageState extends State<FAQPage> {
               child: Container(
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.black),
-                  borderRadius: BorderRadius.circular(8.0),
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Padding(
                   padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 20.0),
@@ -73,7 +73,7 @@ Widget build(BuildContext context) {
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(15),
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 child: ListTile(
                   title: Padding(

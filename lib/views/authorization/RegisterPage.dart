@@ -73,7 +73,7 @@ class _RegisterPageState extends State<RegisterPage> {
           Container(
             width: MediaQuery.of(context).size.width,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(12),
             ),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 80),
@@ -570,7 +570,7 @@ class _InfoSetupPageState extends State<InfoSetupPage> {
                                 errorStyle: const TextStyle(color: Colors.red, fontSize: 20),
                                 errorText: _birthdayError,
                                 border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
+                                  borderRadius: BorderRadius.circular(12),
                                 ),
                               ),
                               onChanged: _validateBirthday,

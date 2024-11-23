@@ -51,7 +51,7 @@ class CustomDropdownButton extends StatelessWidget {
             buttonStyleData: ButtonStyleData(
               height: 60,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(12),
                 border: Border.all(
                   color: Colors.black54,
                 ),
@@ -68,7 +68,7 @@ class CustomDropdownButton extends StatelessWidget {
             dropdownStyleData: DropdownStyleData(
               maxHeight: 300,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(12),
                 color: Colors.white,
               ),
             ),

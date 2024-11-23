@@ -365,7 +365,7 @@ class _PasswordResetPageState extends State<PasswordResetPage> {
           Container(
             width: MediaQuery.of(context).size.width,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(12),
             ),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 80),

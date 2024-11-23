@@ -30,7 +30,7 @@ class _CheckInPageState extends State<CheckInPage> {
           decoration: BoxDecoration(
             color: Colors.white,
             border: Border.all(color: Colors.red, width: 3),
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(12),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -51,7 +51,7 @@ class _CheckInPageState extends State<CheckInPage> {
               padding: const EdgeInsets.all(16.0),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(10.0),
+                borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: Colors.black38)
               ),
               child: TableCalendar(

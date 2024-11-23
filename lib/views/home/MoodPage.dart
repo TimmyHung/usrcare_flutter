@@ -103,7 +103,7 @@ class _MoodPageState extends State<MoodPage> {
               color: Colors.white,
               border: Border.all(
                   color: const Color.fromARGB(255, 202, 0, 109), width: 3),
-              borderRadius: BorderRadius.circular(15),
+              borderRadius: BorderRadius.circular(12),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -137,7 +137,7 @@ class _MoodPageState extends State<MoodPage> {
                             border: Border.all(
                                 color: const Color.fromARGB(255, 202, 0, 109),
                                 width: 3),
-                            borderRadius: BorderRadius.circular(15),
+                            borderRadius: BorderRadius.circular(12),
                           ),
                           width: double.infinity,
                           height: 80,
@@ -175,7 +175,7 @@ class _MoodPageState extends State<MoodPage> {
                             border: Border.all(
                                 color: const Color.fromARGB(255, 202, 0, 109),
                                 width: 3),
-                            borderRadius: BorderRadius.circular(15),
+                            borderRadius: BorderRadius.circular(12),
                           ),
                           width: double.infinity,
                           height: 80,
@@ -226,7 +226,7 @@ class _MoodPageState extends State<MoodPage> {
                           border: Border.all(
                               color: const Color.fromARGB(255, 202, 0, 109),
                               width: 3),
-                          borderRadius: BorderRadius.circular(15),
+                          borderRadius: BorderRadius.circular(12),
                         ),
                         width: double.infinity,
                         height: 80,
@@ -322,7 +322,7 @@ class _QuestionPageState extends State<QuestionPage> {
       builder: (BuildContext context) {
         return AlertDialog(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(12),
           ),
           title: const Row(
             children: [
@@ -343,7 +343,7 @@ class _QuestionPageState extends State<QuestionPage> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.orange,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(12),
                 ),
               ),
               child: const Text('確定', style: TextStyle(fontSize: 30)),
@@ -511,7 +511,7 @@ class ResultPage extends StatelessWidget {
             color: Colors.white,
             border: Border.all(
                 color: const Color.fromARGB(255, 202, 0, 109), width: 3),
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(12),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -687,7 +687,7 @@ class _TypeWriter_PageState extends State<TypeWriter_Page> {
       builder: (context) {
         return AlertDialog(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(12),
           ),
           content: SingleChildScrollView(
             child: Column(
@@ -781,7 +781,7 @@ class _TypeWriter_PageState extends State<TypeWriter_Page> {
             color: Colors.white,
             border: Border.all(
                 color: const Color.fromARGB(255, 202, 0, 109), width: 3),
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(12),
           ),
           child: const Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -809,7 +809,7 @@ class _TypeWriter_PageState extends State<TypeWriter_Page> {
               Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(15),
+                  borderRadius: BorderRadius.circular(12),
                   border: Border.all(color: Colors.black87),
                 ),
                 child: Column(
@@ -817,8 +817,7 @@ class _TypeWriter_PageState extends State<TypeWriter_Page> {
                   children: [
                     const Center(
                       child: Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 16.0, vertical: 8.0),
+                        padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                         child: Text(
                           "您現在心情怎麼樣呢？",
                           style: TextStyle(
@@ -872,28 +871,18 @@ class _TypeWriter_PageState extends State<TypeWriter_Page> {
                             String userInput = _textController.text.trim();
                             final DateTime rawDateTime = DateTime.now();
                             //將時間轉換為ISO8601格式
-                            final String creationTime_ISO8601 =
-                                DateFormat('yyyy-MM-ddTHH:mm:ss')
-                                    .format(rawDateTime);
-                            final String creationTime =
-                                '${DateFormat('EEE, dd MMM yyyy HH:mm:ss').format(rawDateTime)} GMT';
+                            final String creationTime_ISO8601 = DateFormat('yyyy-MM-ddTHH:mm:ss').format(rawDateTime);
+                            final String creationTime = '${DateFormat('EEE, dd MMM yyyy HH:mm:ss').format(rawDateTime)} GMT';
                             if (userInput.isEmpty) {
-                              showCustomDialog(context, "提示", "請先輸入您的心情內容再送出。",
-                                  closeButton: true);
+                              showCustomDialog(context, "提示", "請先輸入您的心情內容再送出。",closeButton: true);
                               return;
                             }
-                            var response = await widget.apiService
-                                .postTypewriter(
-                                    userInput, creationTime_ISO8601, context);
-                            var aiReply = handleHttpResponses(
-                                context, response, "無法取得心情打字機回應物件");
+                            var response = await widget.apiService.postTypewriter(userInput, creationTime_ISO8601, context);
+                            var aiReply = handleHttpResponses(context, response, "無法取得心情打字機回應物件");
                             final responseSuggestion = aiReply["suggestion"];
-                            _showResponseDetailDialog(
-                                context, userInput, responseSuggestion);
-                            // 清除使用者的輸入內容
+                            _showResponseDetailDialog(context, userInput, responseSuggestion);
                             _textController.clear();
 
-                            // 更新資料至歷史紀錄
                             var newRecord = {
                               "AI_reply": json.encode(aiReply),
                               "user_input": userInput,
@@ -906,15 +895,12 @@ class _TypeWriter_PageState extends State<TypeWriter_Page> {
                           },
                           child: Container(
                             decoration: BoxDecoration(
-                              border: Border.all(color: Colors.black),
-                              borderRadius: BorderRadius.circular(8.0),
+                              border: Border.all(color: Colors.black87),
+                              borderRadius: BorderRadius.circular(12),
                             ),
                             child: const Padding(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 8.0, horizontal: 20.0),
-                              child: Text("送出",
-                                  style: TextStyle(
-                                      fontSize: 22, color: Colors.black)),
+                              padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 20.0),
+                              child: Text("送出", style: TextStyle(fontSize: 22, color: Colors.black)),
                             ),
                           ),
                         )
@@ -945,21 +931,16 @@ class _TypeWriter_PageState extends State<TypeWriter_Page> {
                           )
                         : NotificationListener<ScrollNotification>(
                             onNotification: (ScrollNotification scrollInfo) {
-                              if (scrollInfo.metrics.pixels ==
-                                      scrollInfo.metrics.maxScrollExtent &&
-                                  !isLoadingMore) {
-                                _fetchMoodHistory(
-                                    isLoadMore: true); // 當滾動到列表底部時加載更多資料
+                              if (scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent && !isLoadingMore) {
+                                _fetchMoodHistory(isLoadMore: true); // 當滾動到列表底部時加載更多資料
                               }
                               return true;
                             },
                             child: ListView.builder(
                               controller: _scrollController,
-                              itemCount: moodHistory.length +
-                                  (hasMoreData ? 1 : 0), // 顯示更多加載標誌
+                              itemCount: moodHistory.length +(hasMoreData ? 1 : 0),
                               itemBuilder: (context, index) {
                                 if (index == moodHistory.length) {
-                                  // 加載更多的進度條
                                   return const Padding(
                                     padding: EdgeInsets.symmetric(vertical: 10),
                                     child: Center(
@@ -968,25 +949,18 @@ class _TypeWriter_PageState extends State<TypeWriter_Page> {
                                     )),
                                   );
                                 }
-
+                            
                                 var record = moodHistory[index];
                                 var userInput = record['user_input'] ?? '無心情內容';
                                 var aiReply = record['AI_reply'];
-                                var aiSuggestion = json
-                                        .decode(aiReply)['suggestion'] ??
-                                    (json.decode(aiReply)['message'] ?? '暫無建議');
-                                var formattedDate =
-                                    formatDate(record['start_time']);
-
+                                var aiSuggestion = json.decode(aiReply)['suggestion'] ??(json.decode(aiReply)['message'] ?? '暫無建議');
+                                var formattedDate =formatDate(record['start_time']);
+                            
                                 return GestureDetector(
-                                  onTap: () {
-                                    _showResponseDetailDialog(
-                                        context, userInput, aiSuggestion);
-                                  },
+                                  onTap: () => _showResponseDetailDialog(context, userInput, aiSuggestion),
                                   child: Card(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(15),
-                                    ),
+                                    margin: const EdgeInsets.only(top: 8),
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12),side: BorderSide(color: Colors.black),),
                                     child: ListTile(
                                       title: Text(
                                         userInput,

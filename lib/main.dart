@@ -90,13 +90,16 @@ final ThemeData appTheme = ThemeData(
         color: Colors.black, fontSize: 30, fontWeight: FontWeight.bold),
     centerTitle: true,
   ),
+  dialogTheme: DialogTheme(
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+  ),
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
       backgroundColor: ColorUtil.primary,
       foregroundColor: Colors.white,
       textStyle: const TextStyle(color: Colors.white, fontSize: 22),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15.0),
+        borderRadius: BorderRadius.circular(12.0),
       ),
     ),
   ),

@@ -190,7 +190,7 @@ class _SettingPageState extends State<SettingPage> {
                 child: Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   child: Consumer<OAuthBindingList_Provider>(
                     builder: (context, provider, child) {

@@ -59,7 +59,7 @@ class _GamePageState extends State<GamePage> {
           decoration: BoxDecoration(
             color: Colors.white,
             border: Border.all(color: const Color.fromARGB(255, 212, 152, 0), width: 3),
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(12),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -91,7 +91,7 @@ class _GamePageState extends State<GamePage> {
                   decoration: BoxDecoration(
                     color: Colors.white,
                     border: Border.all(color: const Color.fromARGB(255, 212, 152, 0), width: 3),
-                    borderRadius: BorderRadius.circular(15),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   width: double.infinity,
                   height: 80,
@@ -116,7 +116,7 @@ class _GamePageState extends State<GamePage> {
                   decoration: BoxDecoration(
                     color: Colors.white,
                     border: Border.all(color: const Color.fromARGB(255, 212, 152, 0), width: 3),
-                    borderRadius: BorderRadius.circular(15),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   width: double.infinity,
                   height: 80,
@@ -141,7 +141,7 @@ class _GamePageState extends State<GamePage> {
                   decoration: BoxDecoration(
                     color: Colors.white,
                     border: Border.all(color: const Color.fromARGB(255, 212, 152, 0), width: 3),
-                    borderRadius: BorderRadius.circular(15),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   width: double.infinity,
                   height: 80,
@@ -166,7 +166,7 @@ class _GamePageState extends State<GamePage> {
                   decoration: BoxDecoration(
                     color: Colors.white,
                     border: Border.all(color: const Color.fromARGB(255, 212, 152, 0), width: 3),
-                    borderRadius: BorderRadius.circular(15),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   width: double.infinity,
                   height: 80,
@@ -209,7 +209,7 @@ class WebGameScreen extends StatelessWidget {
           decoration: BoxDecoration(
             color: Colors.white,
             border: Border.all(color: const Color.fromARGB(255, 212, 152, 0), width: 3),
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(12),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,

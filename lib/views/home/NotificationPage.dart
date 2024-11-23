@@ -162,7 +162,7 @@ class _NotificationPageState extends State<NotificationPage> {
           decoration: BoxDecoration(
             color: Colors.white,
             border: Border.all(color: borderColor, width: 3),
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(12),
           ),
           child: const Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -279,7 +279,7 @@ class _NotificationPageState extends State<NotificationPage> {
                     minimumSize: const Size.fromHeight(50),
                     backgroundColor: const Color.fromARGB(255, 118, 129, 245),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                   ),
                   child: const Text(

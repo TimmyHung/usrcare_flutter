@@ -55,7 +55,7 @@ class EmailVerificationPage extends StatelessWidget {
           Container(
             width: MediaQuery.of(context).size.width,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(12),
             ),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 80),
@@ -91,7 +91,7 @@ class EmailVerificationPage extends StatelessWidget {
                     borderWidth: 2,
                     textStyle: const TextStyle(fontSize: 40),
                     margin: const EdgeInsets.only(right: 2.0),
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(12),
                     borderColor: ColorUtil.primary,
                     showFieldAsBox: true,
                     onSubmit: (String verificationCode) {

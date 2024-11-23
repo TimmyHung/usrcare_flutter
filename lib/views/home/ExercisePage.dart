@@ -13,7 +13,6 @@ import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 import 'dart:async';
 import 'package:usrcare/utils/SharedPreference.dart';
 import 'dart:io';
-import 'package:http/http.dart' as http;
 import 'package:video_player/video_player.dart';
 import 'package:chewie/chewie.dart';
 import 'package:usrcare/utils/PermissionUtil.dart';
@@ -188,14 +187,14 @@ class _ExercisePageState extends State<ExercisePage> with WidgetsBindingObserver
                 height: 200,
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey),
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
                     if (uint8list != null)
                       ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(12),
                         child: Image.memory(
                           uint8list,
                           fit: BoxFit.cover,
@@ -225,7 +224,7 @@ class _ExercisePageState extends State<ExercisePage> with WidgetsBindingObserver
                     Container(
                       decoration: BoxDecoration(
                         color: Colors.black.withOpacity(0.3),
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(12),
                       ),
                     ),
                     if (uint8list != null)
@@ -294,7 +293,7 @@ class _ExercisePageState extends State<ExercisePage> with WidgetsBindingObserver
 
         return AlertDialog(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(12),
           ),
           title: const Text(
             '運動攝影使用說明',
@@ -352,7 +351,7 @@ class _ExercisePageState extends State<ExercisePage> with WidgetsBindingObserver
                 style: ElevatedButton.styleFrom(
                   backgroundColor: ColorUtil.primary,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                 ),
                 onPressed: () async {
@@ -487,7 +486,7 @@ class _ExercisePageState extends State<ExercisePage> with WidgetsBindingObserver
           decoration: BoxDecoration(
             color: Colors.white,
             border: Border.all(color: borderColor, width: 3),
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(12),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -516,7 +515,7 @@ class _ExercisePageState extends State<ExercisePage> with WidgetsBindingObserver
               Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(15),
+                  borderRadius: BorderRadius.circular(12),
                   border: Border.all(
                     color: const Color.fromARGB(255, 64, 146, 206),
                     width: 2,
@@ -575,7 +574,7 @@ class _ExercisePageState extends State<ExercisePage> with WidgetsBindingObserver
                       color: Colors.white,
                       margin: const EdgeInsets.only(bottom: 10),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(12),
                         side: const BorderSide(
                           color: Colors.black,
                           width: 1,
