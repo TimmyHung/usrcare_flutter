@@ -48,6 +48,14 @@
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>需要相機權限來進行運動錄影</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>需要麥克風權限來錄製影片聲音</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>需要相簿權限來選擇影片</string>
+	<!-- <key>NSPhotoLibraryAddUsageDescription</key>
+	<string>需要相簿權限來儲存影片</string> -->
 	<key>NSRemindersUsageDescription</key>
 	<string>需要提醒權限來設定通知</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
@@ -66,10 +74,8 @@
 	<true/>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-	</array>
-	<key>UISupportedInterfaceOrientations~ipad</key>
-	<array>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
 	<key>UNAuthorizationOptionsAlert</key>

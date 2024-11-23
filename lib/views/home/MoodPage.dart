@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:usrcare/api/APIService.dart';
@@ -72,7 +71,7 @@ class _MoodPageState extends State<MoodPage> {
         int days_remaining = data['days_remaining'] ?? '未知日期';
 
         showCustomDialog(context, "請您再等等",
-            '感謝您已經完成「$sheet_name」量表的測驗。為了更精確地了解您的健康狀況，我們建議您在「$days_remaining天」後再進行一次測驗。這有助於我們追蹤您的情況，並確保能夠提供最合適的照護建議。如果您在此期間有任何疑慮或需要協助，請隨時與我們聯繫。',
+            '感謝您已經完成「$sheet_name」的測驗。為了更精確地了解您的健康狀況，我們建議您在「$days_remaining天」後再進行一次測驗。這有助於我們追蹤您的情況，並確保能夠提供最合適的照護建議。如果您在此期間有任何疑慮或需要協助，請隨時與我們聯繫。',
             closeButton: true);
       }
 
@@ -124,7 +123,7 @@ class _MoodPageState extends State<MoodPage> {
                 Expanded(
                   flex: 6,
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center, // 垂直置中
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       InkWell(
                         onTap: () => _navigateToQuestionPage(0, 'AD8 認知功能評估表'),

@@ -8,7 +8,7 @@ void showToast(BuildContext context, String msg, {int duration = 1500}) {
       duration: Duration(milliseconds: duration),
       behavior: SnackBarBehavior.floating,
       margin: const EdgeInsets.only(bottom: 55, left: 16, right: 16),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
       content: Text(
         msg,
         textAlign: TextAlign.center,
@@ -19,11 +19,12 @@ void showToast(BuildContext context, String msg, {int duration = 1500}) {
 }
 
 void showCustomDialog(BuildContext context, dynamic title, dynamic message,
-    {bool? closeButton}) {
+    {bool? closeButton = true}) {
   showDialog(
     context: context,
     builder: (context) {
       return AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
         backgroundColor: Colors.white,
         title: title is String
             ? Row(

@@ -11,6 +11,7 @@ enum StorageKeys {
   activityPresets,
   waterPresets,
   restPresets,
+  hideExerciseRecordingNotice,
 }
 
 const Map<StorageKeys, String> storageKeysMap = {
@@ -24,6 +25,7 @@ const Map<StorageKeys, String> storageKeysMap = {
   StorageKeys.activityPresets: 'activity_presets',
   StorageKeys.waterPresets: 'water_presets',
   StorageKeys.restPresets: 'rest_presets',
+  StorageKeys.hideExerciseRecordingNotice: 'hide_exercise_recording_notice',
 };
 
 extension StorageKeysExtension on StorageKeys {

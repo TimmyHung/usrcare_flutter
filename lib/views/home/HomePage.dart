@@ -13,6 +13,7 @@ import 'package:usrcare/utils/MiscUtil.dart';
 import 'package:usrcare/utils/SharedPreference.dart';
 import 'package:usrcare/views/home/CheckInPage.dart';
 import 'package:usrcare/views/home/GamePage.dart';
+import 'package:usrcare/views/home/ExercisePage.dart';
 import 'package:usrcare/views/setting/SettingPage.dart';
 import 'package:usrcare/widgets/Button.dart';
 import 'package:usrcare/widgets/Dialog.dart';
@@ -447,9 +448,15 @@ class _HomePageState extends State<HomePage> {
                                 "愛來運動",
                                 "assets/HomePage_Icons/sport.png",
                                 const Color.fromARGB(255, 0, 107, 185),
-                                2, () {
-                              showToast(context, "你不愛運動");
-                            }),
+                                2,
+                                () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const ExercisePage(),
+                                    ),
+                                  );
+                                }),
                             const SizedBox(width: 10),
                             _buildGridButton(
                                 "鬧鐘小提醒",
@@ -682,15 +689,16 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildClickableText(String text) {
+    final trimmedText = text.trimRight();
     final urlPattern = RegExp(r'https?://\S+$');
-    final match = urlPattern.firstMatch(text);
+    final match = urlPattern.firstMatch(trimmedText);
 
     if (match == null) {
-      return Text(text, style: const TextStyle(fontSize: 25));
+      return Text(trimmedText, style: const TextStyle(fontSize: 25));
     }
 
     final url = match.group(0)!;
-    final textWithoutUrl = text.substring(0, match.start);
+    final textWithoutUrl = trimmedText.substring(0, match.start);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

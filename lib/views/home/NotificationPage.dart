@@ -1,13 +1,8 @@
-import 'dart:convert';
 import 'dart:io' show Platform;
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:usrcare/utils/AlarmNotificationService.dart';
-import 'package:usrcare/utils/ColorUtil.dart';
 import 'package:usrcare/utils/MiscUtil.dart';
 import 'package:usrcare/widgets/Dialog.dart';
-import 'package:usrcare/utils/SharedPreference.dart';
 
 // 新增通知項目模型
 class NotificationItem {
@@ -15,9 +10,9 @@ class NotificationItem {
   final String title;
   final String content;
   final DateTime timestamp;
-  final String? actionType; // 可以用來定義點擊後的行為
-  final String? actionData; // 存放相關的數據
-  bool isRead; // 新增已讀狀態
+  final String? actionType;
+  final String? actionData;
+  bool isRead;
 
   NotificationItem({
     required this.id,
@@ -26,7 +21,7 @@ class NotificationItem {
     required this.timestamp,
     this.actionType,
     this.actionData,
-    this.isRead = false, // 預設為未讀
+    this.isRead = false,
   });
 }
 
@@ -174,7 +169,7 @@ class _NotificationPageState extends State<NotificationPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(Icons.notifications_outlined, size: 40),
-              SizedBox(width: 10),
+              SizedBox(width: 5),
               Text("系統通知")
             ],
           ),

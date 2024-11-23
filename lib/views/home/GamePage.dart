@@ -28,7 +28,7 @@ class _GamePageState extends State<GamePage> {
           String dataFromWeb = message.message;
           // print('接收到的遊戲數據: $dataFromWeb');
           final response = await widget.apiService.postGameRecord_WebBased(json.decode(dataFromWeb), context);
-          var x = handleHttpResponses(context, response, "上傳遊戲資料時發生錯誤");
+          handleHttpResponses(context, response, "上傳遊戲資料時發生錯誤");
         },
       );
     
@@ -65,8 +65,15 @@ class _GamePageState extends State<GamePage> {
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Image.asset("assets/HomePage_Icons/brain_game.png", height: 50),
-              const SizedBox(width: 10),
+              ClipRRect(
+                clipBehavior: Clip.hardEdge,
+                child: Image.asset(
+                  "assets/HomePage_Icons/brain_game.png",
+                  height: 50,
+                  width: 50,
+                  fit: BoxFit.cover,
+                ),
+              ),
               const Text("動腦小遊戲")
             ],
           ),
@@ -208,8 +215,15 @@ class WebGameScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Image.asset("assets/HomePage_Icons/brain_game.png", height: 50),
-              const SizedBox(width: 10),
+              ClipRRect(
+                clipBehavior: Clip.hardEdge,
+                child: Image.asset(
+                  "assets/HomePage_Icons/brain_game.png",
+                  height: 50,
+                  width: 50,
+                  fit: BoxFit.cover,
+                ),
+              ),
               const Text("動腦小遊戲")
             ],
           ),

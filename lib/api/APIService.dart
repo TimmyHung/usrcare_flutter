@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:intl/intl.dart';
 import 'package:usrcare/api/APIModels.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/material.dart';
@@ -39,8 +38,7 @@ class APIService {
   }
 
   // 註冊相關
-  Future<http.Response> checkEmail(String email, BuildContext context,
-      {bool showLoading = false}) async {
+  Future<http.Response> checkEmail(String email, BuildContext context, {bool showLoading = false}) async {
     if (showLoading) showLoadingDialog(context);
     final url = Uri.parse('$baseUrl/v1/registration/email/$email');
     try {
@@ -50,9 +48,7 @@ class APIService {
     }
   }
 
-  Future<http.Response> emailOtpVerification_RegisterONLY(
-      OTPRequest otpRequest, BuildContext context,
-      {bool showLoading = false}) async {
+  Future<http.Response> emailOtpVerification_RegisterONLY(OTPRequest otpRequest, BuildContext context, {bool showLoading = false}) async {
     if (showLoading) showLoadingDialog(context);
     final url = Uri.parse('$baseUrl/v1/registration/email');
     try {
@@ -63,8 +59,7 @@ class APIService {
     }
   }
 
-  Future<http.Response> checkUsername(String username, BuildContext context,
-      {bool showLoading = false}) async {
+  Future<http.Response> checkUsername(String username, BuildContext context, {bool showLoading = false}) async {
     if (showLoading) showLoadingDialog(context);
     final url = Uri.parse('$baseUrl/v1/registration/username/$username');
     try {
@@ -74,8 +69,7 @@ class APIService {
     }
   }
 
-  Future<http.Response> registerUser(User user, BuildContext context,
-      {bool showLoading = false}) async {
+  Future<http.Response> registerUser(User user, BuildContext context, {bool showLoading = false}) async {
     if (showLoading) showLoadingDialog(context);
     final url = Uri.parse('$baseUrl/v1/registration');
     try {
@@ -86,9 +80,7 @@ class APIService {
     }
   }
 
-  Future<http.Response> oauthRegister(
-      String oauthType, User user, BuildContext context,
-      {bool showLoading = false}) async {
+  Future<http.Response> oauthRegister(String oauthType, User user, BuildContext context, {bool showLoading = false}) async {
     if (showLoading) showLoadingDialog(context);
     final url = Uri.parse('$baseUrl/v1/registration/oauth/$oauthType');
     try {
@@ -100,8 +92,7 @@ class APIService {
   }
 
   // 登入相關
-  Future<http.Response> getSalt(String username, BuildContext context,
-      {bool showLoading = false}) async {
+  Future<http.Response> getSalt(String username, BuildContext context, {bool showLoading = false}) async {
     if (showLoading) showLoadingDialog(context);
     final url = Uri.parse('$baseUrl/v1/salt/$username');
     try {
@@ -111,9 +102,7 @@ class APIService {
     }
   }
 
-  Future<http.Response> oauthLogin(
-      String oauthType, Map<String, dynamic> credentials, BuildContext context,
-      {bool showLoading = true}) async {
+  Future<http.Response> oauthLogin(String oauthType, Map<String, dynamic> credentials, BuildContext context, {bool showLoading = true}) async {
     if (showLoading) showLoadingDialog(context);
     final url = Uri.parse('$baseUrl/v1/authentication/oauth/$oauthType');
     try {
@@ -124,9 +113,7 @@ class APIService {
     }
   }
 
-  Future<http.Response> authenticate(
-      Map<String, dynamic> credentials, BuildContext context,
-      {bool showLoading = false}) async {
+  Future<http.Response> authenticate(Map<String, dynamic> credentials, BuildContext context, {bool showLoading = false}) async {
     if (showLoading) showLoadingDialog(context);
     final url = Uri.parse('$baseUrl/v1/authentication');
     try {
@@ -137,8 +124,7 @@ class APIService {
     }
   }
 
-  Future<http.Response> validateToken(String version, BuildContext context,
-      {bool showLoading = false}) async {
+  Future<http.Response> validateToken(String version, BuildContext context, {bool showLoading = false}) async {
     if (showLoading) showLoadingDialog(context);
     final url = Uri.parse('$baseUrl/v1/token');
     try {
@@ -150,8 +136,7 @@ class APIService {
   }
 
   // OAuth綁定相關
-  Future<http.Response> oauthBindingList(BuildContext context,
-      {bool showLoading = false}) async {
+  Future<http.Response> oauthBindingList(BuildContext context, {bool showLoading = false}) async {
     if (showLoading) showLoadingDialog(context);
     final url = Uri.parse('$baseUrl/v1/oauth/binding/inquiry');
     try {
@@ -161,9 +146,7 @@ class APIService {
     }
   }
 
-  Future<http.Response> oauthBinding(
-      String oauthType, Map<String, dynamic> credentials, BuildContext context,
-      {bool showLoading = true}) async {
+  Future<http.Response> oauthBinding(String oauthType, Map<String, dynamic> credentials, BuildContext context, {bool showLoading = true}) async {
     if (showLoading) showLoadingDialog(context);
     final url = Uri.parse('$baseUrl/v1/oauth/binding/$oauthType');
     try {
@@ -174,9 +157,7 @@ class APIService {
     }
   }
 
-  Future<http.Response> oauthBindingReplacement(
-      String oauthType, Map<String, dynamic> credentials, BuildContext context,
-      {bool showLoading = true}) async {
+  Future<http.Response> oauthBindingReplacement(String oauthType, Map<String, dynamic> credentials, BuildContext context, {bool showLoading = true}) async {
     if (showLoading) showLoadingDialog(context);
     final url = Uri.parse('$baseUrl/v1/oauth/binding/replacement/$oauthType');
     try {
@@ -187,8 +168,7 @@ class APIService {
     }
   }
 
-  Future<http.Response> oauthUnBinding(String oauthType, BuildContext context,
-      {bool showLoading = true}) async {
+  Future<http.Response> oauthUnBinding(String oauthType, BuildContext context, {bool showLoading = true}) async {
     if (showLoading) showLoadingDialog(context);
     final url = Uri.parse('$baseUrl/v1/oauth/binding/cancelation/$oauthType');
     try {
@@ -199,8 +179,7 @@ class APIService {
   }
 
   // 忘記密碼/重設密碼相關
-  Future<http.Response> forgotPassword(String email, BuildContext context,
-      {bool showLoading = false}) async {
+  Future<http.Response> forgotPassword(String email, BuildContext context, {bool showLoading = false}) async {
     if (showLoading) showLoadingDialog(context);
     final url = Uri.parse('$baseUrl/v1/forgot/email/$email');
     try {
@@ -210,9 +189,7 @@ class APIService {
     }
   }
 
-  Future<http.Response> resetPassword(
-      PasswordReset passwordReset, BuildContext context,
-      {bool showLoading = false}) async {
+  Future<http.Response> resetPassword(PasswordReset passwordReset, BuildContext context, {bool showLoading = false}) async {
     if (showLoading) showLoadingDialog(context);
     final url = Uri.parse('$baseUrl/v1/password/reset');
     try {
@@ -223,9 +200,7 @@ class APIService {
     }
   }
 
-  Future<http.Response> otpVerification(
-      OTPRequest otpRequest, BuildContext context,
-      {bool showLoading = false}) async {
+  Future<http.Response> otpVerification(OTPRequest otpRequest, BuildContext context, {bool showLoading = false}) async {
     if (showLoading) showLoadingDialog(context);
     final url = Uri.parse('$baseUrl/v1/otp');
     try {
@@ -237,8 +212,7 @@ class APIService {
   }
 
   // 心情量表相關
-  Future<http.Response> getMentalRecords(BuildContext context,
-      {bool showLoading = false}) async {
+  Future<http.Response> getMentalRecords(BuildContext context, {bool showLoading = false}) async {
     if (showLoading) showLoadingDialog(context);
     final url = Uri.parse('$baseUrl/v1/mental_record');
     try {
@@ -248,8 +222,7 @@ class APIService {
     }
   }
 
-  Future<http.Response> getMentalRecord(int listID, BuildContext context,
-      {bool showLoading = false}) async {
+  Future<http.Response> getMentalRecord(int listID, BuildContext context, {bool showLoading = false}) async {
     if (showLoading) showLoadingDialog(context);
     final url = Uri.parse('$baseUrl/v2/mental_record/$listID');
     try {
@@ -259,9 +232,7 @@ class APIService {
     }
   }
 
-  Future<http.Response> submitMentalRecord(
-      int listID, Map<String, dynamic> record, BuildContext context,
-      {bool showLoading = false}) async {
+  Future<http.Response> submitMentalRecord(int listID, Map<String, dynamic> record, BuildContext context, {bool showLoading = false}) async {
     if (showLoading) showLoadingDialog(context);
     final url = Uri.parse('$baseUrl/v1/mental_record/$listID');
     try {
@@ -272,9 +243,7 @@ class APIService {
   }
 
   // 每日心情相關
-  Future<http.Response> postMood(
-      int moodScore, String time, BuildContext context,
-      {bool showLoading = false}) async {
+  Future<http.Response> postMood(int moodScore, String time, BuildContext context, {bool showLoading = false}) async {
     if (showLoading) showLoadingDialog(context);
     final url = Uri.parse('$baseUrl/v1/mood/$moodScore');
     final body = {
@@ -288,8 +257,7 @@ class APIService {
     }
   }
 
-  Future<http.Response> getCheckin(BuildContext context,
-      {bool showLoading = false}) async {
+  Future<http.Response> getCheckin(BuildContext context, {bool showLoading = false}) async {
     if (showLoading) showLoadingDialog(context);
     final url = Uri.parse('$baseUrl/v1/record/checkin');
     try {
@@ -300,9 +268,7 @@ class APIService {
   }
 
   // 心情打字機
-  Future<http.Response> postTypewriter(
-      String typewriter, String creationTime, BuildContext context,
-      {bool showLoading = true}) async {
+  Future<http.Response> postTypewriter(String typewriter, String creationTime, BuildContext context, {bool showLoading = true}) async {
     if (showLoading) showLoadingDialog(context);
 
     final url = Uri.parse('$baseUrl/v2/mood/typewriter');
@@ -318,11 +284,7 @@ class APIService {
     }
   }
 
-  Future<http.Response> getTypeWriterHistory(
-    BuildContext context, {
-    required int batch,
-    bool showLoading = false,
-  }) async {
+  Future<http.Response> getTypeWriterHistory(BuildContext context, {required int batch, bool showLoading = false}) async {
     if (showLoading) showLoadingDialog(context);
 
     // 組合URL
@@ -339,8 +301,7 @@ class APIService {
   }
 
   // 點數相關
-  Future<http.Response> getPoints(BuildContext context,
-      {bool showLoading = false}) async {
+  Future<http.Response> getPoints(BuildContext context, {bool showLoading = false}) async {
     if (showLoading) showLoadingDialog(context);
     final url = Uri.parse('$baseUrl/v1/points');
     try {
@@ -350,9 +311,7 @@ class APIService {
     }
   }
 
-  Future<http.Response> postPointsDeduction(
-      PointsDeduction pointsDeduction, BuildContext context,
-      {bool showLoading = false}) async {
+  Future<http.Response> postPointsDeduction(PointsDeduction pointsDeduction, BuildContext context, {bool showLoading = false}) async {
     if (showLoading) showLoadingDialog(context);
     final url = Uri.parse('$baseUrl/v1/points/deduction');
     try {
@@ -363,8 +322,7 @@ class APIService {
     }
   }
 
-  Future<http.Response> getPointsCheat(BuildContext context,
-      {bool showLoading = false}) async {
+  Future<http.Response> getPointsCheat(BuildContext context, {bool showLoading = false}) async {
     if (showLoading) showLoadingDialog(context);
     final url = Uri.parse('$baseUrl/v1/points/cheat');
     try {
@@ -375,8 +333,7 @@ class APIService {
   }
 
   // 首頁Banner
-  Future<http.Response> getHistoryStory(BuildContext context,
-      {bool showLoading = false}) async {
+  Future<http.Response> getHistoryStory(BuildContext context, {bool showLoading = false}) async {
     if (showLoading) showLoadingDialog(context);
     final url = Uri.parse('$baseUrl/v1/history_story');
     try {
@@ -386,8 +343,7 @@ class APIService {
     }
   }
 
-  Future<http.Response> getVocabulary(BuildContext context,
-      {bool showLoading = false}) async {
+  Future<http.Response> getVocabulary(BuildContext context, {bool showLoading = false}) async {
     if (showLoading) showLoadingDialog(context);
     final url = Uri.parse('$baseUrl/v1/vocabulary');
     try {
@@ -398,35 +354,32 @@ class APIService {
   }
 
   // 遊戲
-  Future<http.Response> postGameRecord_WebBased(
-      Map<String, dynamic> gameData, BuildContext context) async {
+  Future<http.Response> postGameRecord_WebBased(Map<String, dynamic> gameData, BuildContext context) async {
     final url = Uri.parse('$baseUrl/v1/game_record/web-based');
     return await http.post(url, headers: headers, body: json.encode(gameData));
   }
 
   // 愛來運動
-  Future<http.StreamedResponse> uploadVideo(
-      List<int> videoFile, BuildContext context,
-      {bool showLoading = false}) async {
+  Future<http.Response> uploadVideo(List<int> videoFile, BuildContext context, {bool showLoading = false}) async {
     if (showLoading) showLoadingDialog(context);
     final url = Uri.parse('$baseUrl/v1/video/analysis/upload');
     var request = http.MultipartRequest('POST', url)
-      ..headers.addAll(headers)
+      ..headers['Content-Type'] = 'text/html'
+      ..headers['Authorization'] = headers['Authorization']!
       ..files.add(http.MultipartFile.fromBytes('video', videoFile,
           filename: 'video.mp4'));
 
     try {
-      return await request.send();
+      final streamedResponse = await request.send();
+      return await http.Response.fromStream(streamedResponse);
     } finally {
       if (showLoading) hideLoadingDialog(context);
     }
   }
 
-  Future<http.Response> videoAnalysisWebhook(
-      String videoName, BuildContext context,
-      {bool showLoading = false}) async {
+  Future<http.Response> getVideoList(BuildContext context, {bool showLoading = false}) async {
     if (showLoading) showLoadingDialog(context);
-    final url = Uri.parse('$baseUrl/v1/video/analysis/webhook/$videoName');
+    final url = Uri.parse('$baseUrl/v1/video/list');
     try {
       return await http.get(url, headers: headers);
     } finally {

@@ -10,6 +10,7 @@ import 'package:usrcare/widgets/Dialog.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter/services.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -32,7 +33,9 @@ class _SplashPageState extends State<SplashPage> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     _deepLinkService.init(context);
     _checkAndRequestNotificationPermission();
-    // Initialize _previousNotificationStatus
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
     Permission.notification.status.then((status) {
       _previousNotificationStatus = status;
     });

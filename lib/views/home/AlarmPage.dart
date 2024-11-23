@@ -211,8 +211,15 @@ class _AlarmPageState extends State<AlarmPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Image.asset("assets/HomePage_Icons/alarm.png", height: 50),
-              const SizedBox(width: 10),
+              ClipRRect(
+                clipBehavior: Clip.hardEdge,
+                child: Image.asset(
+                  "assets/HomePage_Icons/alarm.png",
+                  height: 50,
+                  width: 50,
+                  fit: BoxFit.cover,
+                ),
+              ),
               const Text("鬧鐘小提醒")
             ],
           ),
