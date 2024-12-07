@@ -1,7 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -17,6 +20,7 @@ import 'package:usrcare/views/home/ExercisePage.dart';
 import 'package:usrcare/views/setting/SettingPage.dart';
 import 'package:usrcare/widgets/Button.dart';
 import 'package:usrcare/widgets/Dialog.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -38,6 +42,7 @@ class _HomePageState extends State<HomePage> {
   late PageController _pageController;
   Timer? _timer;
   bool _isUserScrolling = false;
+  final FlutterTts flutterTts = FlutterTts();
 
   @override
   void initState() {
@@ -65,6 +70,7 @@ class _HomePageState extends State<HomePage> {
       _checkOAuthBinding();
       _loadData();
       _checkCheckin();
+      _setFCMToken();
       _isDataLoaded = true;
     }
   }
@@ -91,11 +97,9 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _checkOAuthBinding() async {
-    final oauthBindingProvider =
-        Provider.of<OAuthBindingList_Provider>(context, listen: false);
+    final oauthBindingProvider = Provider.of<OAuthBindingList_Provider>(context, listen: false);
 
-    final localOauthBindingList =
-        await SharedPreferencesService().getData(StorageKeys.oauthBindingList);
+    final localOauthBindingList = await SharedPreferencesService().getData(StorageKeys.oauthBindingList);
 
     if (localOauthBindingList != null) {
       final decoded = jsonDecode(localOauthBindingList);
@@ -104,8 +108,7 @@ class _HomePageState extends State<HomePage> {
       final response = await apiService!.oauthBindingList(context);
       final x = handleHttpResponses(context, response, "取得OAuth已綁定資料時發生問題");
       oauthBindingProvider.setBindingList(Map<String, bool>.from(x));
-      SharedPreferencesService().saveData(StorageKeys.oauthBindingList,
-          jsonEncode(oauthBindingProvider.oauthBindingList));
+      SharedPreferencesService().saveData(StorageKeys.oauthBindingList, jsonEncode(oauthBindingProvider.oauthBindingList));
     }
   }
 
@@ -245,10 +248,38 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  void _setFCMToken() async {
+    if (Platform.isIOS) {
+      final APNs_token = await FirebaseMessaging.instance.getAPNSToken();
+    }
+    String? fcmToken = await FirebaseMessaging.instance.getToken();
+    if (fcmToken != null) {
+      final response = await apiService!.postFCMToken(fcmToken, context);
+      handleHttpResponses(context, response, "註冊裝置Token時發生錯誤");
+      FirebaseMessaging.instance.subscribeToTopic('broadcast');
+    }
+  }
+
+  Future<void> _speak(String text) async {
+    await flutterTts.setLanguage("en-US");
+    await flutterTts.speak(text);
+    
+    await Future.delayed(const Duration(seconds: 1));
+    
+    await flutterTts.setLanguage("zh-TW");
+    await flutterTts.speak(vocabulary[2]);
+  }
+
   @override
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
+      onPopInvokedWithResult: (bool didPop, dynamic result) async {
+        if (didPop) {
+          return;
+        }
+        SystemNavigator.pop();
+      },
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         body: SafeArea(
@@ -584,11 +615,52 @@ class _HomePageState extends State<HomePage> {
           Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(vocabulary[0], style: const TextStyle(fontSize: 25)),
+              Text(vocabulary[0], style: const TextStyle(fontSize: 30)),
               const SizedBox(height: 20),
-              Text(vocabulary[1], style: const TextStyle(fontSize: 25)),
+              Text(vocabulary[1], style: const TextStyle(fontSize: 30)),
+              const SizedBox(height: 15),
+              Text(vocabulary[2], style: const TextStyle(fontSize: 30)),
               const SizedBox(height: 20),
-              Text(vocabulary[2], style: const TextStyle(fontSize: 25)),
+              Container(
+                decoration: BoxDecoration(
+                  color: ColorUtil.primary.withOpacity(0.15),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: ColorUtil.primary,
+                    width: 2,
+                  ),
+                ),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(12),
+                    onTap: () => _speak(vocabulary[0]),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 12),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.volume_up,
+                            size: 30,
+                            color: Colors.black87,
+                          ),
+                          const SizedBox(width: 12),
+                          Text(
+                            "點我聽發音",
+                            style: TextStyle(
+                              fontSize: 24,
+                              color: Colors.black87,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
           closeButton: true,

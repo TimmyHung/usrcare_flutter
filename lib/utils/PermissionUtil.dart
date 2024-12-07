@@ -21,8 +21,9 @@ class PermissionUtil {
     Permission permission,
     String permissionName,
     String description,
-    VoidCallback onGranted,
-  ) async {
+    VoidCallback onGranted, {
+    bool isRequired = false,
+  }) async {
     _onPermissionGranted = onGranted;
     final status = await permission.status;
 
@@ -33,13 +34,14 @@ class PermissionUtil {
 
     if (status.isPermanentlyDenied) {
       _pendingAction = permission;
-      _showPermissionDialog(context, permissionName, description);
+      _showPermissionDialog(context, permissionName, description, isRequired);
       return;
     }
 
     if (status.isDenied) {
       final bool? userAccepted = await showDialog<bool>(
         context: context,
+        barrierDismissible: !isRequired,
         builder: (context) => AlertDialog(
           title: Center(
             child: Text(
@@ -76,15 +78,15 @@ class PermissionUtil {
                   ),
                 ),
                 TextButton(
-                  onPressed: () {
+                  onPressed: isRequired ? null : () {
                     Navigator.pop(context, false);
                     _pendingAction = Permission.unknown;
                   },
-                  child: const Text(
-                    '稍後再說',
+                  child: Text(
+                    isRequired ? '無法跳過' : '稍後再說',
                     style: TextStyle(
                       fontSize: 20,
-                      color: Colors.black54,
+                      color: isRequired ? Colors.grey : Colors.black54,
                     ),
                   ),
                 ),
@@ -104,12 +106,19 @@ class PermissionUtil {
         return;
       }
       if (result.isDenied) {
-        checkAndRequestPermission(context, permission, permissionName, description, onGranted);
+        checkAndRequestPermission(
+          context, 
+          permission, 
+          permissionName, 
+          description, 
+          onGranted, 
+          isRequired: isRequired
+        );
         return;
       }
       if (result.isPermanentlyDenied) {
         _pendingAction = permission;
-        _showPermissionDialog(context, permissionName, description);
+        _showPermissionDialog(context, permissionName, description, isRequired);
         return;
       }
     }
@@ -120,6 +129,7 @@ class PermissionUtil {
     AppLifecycleState state,
     BuildContext context,
   ) async {
+    print("AppLifecycleState: $state, _pendingAction: $_pendingAction");
     if (state == AppLifecycleState.resumed && _pendingAction != Permission.unknown) {
       for (var entry in _previousStatuses.entries) {
         if (entry.key == _pendingAction) {
@@ -144,13 +154,14 @@ class PermissionUtil {
     BuildContext context,
     String permissionName,
     String description,
+    bool isRequired,
   ) {
     if (_isDialogShowing) return;
     _isDialogShowing = true;
 
     showDialog(
       context: context,
-      barrierDismissible: false,
+      barrierDismissible: !isRequired,
       builder: (BuildContext context) {
         return AlertDialog(
           actionsAlignment: MainAxisAlignment.center,
@@ -164,7 +175,7 @@ class PermissionUtil {
             ),
           ),
           content: Text(
-            description,
+            description + "\n\n請點擊下方按鈕「前往設定」允許「$permissionName」權限以繼續。",
             style: const TextStyle(fontSize: 24),
           ),
           actions: [
@@ -184,14 +195,17 @@ class PermissionUtil {
                   ),
                 ),
                 TextButton(
-                  onPressed: () {
+                  onPressed: isRequired ? null : () {
                     _pendingAction = Permission.unknown;
                     Navigator.pop(context);
                     _isDialogShowing = false;
                   },
-                  child: const Text(
-                    '稍後再說',
-                    style: TextStyle(fontSize: 20, color: Colors.black54),
+                  child: Text(
+                    isRequired ? '無法跳過' : '稍後再說',
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: isRequired ? Colors.grey : Colors.black54,
+                    ),
                   ),
                 ),
               ],

@@ -64,6 +64,9 @@ dependencies:
   chewie: ^1.8.5
   get_thumbnail_video: ^0.7.3
   gal: ^2.3.0
+  firebase_core: ^3.8.0
+  firebase_messaging: ^15.1.5
+  flutter_tts: ^4.2.0
 
 flutter_launcher_icons:
   android: "launcher_icon"

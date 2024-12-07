@@ -278,6 +278,7 @@ class _QuestionPageState extends State<QuestionPage> {
   int currentQuestionIndex = 0;
   List<int?> answers = [];
   DateTime? startTime;
+  bool isSubmitting = false;
 
   @override
   void initState() {
@@ -287,32 +288,44 @@ class _QuestionPageState extends State<QuestionPage> {
   }
 
   Future<void> _submitAnswers() async {
-    final loadedToken =
-        await SharedPreferencesService().getData(StorageKeys.userToken) ??
-            "Null";
-    final APIService apiService = APIService(token: loadedToken);
-    DateTime endTime = DateTime.now();
-    List<String> answerStrings =
-        answers.map((answer) => answer.toString()).toList();
+    if (isSubmitting) return;
 
-    Map<String, dynamic> record = {
-      "answer": answerStrings,
-      "start_time": startTime!.toIso8601String(),
-      "end_time": endTime.toIso8601String(),
-    };
+    setState(() {
+      isSubmitting = true;
+    });
 
-    final response =
-        await apiService.submitMentalRecord(widget.listID, record, context);
-    var x = handleHttpResponses(context, response, "無法提交心情量表結果");
-    if (x == null) {
-      return;
+    try {
+      final loadedToken =
+          await SharedPreferencesService().getData(StorageKeys.userToken) ??
+              "Null";
+      final APIService apiService = APIService(token: loadedToken);
+      DateTime endTime = DateTime.now();
+      List<String> answerStrings =
+          answers.map((answer) => answer.toString()).toList();
+
+      Map<String, dynamic> record = {
+        "answer": answerStrings,
+        "start_time": startTime!.toIso8601String(),
+        "end_time": endTime.toIso8601String(),
+      };
+
+      final response =
+          await apiService.submitMentalRecord(widget.listID, record, context);
+      var x = handleHttpResponses(context, response, "無法提交心情量表結果");
+      if (x == null) {
+        return;
+      }
+      bool consultation = x['consultation'];
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ResultPage(consultation: consultation)),
+      );
+    } finally {
+      setState(() {
+        isSubmitting = false;
+      });
     }
-    bool consultation = x['consultation'];
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (context) => ResultPage(consultation: consultation)),
-    );
   }
 
   Future<void> _showExitConfirmationDialog() async {
@@ -430,22 +443,24 @@ class _QuestionPageState extends State<QuestionPage> {
                   ),
                 FloatingActionButton(
                   backgroundColor: answers[currentQuestionIndex] != null
-                      ? Colors.orange
+                      ? (isSubmitting ? Colors.grey : Colors.orange)
                       : Colors.grey,
                   heroTag: 'next',
-                  onPressed: () {
-                    if (answers[currentQuestionIndex] == null) {
-                      showToast(context, "請先選擇一個選項");
-                      return;
-                    }
-                    if (currentQuestionIndex < widget.questions.length - 1) {
-                      setState(() {
-                        currentQuestionIndex++;
-                      });
-                    } else {
-                      _submitAnswers();
-                    }
-                  },
+                  onPressed: isSubmitting
+                      ? null
+                      : () {
+                          if (answers[currentQuestionIndex] == null) {
+                            showToast(context, "請先選擇一個選項");
+                            return;
+                          }
+                          if (currentQuestionIndex < widget.questions.length - 1) {
+                            setState(() {
+                              currentQuestionIndex++;
+                            });
+                          } else {
+                            _submitAnswers();
+                          }
+                        },
                   child: currentQuestionIndex < widget.questions.length - 1
                       ? const Icon(Icons.arrow_forward)
                       : const Text("提交", style: TextStyle(fontSize: 20)),
@@ -870,7 +885,7 @@ class _TypeWriter_PageState extends State<TypeWriter_Page> {
                           onPressed: () async {
                             String userInput = _textController.text.trim();
                             final DateTime rawDateTime = DateTime.now();
-                            //將時間轉換為ISO8601格式
+                            //將時間轉換ISO8601格式
                             final String creationTime_ISO8601 = DateFormat('yyyy-MM-ddTHH:mm:ss').format(rawDateTime);
                             final String creationTime = '${DateFormat('EEE, dd MMM yyyy HH:mm:ss').format(rawDateTime)} GMT';
                             if (userInput.isEmpty) {

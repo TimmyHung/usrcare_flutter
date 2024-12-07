@@ -140,7 +140,7 @@ class _ExerciseResultPageState extends State<ExerciseResultPage> with WidgetsBin
       ),
       body: _isLoading 
         ? Center(child: CircularProgressIndicator(color: borderColor,))
-        : (_videos == null || _videos!.isEmpty)
+        : (_videos == null || _videos!.isEmpty || _videos!.every((video) => video.expired))
           ? const Center(
               child: Column(
                 mainAxisSize: MainAxisSize.min,

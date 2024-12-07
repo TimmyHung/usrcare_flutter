@@ -19,9 +19,9 @@ class NotificationService {
     tz.initializeTimeZones();
     tz.setLocalLocation(tz.getLocation('Asia/Taipei'));
 
-    if (await Permission.notification.isDenied) {
-      await Permission.notification.request();
-    }
+    // if (await Permission.notification.isDenied) {
+    //   await Permission.notification.request();
+    // }
 
     const androidChannel = AndroidNotificationChannel(
       'alarm_channel',

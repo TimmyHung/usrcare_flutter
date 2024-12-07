@@ -178,7 +178,7 @@ class _WelcomePageState extends State<WelcomePage> {
       children: [
         Container(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(100),
+            borderRadius: BorderRadius.circular(150),
             color: Colors.white,
           ),
           padding: const EdgeInsets.all(10),

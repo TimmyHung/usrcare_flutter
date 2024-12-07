@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -11,6 +12,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/services.dart';
+import 'package:usrcare/utils/PermissionUtil.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -24,21 +26,25 @@ class _SplashPageState extends State<SplashPage> with WidgetsBindingObserver {
   bool forceUpdate = false;
   late String userToken;
   late String userName;
-  bool _isDialogShowing = false;
-  PermissionStatus _previousNotificationStatus = PermissionStatus.denied;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _deepLinkService.init(context);
-    _checkAndRequestNotificationPermission();
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
-    Permission.notification.status.then((status) {
-      _previousNotificationStatus = status;
-    });
+    _deepLinkService.init(context);
+    
+    PermissionUtil.checkAndRequestPermission(
+      context,
+      Permission.notification,
+      '通知',
+      '為了提供您最好的服務體驗，我們需要通知權限來發送重要的提醒。',
+      () => _versionTest(),
+      isRequired: true,
+    );
+
   }
 
   @override
@@ -51,83 +57,12 @@ class _SplashPageState extends State<SplashPage> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
     super.didChangeAppLifecycleState(state);
-    if (state == AppLifecycleState.resumed) {
-      final status = await Permission.notification.status;
-      if (status.isGranted) {
-        if (_isDialogShowing) {
-          Navigator.of(context, rootNavigator: true).pop();
-          _isDialogShowing = false;
-        }
-        if (_previousNotificationStatus != PermissionStatus.granted) {
-          // Notification permission has just been granted
-          _versionTest();
-        }
-      } else {
-        if (!_isDialogShowing) {
-          _showNotificationPermissionDialog();
-        }
-      }
-      _previousNotificationStatus = status;
-    }
-  }
-
-  Future<void> _checkAndRequestNotificationPermission() async {
-    final status = await Permission.notification.status;
-
-    if (status.isGranted) {
-      _versionTest();
-    } else {
-      _showNotificationPermissionDialog();
-    }
-  }
-
-  void _showNotificationPermissionDialog() {
-    if (_isDialogShowing) return; // Avoid showing the dialog multiple times
-    _isDialogShowing = true;
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          actionsAlignment: MainAxisAlignment.center,
-          title: const Text(
-            '需要通知權限',
-            style: TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          content: const Text(
-            '為了提供您最好的服務體驗，我們需要通知權限來發送重要的提醒，請在設定中啟用通知權限。',
-            style: TextStyle(fontSize: 24),
-          ),
-          actions: [
-            SizedBox(
-              width: double.infinity,
-              height: 50,
-              child: ElevatedButton(
-                onPressed: () async {
-                  await openAppSettings();
-                },
-                child: const Text(
-                  '前往設定',
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
-                ),
-              ),
-            ),
-          ],
-        );
-      },
-    ).then((_) {
-      _isDialogShowing = false;
-    });
+    PermissionUtil.handleAppLifecycleStateChange(state, context);
   }
 
   Future<void> _checkLoginStatus() async {
-    userToken =
-        await SharedPreferencesService().getData(StorageKeys.userToken) ?? "";
-    userName =
-        await SharedPreferencesService().getData(StorageKeys.userName) ?? "";
+    userToken = await SharedPreferencesService().getData(StorageKeys.userToken) ?? "";
+    userName = await SharedPreferencesService().getData(StorageKeys.userName) ?? "";
 
     if (userToken.isNotEmpty && userName.isNotEmpty) {
       await _validateTokenAndNavigate();
@@ -146,10 +81,7 @@ class _SplashPageState extends State<SplashPage> with WidgetsBindingObserver {
     var x = handleHttpResponses(context, response, null);
 
     if (x != null) {
-      if (ModalRoute.of(context)?.settings.name != '/home') {
-        Navigator.pushReplacementNamed(context, "/home",
-            arguments: {"token": userToken, "name": userName});
-      }
+      Navigator.pushReplacementNamed(context, "/home", arguments: {"token": userToken, "name": userName});
     } else {
       await SharedPreferencesService().clearAllData();
       Navigator.pushNamed(context, "/welcome");

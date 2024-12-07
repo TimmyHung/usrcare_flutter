@@ -363,15 +363,21 @@ class APIService {
   Future<http.Response> uploadVideo(List<int> videoFile, BuildContext context, {bool showLoading = false}) async {
     if (showLoading) showLoadingDialog(context);
     final url = Uri.parse('$baseUrl/v1/video/analysis/upload');
-    var request = http.MultipartRequest('POST', url)
-      ..headers['Content-Type'] = 'text/html'
-      ..headers['Authorization'] = headers['Authorization']!
-      ..files.add(http.MultipartFile.fromBytes('video', videoFile,
-          filename: 'video.mp4'));
-
+    
     try {
+      var request = http.MultipartRequest('POST', url)
+        ..headers['Authorization'] = headers['Authorization']!
+        ..files.add(http.MultipartFile.fromBytes(
+          'video',
+          videoFile,
+          filename: 'video.mp4'
+        ));
+
       final streamedResponse = await request.send();
-      return await http.Response.fromStream(streamedResponse);
+      final response = await http.Response.fromStream(streamedResponse);
+      
+      return response;
+      
     } finally {
       if (showLoading) hideLoadingDialog(context);
     }
@@ -382,6 +388,17 @@ class APIService {
     final url = Uri.parse('$baseUrl/v1/video/list');
     try {
       return await http.get(url, headers: headers);
+    } finally {
+      if (showLoading) hideLoadingDialog(context);
+    }
+  }
+
+  // 傳遞FCM Token
+  Future<http.Response> postFCMToken(String FCMToken, BuildContext context, {bool showLoading = false}) async {
+    if (showLoading) showLoadingDialog(context);
+    final url = Uri.parse('$baseUrl/v1/device/registration');
+    try {
+      return await http.post(url, headers: headers, body: json.encode({'registration_token': FCMToken}));
     } finally {
       if (showLoading) hideLoadingDialog(context);
     }

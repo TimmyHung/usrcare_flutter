@@ -6,20 +6,25 @@ import 'package:flutter/material.dart';
 import 'package:usrcare/widgets/Dialog.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-dynamic handleHttpResponses(
-    BuildContext context, dynamic response, String? errorTitle) {
+dynamic handleHttpResponses(BuildContext context, dynamic response, String? errorTitle) {
   if (kDebugMode) {
     try {
-      print(
-          "HttpCode: ${response.statusCode} \nBody: ${json.decode(response.body)}");
+      print("[${response.request?.method}] ${response.request?.url}\nHttpCode: ${response.statusCode}, Body: ${response.body}");
     } catch (err) {
       print(response);
       return null;
     }
   }
   if (response.statusCode == 200 || response.statusCode == 201) {
-    final responseBody = json.decode(response.body);
-    return responseBody;
+    try {
+      if (response.body.isEmpty) {
+        return {};
+      }
+      final responseBody = json.decode(response.body);
+      return responseBody;
+    } catch (e) {
+      return {};
+    }
   } else {
     if (errorTitle != null) {
       showCustomDialog(context, errorTitle, response.reasonPhrase.toString());

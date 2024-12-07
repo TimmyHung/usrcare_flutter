@@ -267,15 +267,18 @@ class _ExercisePageState extends State<ExercisePage> with WidgetsBindingObserver
 
     final videoBytes = await video.readAsBytes();
     final response = await _apiService.uploadVideo(videoBytes, context);
-    final x = handleHttpResponses(context, response, "上傳影片失敗");
-    if (x == null) return;
+    if (!context.mounted) return;
     
-    showCustomDialog(
-      context,
-      "影片上傳成功",
-      "分析完成後我們會發送通知給您，屆時再請您回來查看結果！",
-      closeButton: true,
-    );
+    final result = handleHttpResponses(context, response, "上傳影片失敗");
+    
+    if (result != null) {
+      showCustomDialog(
+        context,
+        "影片上傳成功",
+        "分析完成後我們會發送通知給您，屆時再請您回來查看結果！",
+        closeButton: true,
+      );
+    }
   }
 
   // 顯示運動攝影使用說明
