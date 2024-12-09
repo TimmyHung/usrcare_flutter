@@ -12,6 +12,10 @@ enum StorageKeys {
   waterPresets,
   restPresets,
   hideExerciseRecordingNotice,
+  petCompanionPetName,
+  petCompanionPedometerData,
+  petCompanionPedometerDayStart,
+  petCompanionPedometerLastRecord
 }
 
 const Map<StorageKeys, String> storageKeysMap = {
@@ -26,6 +30,10 @@ const Map<StorageKeys, String> storageKeysMap = {
   StorageKeys.waterPresets: 'water_presets',
   StorageKeys.restPresets: 'rest_presets',
   StorageKeys.hideExerciseRecordingNotice: 'hide_exercise_recording_notice',
+  StorageKeys.petCompanionPetName: 'pet_companion_pet_name',
+  StorageKeys.petCompanionPedometerData: 'pet_companion_pedometer_data',
+  StorageKeys.petCompanionPedometerDayStart: 'pet_companion_pedometer_day_start',
+  StorageKeys.petCompanionPedometerLastRecord: 'pet_companion_pedometer_last_record',
 };
 
 extension StorageKeysExtension on StorageKeys {

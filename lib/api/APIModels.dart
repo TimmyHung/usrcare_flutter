@@ -7,14 +7,14 @@ class User {
   final String name;
   final String gender;
   final String birthday;
-  final String? phone; // 可選
+  final String? phone;
   final String city;
   final String district;
   final String neighbor;
-  final String? address; // 可選
-  final String? EName; // 可選
-  final String? EPhone; // 可選
-  final String? ERelation; // 可選
+  final String? address;
+  final String? EName;
+  final String? EPhone;
+  final String? ERelation;
 
   User({
     this.id_token,
@@ -153,5 +153,14 @@ class GameRecordOcean {
       'helpTotalCount': helpTotalCount,
       'helpRecord': helpRecord,
     };
+  }
+}
+
+class UserConfigKeys {
+  static const String petCompanionPedometerGoal = 'pet_companion_pedomoter_goal';
+  static const String petCompanionPetName = 'pet_companion_pet_name';
+  
+  static List<String> getAllKeys() {
+    return [petCompanionPedometerGoal, petCompanionPetName];
   }
 }
