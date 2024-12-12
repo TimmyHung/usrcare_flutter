@@ -23,6 +23,7 @@ class PermissionUtil {
     String description,
     VoidCallback onGranted, {
     bool isRequired = false,
+    VoidCallback? onCancel,
   }) async {
     _onPermissionGranted = onGranted;
     final status = await permission.status;
@@ -34,7 +35,7 @@ class PermissionUtil {
 
     if (status.isPermanentlyDenied) {
       _pendingAction = permission;
-      _showPermissionDialog(context, permissionName, description, isRequired);
+      _showPermissionDeniedDialog(context, permissionName, description, isRequired, onCancel);
       return;
     }
 
@@ -81,6 +82,7 @@ class PermissionUtil {
                   onPressed: isRequired ? null : () {
                     Navigator.pop(context, false);
                     _pendingAction = Permission.unknown;
+                    onCancel?.call();
                   },
                   child: Text(
                     isRequired ? '無法跳過' : '稍後再說',
@@ -112,13 +114,14 @@ class PermissionUtil {
           permissionName, 
           description, 
           onGranted, 
-          isRequired: isRequired
+          isRequired: isRequired,
+          onCancel: onCancel,
         );
         return;
       }
       if (result.isPermanentlyDenied) {
         _pendingAction = permission;
-        _showPermissionDialog(context, permissionName, description, isRequired);
+        _showPermissionDeniedDialog(context, permissionName, description, isRequired, onCancel);
         return;
       }
     }
@@ -129,7 +132,6 @@ class PermissionUtil {
     AppLifecycleState state,
     BuildContext context,
   ) async {
-    print("AppLifecycleState: $state, _pendingAction: $_pendingAction");
     if (state == AppLifecycleState.resumed && _pendingAction != Permission.unknown) {
       for (var entry in _previousStatuses.entries) {
         if (entry.key == _pendingAction) {
@@ -150,11 +152,12 @@ class PermissionUtil {
   }
 
   // 顯示權限請求對話框
-  static void _showPermissionDialog(
+  static void _showPermissionDeniedDialog(
     BuildContext context,
     String permissionName,
     String description,
     bool isRequired,
+    VoidCallback? onCancel,
   ) {
     if (_isDialogShowing) return;
     _isDialogShowing = true;
@@ -199,6 +202,7 @@ class PermissionUtil {
                     _pendingAction = Permission.unknown;
                     Navigator.pop(context);
                     _isDialogShowing = false;
+                    onCancel?.call();
                   },
                   child: Text(
                     isRequired ? '無法跳過' : '稍後再說',

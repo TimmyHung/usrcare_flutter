@@ -67,6 +67,8 @@ dependencies:
   firebase_core: ^3.8.0
   firebase_messaging: ^15.1.5
   flutter_tts: ^4.2.0
+  pedometer: ^4.0.2
+  workmanager: ^0.5.2
 
 flutter_launcher_icons:
   android: "launcher_icon"
@@ -99,8 +101,9 @@ flutter:
     - assets/line.png
 
     - assets/Icons/
-    - assets/Icons/daily_mood/
+    - assets/HomePage_Icons/daily_mood/
     - assets/HomePage_Icons/
+    - assets/Pet_Images/
 
     - assets/Web_Game/WhackMoleGame/
     - assets/Web_Game/SudokuGame/
