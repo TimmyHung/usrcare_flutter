@@ -54,10 +54,10 @@
 	<string>需要麥克風權限來錄製影片聲音</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>需要相簿權限來選擇影片</string>
-	<!-- <key>NSPhotoLibraryAddUsageDescription</key>
-	<string>需要相簿權限來儲存影片</string> -->
 	<key>NSRemindersUsageDescription</key>
 	<string>需要提醒權限來設定通知</string>
+	<key>NSMotionUsageDescription</key>
+	<string>我們需要存取您的運動數據來追蹤步數和活動狀態</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIBackgroundModes</key>

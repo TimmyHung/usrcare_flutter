@@ -140,7 +140,7 @@ class _ExerciseResultPageState extends State<ExerciseResultPage> with WidgetsBin
       ),
       body: _isLoading 
         ? Center(child: CircularProgressIndicator(color: borderColor,))
-        : (_videos == null || _videos!.isEmpty || _videos!.every((video) => video.expired))
+        : (_videos == null || _videos!.isEmpty)
           ? const Center(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -160,11 +160,9 @@ class _ExerciseResultPageState extends State<ExerciseResultPage> with WidgetsBin
             )
           : ListView.builder(
               padding: const EdgeInsets.all(16),
-              itemCount: _videos!.where((video) => !video.expired).length,
+              itemCount: _videos!.length,
               itemBuilder: (context, index) {
-                final activeVideos = _videos!
-                    .where((video) => !video.expired)
-                    .toList()
+                final activeVideos = _videos!.toList()
                   ..sort((a, b) {
                     final dateA = DateTime.parse(a.uploadTime);
                     final dateB = DateTime.parse(b.uploadTime);
@@ -180,16 +178,16 @@ class _ExerciseResultPageState extends State<ExerciseResultPage> with WidgetsBin
                     borderRadius: BorderRadius.circular(12),
                     side: BorderSide(color: Colors.black54, width: 0.5),
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-
-                      Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Row(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // 上傳時間
+                        Row(
                           children: [
-                            const Icon(Icons.access_time, color: Colors.black),
-                            const SizedBox(width: 4),
+                            const Icon(Icons.access_time, color: Colors.black, size: 28),
+                            const SizedBox(width: 8),
                             Expanded(
                               child: FittedBox(
                                 fit: BoxFit.scaleDown,
@@ -206,172 +204,204 @@ class _ExerciseResultPageState extends State<ExerciseResultPage> with WidgetsBin
                             ),
                           ],
                         ),
-                      ),
 
-                      if (video.url != null && video.analyzed)
-                        ExerciseVideoWidget(url: video.url!)
-                      else
-                        Container(
-                          height: 200,
-                          color: Colors.grey[400],
-                          child: const Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(Icons.movie_creation, size: 50),
-                              ],
+                        const SizedBox(height: 16),
+
+                        // 影片播放器
+                        if (video.url != null && video.analyzed)
+                          ExerciseVideoWidget(url: video.url!)
+                        else
+                          Container(
+                            height: 200,
+                            decoration: BoxDecoration(
+                              color: Colors.grey[400],
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: const Center(
+                              child: Icon(Icons.movie_creation, size: 50),
                             ),
                           ),
-                        ),
 
-                      Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            if (!video.analyzed)
+                        const SizedBox(height: 16),
+
+                        // 分析狀態或剩餘時間
+                        if (!video.analyzed)
+                          Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: Colors.orange.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: Colors.orange),
+                            ),
+                            child: const Row(
+                              children: [
+                                SizedBox(
+                                  width: 24,
+                                  height: 24,
+                                  child: CircularProgressIndicator(
+                                    valueColor: AlwaysStoppedAnimation<Color>(Colors.orange),
+                                    strokeWidth: 2,
+                                  ),
+                                ),
+                                SizedBox(width: 12),
+                                Text(
+                                  "影片分析中...請稍後再查看",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    color: Colors.orange,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        else if (video.analyzed) ...[
+                          Builder(
+                            builder: (context) {
+                              final expiryTime = DateTime.parse(video.expiryTime);
+                              final now = DateTime.now();
+                              final difference = expiryTime.difference(now);
+                              
+                              final isExpired = difference.isNegative;
+                              final isNearExpiry = !isExpired && difference.inHours < 24;
+                              
+                              String timeText;
+                              if (isExpired) {
+                                timeText = "已過期";
+                              } else {
+                                final days = difference.inDays;
+                                final hours = difference.inHours.remainder(24);
+                                final minutes = difference.inMinutes.remainder(60);
+                                timeText = days > 0 
+                                    ? "$days天$hours小時$minutes分鐘"
+                                    : "$hours小時$minutes分鐘";
+                              }
+                              
+                              final color = isExpired 
+                                  ? Colors.grey 
+                                  : (isNearExpiry ? Colors.red : Colors.grey);
+                              
+                              return Container(
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: color.withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(color: color),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.timer,
+                                      size: 24,
+                                      color: isExpired ? color : (isNearExpiry ? Colors.red : Colors.black),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Expanded(
+                                      child: Text(
+                                        isExpired ? "影片已過期" : "過期倒數：$timeText",
+                                        style: TextStyle(
+                                          fontSize: 22,
+                                          color: isExpired ? color : (isNearExpiry ? Colors.red : Colors.black),
+                                          fontWeight: isNearExpiry ? FontWeight.bold : FontWeight.normal,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+
+                          const SizedBox(height: 12),
+
+                          // 活力指數和按鈕
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
                               Container(
                                 padding: const EdgeInsets.all(12),
                                 decoration: BoxDecoration(
-                                  color: Colors.orange.withOpacity(0.1),
+                                  color: Colors.blue.withOpacity(0.1),
                                   borderRadius: BorderRadius.circular(12),
-                                  border: Border.all(color: Colors.orange),
+                                  border: Border.all(color: Colors.blue),
                                 ),
-                                child: const Row(
+                                child: Row(
                                   children: [
-                                    SizedBox(
-                                      width: 20,
-                                      height: 20,
-                                      child: CircularProgressIndicator(
-                                        valueColor: AlwaysStoppedAnimation<Color>(Colors.orange),
-                                        strokeWidth: 2,
+                                    const Icon(Icons.show_chart, color: Colors.blue, size: 24),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      "活力指數：${video.score?.toStringAsFixed(2) ?? '不適用'}",
+                                      style: const TextStyle(
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.blue,
                                       ),
                                     ),
-                                    SizedBox(width: 12),
-                                    Flexible(
-                                      child: FittedBox(
-                                        fit: BoxFit.scaleDown,
-                                        child: Text(
-                                          "影片分析中...請稍後再查看",
+                                  ],
+                                ),
+                              ),
+                              
+                              const SizedBox(height: 12),
+                              
+                              // 按鈕列
+                              Row(
+                                children: [
+                                  if (video.analyzed)
+                                    Container(
+                                      width: 60,
+                                      decoration: BoxDecoration(
+                                        color: Colors.red,
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: IconButton(
+                                        onPressed: () => _deleteVideo(video.videoID),
+                                        icon: const Icon(Icons.delete, color: Colors.white, size: 28),
+                                        style: IconButton.styleFrom(
+                                          backgroundColor: Colors.red,
+                                        ),
+                                        tooltip: '刪除影片',
+                                      ),
+                                    ),
+                                  if (!video.expired && video.url != null) ...[
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: ElevatedButton.icon(
+                                        onPressed: () => PermissionUtil.checkAndRequestPermission(
+                                          context,
+                                          Permission.photos,
+                                          '儲存空間',
+                                          '為了讓您能下載影片，我們需要取得您的儲存空間權限。',
+                                          () => _downloadVideo(context, video.url!, video.videoID),
+                                        ),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: ColorUtil.primary,
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 16,
+                                            vertical: 7,
+                                          ),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(12),
+                                          ),
+                                        ),
+                                        icon: const Icon(Icons.download, color: Colors.white, size: 24),
+                                        label: const Text(
+                                          "下載影片",
                                           style: TextStyle(
-                                            fontSize: 20,
-                                            color: Colors.orange,
+                                            fontSize: 24,
+                                            color: Colors.white,
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
                                       ),
                                     ),
                                   ],
-                                ),
-                              )
-                            else...[
-                              if (video.analyzed) ...[
-                                Builder(
-                                  builder: (context) {
-                                    final expiryTime = DateTime.parse(video.expiryTime);
-                                    final now = DateTime.now();
-                                    final difference = expiryTime.difference(now);
-                                    
-                                    final days = difference.inDays;
-                                    final hours = difference.inHours.remainder(24);
-                                    final minutes = difference.inMinutes.remainder(60);
-                                    
-                                    final timeText = days > 0 
-                                        ? "$days天$hours小時$minutes分鐘"
-                                        : "$hours小時$minutes分鐘";
-                                    final isNearExpiry = difference.inHours < 24;
-                                    
-                                    return Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                                      decoration: BoxDecoration(
-                                        color: isNearExpiry 
-                                            ? Colors.red.withOpacity(0.1)
-                                            : Colors.grey.withOpacity(0.1),
-                                        borderRadius: BorderRadius.circular(12),
-                                        border: Border.all(
-                                          color: isNearExpiry ? Colors.red : Colors.grey,
-                                        ),
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          Icon(
-                                            Icons.timer,
-                                            size: 20,
-                                            color: isNearExpiry ? Colors.red : Colors.black,
-                                          ),
-                                          const SizedBox(width: 4),
-                                          Expanded(
-                                            child: Text(
-                                              "剩餘時間：$timeText",
-                                              style: TextStyle(
-                                                fontSize: 20,
-                                                color: isNearExpiry ? Colors.red : Colors.black,
-                                                fontWeight: isNearExpiry ? FontWeight.bold : FontWeight.normal,
-                                              ),
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ],
-                              const SizedBox(height: 16),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
-                                  Expanded(
-                                    child: FittedBox(
-                                      fit: BoxFit.scaleDown,
-                                      alignment: Alignment.centerLeft,
-                                      child: Text(
-                                        "活力指數：${video.score?.toStringAsFixed(2) ?? '不適用'}",
-                                        style: const TextStyle(
-                                          fontSize: 24,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black87,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(width: 8),
-                                  ElevatedButton.icon(
-                                    onPressed: () => PermissionUtil.checkAndRequestPermission(
-                                      context,
-                                      Permission.photos,
-                                      '儲存空間',
-                                      '為了讓您能下載影片，我們需要取得您的儲存空間權限。',
-                                      () => _downloadVideo(context, video.url!, video.videoID),
-                                    ),
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: ColorUtil.primary,
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 16,
-                                        vertical: 12,
-                                      ),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                    ),
-                                    icon: const Icon(Icons.download, color: Colors.white, size: 24),
-                                    label: const Text(
-                                      "下載影片",
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
                                 ],
                               ),
-                            ]
-                          ],
-                        ),
-                      ),
-                    ],
+                            ],
+                          ),
+                        ],
+                      ],
+                    ),
                   ),
                 );
               },
@@ -520,6 +550,29 @@ class _ExerciseResultPageState extends State<ExerciseResultPage> with WidgetsBin
         );
       }
     }
+  }
+
+  Future<void> _deleteVideo(String videoID) async {
+    showConfirmDialog(
+      context,
+      "刪除影片",
+      "確定要刪除這部影片嗎？此操作無法復原。",
+      () async {
+        final response = await widget.apiService.deleteVideo(videoID, context);
+        if (response.statusCode == 200) {
+          setState(() {
+            _videos!.removeWhere((video) => video.videoID == videoID);
+          });
+          if (context.mounted) {
+            showToast(context, "影片已成功刪除");
+          }
+        } else {
+          if (context.mounted) {
+            showToast(context, "刪除失敗，請稍後再試");
+          }
+        }
+      },
+    );
   }
 }
 

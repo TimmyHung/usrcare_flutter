@@ -226,7 +226,7 @@ class _HomePageState extends State<HomePage> {
                                     shadowColor: Colors.transparent,
                                   ),
                                   child: Image.asset(
-                                    'assets/Icons/daily_mood/$mood_score.png',
+                                    'assets/HomePage_Icons/daily_mood/$mood_score.png',
                                     fit: BoxFit.cover,
                                     width: MediaQuery.of(context).size.width *
                                         0.135,
@@ -262,12 +262,14 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _speak(String text) async {
     await flutterTts.setLanguage("en-US");
+    await flutterTts.setSpeechRate(0.0);
     await flutterTts.speak(text);
     
     await Future.delayed(const Duration(seconds: 1));
     
     await flutterTts.setLanguage("zh-TW");
-    await flutterTts.speak(vocabulary[2]);
+    String cleanChineseText = vocabulary[2].replaceAll(RegExp(r'[^\u4e00-\u9fa5]'), '');
+    await flutterTts.speak(cleanChineseText);
   }
 
   @override
@@ -278,7 +280,9 @@ class _HomePageState extends State<HomePage> {
         if (didPop) {
           return;
         }
-        SystemNavigator.pop();
+        if (Platform.isAndroid) {
+          SystemNavigator.pop();
+        }
       },
       child: Scaffold(
         resizeToAvoidBottomInset: false,
@@ -463,7 +467,7 @@ class _HomePageState extends State<HomePage> {
                                 "assets/HomePage_Icons/pet.png",
                                 const Color.fromARGB(255, 0, 143, 0),
                                 2, () {
-                              showToast(context, "你的寵物死了");
+                              Navigator.pushNamed(context, "/petCompanion");
                             }),
                           ],
                         ),

@@ -18,6 +18,7 @@ import 'package:usrcare/views/WelcomePage.dart';
 import 'package:usrcare/views/home/MoodPage.dart';
 import 'package:usrcare/views/home/AlarmPage.dart';
 import 'package:usrcare/views/home/NotificationPage.dart';
+import 'package:usrcare/views/home/PetCompanionPage.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -58,6 +59,7 @@ class _MyAppState extends State<MyApp> {
         '/notification': (context) => const NotificationPage(),
         '/mood': (context) => const MoodPage(),
         '/alarm': (context) => const AlarmPage(),
+        '/petCompanion': (context) => const PetCompanionPage(),
         // '/setting': (context) => const SettingPage(),
         // '/game': (context) => const GamePage(),
         // '/checkin': (context) => const CheckInPage(),
